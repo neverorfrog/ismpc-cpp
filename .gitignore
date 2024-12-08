@@ -1,0 +1,7 @@
+
+# pixi environments
+.pixi
+*.egg-info
+
+# cpp build directories
+build/
