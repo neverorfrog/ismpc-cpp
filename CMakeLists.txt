@@ -29,9 +29,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_compile_definitions("DEBUG")
-endif()
+# if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+add_compile_definitions("DEBUG")
+# endif()
 
 message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 # =============================================================================================
@@ -67,10 +67,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(yaml-cpp)
 
+# PROXSUITE
+set(proxsuite_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/proxsuite/lib/cmake/proxsuite)
+find_package(proxsuite REQUIRED)
+
+
 # ============================ INCLUDE DIRECTORIES ============================================
 set(ISMPC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(EIGEN_INCLUDE_DIR /usr/include/eigen3)
-list(APPEND INCLUDE_DIRS ${ISMPC_INCLUDE_DIR} ${EIGEN_INCLUDE_DIR})
+set(PROX_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/proxsuite/include)
+list(APPEND INCLUDE_DIRS ${ISMPC_INCLUDE_DIR} ${EIGEN_INCLUDE_DIR} ${PROX_INCLUDE_DIR})
 # =============================================================================================
 
 # ============================ LIBRARIES ======================================================

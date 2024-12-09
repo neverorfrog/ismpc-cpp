@@ -1,12 +1,13 @@
 #pragma once
 
+#include <cmath>
+#include <sstream>
+
 #include "tools/math/pose3.h"
 #include "types/body_parts.h"
 #include "types/math_types.h"
-#include "types/walk_state.h"
 #include "types/state.h"
-#include <sstream>
-#include <cmath>
+#include "types/walk_state.h"
 
 namespace ismpc {
 

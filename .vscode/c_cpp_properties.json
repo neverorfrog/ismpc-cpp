@@ -3,7 +3,10 @@
     {
       "name": "linux-gcc-x64",
       "includePath": [
-        "${workspaceFolder}/**"
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/external/proxsuite/include",
+        "/usr/include/eigen3",
+        "${workspaceFolder}/include"
       ],
       "compilerPath": "/usr/bin/gcc",
       "cStandard": "${default}",

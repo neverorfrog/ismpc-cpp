@@ -9,4 +9,4 @@ constexpr char CMAKE_SOURCE_DIR[] = "/home/neverorfrog/code/intrinsically-stable
 constexpr char CMAKE_BINARY_DIR[] = "/home/neverorfrog/code/intrinsically-stable-mpc/build";
 constexpr char NAO_DESCRIPTION_PATH[] = "";
 
-} // namespace ismpc
+}  // namespace ismpc

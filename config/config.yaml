@@ -4,7 +4,7 @@ save_log: false
 delta: 0.01
 
 # Duration parameters
-N: 500
+N: 1000
 P: 300
 C: 100
 W: 100 # iterations to wait before starting
@@ -15,7 +15,7 @@ robot: hrp4
 # Input Velocities
 des_vel_x: 0.1 # [m/s]
 des_vel_y: 0 # [m/s]
-des_omega: 0 # [rad/s]
+des_omega: 0.2 # [rad/s]
 
 # Tail: PERIODIC, TRUNCATED, or ANTICIPATIVE
-tail_type: ANTICIPATIVE
+tail_type: PERIODIC

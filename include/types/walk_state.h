@@ -2,8 +2,8 @@
 
 #include "tools/config/config.h"
 #include "tools/config/robot_config.h"
-#include "types/body_parts.h"
 #include "tools/math/pose2.h"
+#include "types/body_parts.h"
 #include "types/end_effector.h"
 #include "types/math_types.h"
 #include "types/support_phase.h"

@@ -5,10 +5,10 @@
 namespace ismpc {
 
 struct FrameInfo {
-  Scalar tk;
-  int k;
+    Scalar tk;
+    int k;
 
-  FrameInfo() : tk(0.0), k(0) {}
+    FrameInfo() : tk(0.0), k(0) {}
 };
 
 }  // namespace ismpc

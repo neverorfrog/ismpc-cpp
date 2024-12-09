@@ -1,16 +1,17 @@
 #pragma once
 
 #include <vector>
-#include "tools/config/config.h"
+
 #include "representations/lip_robot.h"
-#include "types/support_phase.h"
+#include "tools/config/config.h"
 #include "types/math_types.h"
+#include "types/support_phase.h"
 
 namespace ismpc {
 
 class FootstepsPlan {
-public:
-    std::vector<Scalar> timestamps;                     // timestamps of the next footsteps
+   public:
+    std::vector<Scalar> timestamps;                    // timestamps of the next footsteps
     std::vector<Scalar> timestamps_for_zmp_midpoints;  // with one extra timestamp beyond Tp for the zmp midpoints
 
     VectorX theta;

@@ -67,6 +67,8 @@
     "program": "cpp",
     "referenced": "cpp",
     "shadercomposer": "cpp",
-    "stateattribute": "cpp"
+    "stateattribute": "cpp",
+    "chrono": "cpp",
+    "image": "cpp"
   }
 }
