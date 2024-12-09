@@ -9,4 +9,4 @@ constexpr char CMAKE_SOURCE_DIR[] = "@CMAKE_SOURCE_DIR@";
 constexpr char CMAKE_BINARY_DIR[] = "@CMAKE_BINARY_DIR@";
 constexpr char NAO_DESCRIPTION_PATH[] = "@NAO_DESCRIPTION_PATH@";
 
-} // namespace ismpc
+}  // namespace ismpc
