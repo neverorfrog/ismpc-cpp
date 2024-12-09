@@ -1,0 +1,75 @@
+# To use:
+#
+#     pre-commit run -a
+#
+# To update this file:
+#
+#     pre-commit autoupdate
+#
+# See https://github.com/pre-commit/pre-commit
+
+exclude: ^external/|external|include/tools/systemvars.hpp
+repos:
+
+  # Standard hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-xml
+      - id: check-yaml
+      - id: debug-statements
+      - id: end-of-file-fixer
+        exclude_types: [svg]
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+        exclude_types: [svg]
+      - id: fix-byte-order-marker
+
+  # CPP hooks
+  - repo: https://github.com/cpp-linter/cpp-linter-hooks
+    rev: v0.5.1  # Use the ref you want to point at
+    hooks:
+      - id: clang-format
+        args: [--style=file]
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args:
+          [
+            "--no-warnings",
+            "--config-data",
+            "{extends: default, rules: {line-length: disable, braces: {max-spaces-inside: 1}}}",
+          ]
+        types: [text]
+        files: \.(yml|yaml)$
+
+  # Finds spelling issues in code.
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+
+  # # Python hooks
+  # - repo: https://github.com/psf/black
+  #   rev: 21.9b0
+  #   hooks:
+  #     - id: black
+  #       language_version: python3.12
+  #       additional_dependencies: ['click<8.0.0']
+
+  # - repo: https://github.com/asottile/seed-isort-config
+  #   rev: v2.2.0
+  #   hooks:
+  #     - id: seed-isort-config
+  # - repo: https://github.com/timothycrosley/isort
+  #   rev: 5.11.5  # pick the isort version you'd like to use from https://github.com/timothycrosley/isort/releases
+  #   hooks:
+  #     - id: isort

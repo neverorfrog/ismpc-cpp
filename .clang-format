@@ -1,0 +1,45 @@
+---
+BasedOnStyle: Google
+Standard: Auto
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 117
+
+AlignEscapedNewlinesLeft: false
+AlignTrailingComments: true
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+
+AlwaysBreakBeforeMultilineStrings: false
+BreakBeforeBinaryOperators: false
+BreakBeforeTernaryOperators: false
+
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 60
+PenaltyBreakString: 1
+PenaltyBreakFirstLessLess: 1000
+PenaltyExcessCharacter: 1000
+PenaltyReturnTypeOnItsOwnLine: 90
+
+# Configure each individual brace in BraceWrapping
+BreakBeforeBraces: Custom
+
+# Control of individual brace wrapping cases
+BraceWrapping: {
+    AfterClass: 'false',
+    AfterControlStatement: 'false',
+    AfterEnum : 'false',
+    AfterFunction : 'false',
+    AfterNamespace : 'false',
+    AfterStruct : 'false',
+    AfterUnion : 'false',
+    BeforeCatch : 'false',
+    BeforeElse : 'false',
+    IndentBraces : 'false',
+    SplitEmptyFunction: 'false',
+    SplitEmptyRecord: 'false'
+}
