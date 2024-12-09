@@ -13,16 +13,16 @@ void RobotConfig::init_params() {
     robot_path.append(oss.str());
     YAML::Node robot_config = YAML::LoadFile(robot_path);
 
+    h = robot_config["h"].as<Scalar>();
+    theta_max = robot_config["theta_max"].as<Scalar>();
+    step_height = robot_config["step_height"].as<Scalar>();
+    foot_com_height = robot_config["foot_com_height"].as<Scalar>();
+
     g = 9.81;
     eta = std::sqrt(g / h);
     RED << 1.0, 0.0, 0.0;
     PURPLE << 0.6, 0.44, 0.86;
     GREEN << 0.0, 1.0, 0.0;
-
-    h = robot_config["h"].as<Scalar>();
-    theta_max = robot_config["theta_max"].as<Scalar>();
-    step_height = robot_config["step_height"].as<Scalar>();
-    foot_com_height = robot_config["foot_com_height"].as<Scalar>();
 
     l = robot_config["l"].as<Scalar>();
     dax = robot_config["dax"].as<Scalar>();

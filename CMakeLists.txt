@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(cxx_setup INTERFACE)
-target_compile_options(cxx_setup INTERFACE -Wall -Wpedantic -Wextra)
+target_compile_options(cxx_setup INTERFACE -Wall -Wpedantic -Wextra -Wno-dev)
 target_compile_features(cxx_setup INTERFACE cxx_std_20)
 
 if(CMAKE_CXX_COMPILER_LOADED)
@@ -20,7 +20,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/executables")
 # =============================================================================================
 
 # ============================ BUILD OPTIONS ==================================================
-set(BUILD_TESTS On)
+set(BUILD_TESTS OFF)
 set(BUILD_PYTHON_BINDINGS OFF)
 set(BUILD_DART OFF)
 

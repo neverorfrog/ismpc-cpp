@@ -65,8 +65,6 @@ QP<Scalar> ModelPredictiveController::solve_qp(LipRobot& robot) {
     u.segment(dimz, dimk) << kinematic_constraint.u;
     u.segment(dimz + dimk, dimz) << zmp_velocity_constraint.u;
 
-    PRINT("OK");
-
     // Stability Constraint
     isize n_eq = 2;  // number of equality constraints
     EqualityConstraint stability_constraint = constraint_lib.getStabilityConstraint(lipx, lipy);
