@@ -59,6 +59,14 @@
   "files.associations": {
     ".buckconfig": "plaintext",
     "matrix": "cpp",
-    "state": "cpp"
+    "state": "cpp",
+    "attributedispatchers": "cpp",
+    "bufferobject": "cpp",
+    "callback": "cpp",
+    "primitiveset": "cpp",
+    "program": "cpp",
+    "referenced": "cpp",
+    "shadercomposer": "cpp",
+    "stateattribute": "cpp"
   }
 }

@@ -1,7 +1,8 @@
 #include "tools/config/config.h"
-#include "tools/config/robot_config.h"
 
 #include <gtest/gtest.h>
+
+#include "tools/config/robot_config.h"
 
 namespace ismpc {
 

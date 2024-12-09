@@ -73,7 +73,6 @@ void RobotConfig::init_params() {
     task_gain(10, 10) = robot_config["task_gain"]["swing_foot_position"]["y"].as<Scalar>();
     task_gain(11, 11) = robot_config["task_gain"]["swing_foot_position"]["z"].as<Scalar>();
     ik_gain = robot_config["ik_gain"].as<Scalar>();
-
 }
 
 }  // namespace ismpc
