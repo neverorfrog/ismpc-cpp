@@ -56,10 +56,9 @@ endif()
 # =============================================================================================
 
 # ============================ EXTERNAL LIBRARIES =============================================
-
-# YAML-CPP
 include(FetchContent)
 
+# YAML-CPP
 FetchContent_Declare(
   yaml-cpp
   GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
@@ -68,22 +67,24 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(yaml-cpp)
 
 # PROXSUITE
-set(proxsuite_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/proxsuite/lib/cmake/proxsuite)
-find_package(proxsuite REQUIRED)
-
+FetchContent_Declare(
+  proxsuite
+  GIT_REPOSITORY https://github.com/Simple-Robotics/proxsuite.git
+  GIT_TAG main
+)
+FetchContent_MakeAvailable(proxsuite)
 
 # ============================ INCLUDE DIRECTORIES ============================================
 set(ISMPC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(EIGEN_INCLUDE_DIR /usr/include/eigen3)
-set(PROX_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/proxsuite/include)
-list(APPEND INCLUDE_DIRS ${ISMPC_INCLUDE_DIR} ${EIGEN_INCLUDE_DIR} ${PROX_INCLUDE_DIR})
+list(APPEND INCLUDE_DIRS ${ISMPC_INCLUDE_DIR} ${EIGEN_INCLUDE_DIR})
 # =============================================================================================
 
 # ============================ LIBRARIES ======================================================
 file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(ismpc ${ISMPC_SRCS})
 target_include_directories(ismpc SYSTEM PUBLIC ${INCLUDE_DIRS})
-target_link_libraries(ismpc PUBLIC cxx_setup yaml-cpp::yaml-cpp)
+target_link_libraries(ismpc PUBLIC cxx_setup yaml-cpp::yaml-cpp proxsuite)
 # =============================================================================================
 
 # ============================ EXECUTABLES ====================================================
