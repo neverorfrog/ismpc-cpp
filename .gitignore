@@ -5,3 +5,7 @@
 
 # cpp build directories
 build/
+
+# python stuff
+__pycache__/
+*.pyc
