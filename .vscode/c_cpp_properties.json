@@ -4,7 +4,6 @@
             "name": "linux-gcc-x64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/include/eigen3",
                 "${workspaceFolder}/include"
             ],
             "compilerPath": "/usr/bin/gcc",
