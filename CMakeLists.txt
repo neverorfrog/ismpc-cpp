@@ -74,18 +74,18 @@ FetchContent_Declare(
   GIT_TAG main
 )
 FetchContent_MakeAvailable(proxsuite)
-# =============================================================================================
 
-# ============================ INCLUDE DIRECTORIES ============================================
-set(ISMPC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# DART
+find_package(DART REQUIRED COMPONENTS utils-urdf gui-osg)
 # =============================================================================================
 
 # ============================ LIBRARIES ======================================================
+set(ISMPC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(ismpc ${ISMPC_SRCS})
 target_compile_options(ismpc PUBLIC -fPIC)
-target_include_directories(ismpc PUBLIC ${ISMPC_INCLUDE_DIR})
-target_link_libraries(ismpc PUBLIC cxx_setup Eigen3::Eigen yaml-cpp::yaml-cpp proxsuite)
+target_include_directories(ismpc PUBLIC ${ISMPC_INCLUDE_DIR} ${DART_INCLUDE_DIRS})
+target_link_libraries(ismpc PUBLIC cxx_setup Eigen3::Eigen yaml-cpp::yaml-cpp proxsuite ${DART_LIBRARIES})
 # =============================================================================================
 
 # ============================ PYTHON BINDINGS =================================================
@@ -103,6 +103,9 @@ endif()
 # ============================ EXECUTABLES ====================================================
 add_executable(ismpc_main ${CMAKE_CURRENT_SOURCE_DIR}/src/cppmain.cpp)
 target_link_libraries(ismpc_main PRIVATE ismpc)
+
+add_executable(dart_main ${CMAKE_CURRENT_SOURCE_DIR}/src/dartmain.cpp)
+target_link_libraries(dart_main PRIVATE ismpc)
 # =============================================================================================
 
 # ============================= CONFIG FILE GENERATION =======================================

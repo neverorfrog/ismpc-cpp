@@ -23,6 +23,7 @@ struct Config {
     static inline bool constructed = false;
     static inline Initializer initializer{};
 
+    static inline Eigen::Vector3d RED, PURPLE, GREEN;
     static inline bool save_log;  // Save log file
 
     static inline Scalar delta{};  // Sampling interval

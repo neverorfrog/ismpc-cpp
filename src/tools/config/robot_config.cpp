@@ -20,9 +20,6 @@ void RobotConfig::init_params() {
 
     g = 9.81;
     eta = std::sqrt(g / h);
-    RED << 1.0, 0.0, 0.0;
-    PURPLE << 0.6, 0.44, 0.86;
-    GREEN << 0.0, 1.0, 0.0;
 
     l = robot_config["l"].as<Scalar>();
     dax = robot_config["dax"].as<Scalar>();

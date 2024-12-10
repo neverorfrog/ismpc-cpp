@@ -504,7 +504,7 @@ packages:
 - pypi: .
   name: ismpc-cpp
   version: '0.1'
-  sha256: 1ce2ade05ac69a4e367b50915a424d8a49dfdaacba0984b1574c99d236fffb0b
+  sha256: 15bd6632bf5e64d2dcb4952fa9d838b09295fa8883f2572e2f32883d43f8df47
   requires_dist:
   - pytest>=6.0 ; extra == 'test'
   requires_python: '>=3.8'

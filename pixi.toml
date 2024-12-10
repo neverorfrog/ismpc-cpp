@@ -10,6 +10,7 @@ version = "0.1.0"
 main = "python bindings/main.py"
 build-cpp = 'mkdir -p build && cd build && cmake .. && cmake --build . -j12'
 main-cpp = './build/executables/ismpc_main'
+main-dart = './build/executables/dart_main'
 
 [dependencies]
 python = "==3.11"

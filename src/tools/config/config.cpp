@@ -7,6 +7,9 @@ void Config::init_params() {
     path.append("/config/config.yaml");
     YAML::Node config = YAML::LoadFile(path);
 
+    RED << 1.0, 0.0, 0.0;
+    PURPLE << 0.6, 0.44, 0.86;
+    GREEN << 0.0, 1.0, 0.0;
     save_log = config["save_log"].as<bool>();
     delta = config["delta"].as<Scalar>();
 
