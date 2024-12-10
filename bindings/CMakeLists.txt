@@ -19,4 +19,3 @@ message(STATUS "PYTHON INCLUDE DIRECTORIES" ${Python_INCLUDE_DIRS})
 nanobind_add_module(ismpc_cpp ${PROJECT_SOURCE_DIR}/bindings/ismpc_binding.cpp)
 target_include_directories(ismpc_cpp PUBLIC ${eigen_SOURCE_DIR} ${ISMPC_INCLUDE_DIR})
 target_link_libraries(ismpc_cpp PUBLIC ismpc)
-
