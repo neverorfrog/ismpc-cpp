@@ -5,7 +5,7 @@
   <description>
   This package contains the C++ implementation of the ISMPC algorithm.
   </description>
-
+  <license>TODO: License declaration</license>
   <maintainer email="97flavio.maiorana@gmail.com">neverorfrog</maintainer>
   <author>Flavio Maiorana</author>
 
