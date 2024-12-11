@@ -3,9 +3,9 @@
 #include <sstream>
 #include <string>
 
-#include "tools/math/pose2.h"
-#include "tools/math/rotation_matrix.h"
-#include "types/math_types.h"
+#include "ismpc_cpp/tools/math/pose2.h"
+#include "ismpc_cpp/tools/math/rotation_matrix.h"
+#include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {
 

@@ -1,6 +1,6 @@
 #include <chrono>
 
-#include "modules/walk_engine.h"
+#include "ismpc_cpp/modules/walk_engine.h"
 
 int main() {
     ismpc::WalkEngine engine = ismpc::WalkEngine();

@@ -3,8 +3,8 @@
 #include <cmath>
 #include <string>
 
-#include "tools/math/arithmetic.h"
-#include "types/math_types.h"
+#include "ismpc_cpp/tools/math/arithmetic.h"
+#include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {
 

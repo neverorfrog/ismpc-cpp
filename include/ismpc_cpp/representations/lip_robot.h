@@ -3,11 +3,11 @@
 #include <cmath>
 #include <sstream>
 
-#include "tools/math/pose3.h"
-#include "types/body_parts.h"
-#include "types/math_types.h"
-#include "types/state.h"
-#include "types/walk_state.h"
+#include "ismpc_cpp/tools/math/pose3.h"
+#include "ismpc_cpp/types/body_parts.h"
+#include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/state.h"
+#include "ismpc_cpp/types/walk_state.h"
 
 namespace ismpc {
 

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "types/math_types.h"
+#include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {
 

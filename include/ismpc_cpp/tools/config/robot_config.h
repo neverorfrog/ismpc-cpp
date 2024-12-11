@@ -4,9 +4,9 @@
 
 #include <iostream>
 
-#include "tools/math/angle.h"
-#include "tools/systemvars.h"
-#include "types/math_types.h"
+#include "ismpc_cpp/tools/math/angle.h"
+#include "ismpc_cpp/tools/systemvars.h"
+#include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {
 

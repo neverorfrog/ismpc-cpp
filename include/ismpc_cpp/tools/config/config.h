@@ -4,9 +4,9 @@
 
 #include <string>
 
-#include "tools/systemvars.h"
-#include "types/math_types.h"
-#include "types/tail_type.h"
+#include "ismpc_cpp/tools/systemvars.h"
+#include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/tail_type.h"
 
 namespace ismpc {
 

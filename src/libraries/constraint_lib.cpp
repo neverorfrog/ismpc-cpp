@@ -1,4 +1,4 @@
-#include "libraries/constraint_lib.h"
+#include "ismpc_cpp/libraries/constraint_lib.h"
 
 namespace ismpc {
 

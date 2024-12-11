@@ -5,7 +5,7 @@
 #include <limits>
 #include <type_traits>
 
-#include "types/math_types.h"
+#include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {
 namespace Arithmetic {

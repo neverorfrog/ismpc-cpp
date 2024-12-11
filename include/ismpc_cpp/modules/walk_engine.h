@@ -2,10 +2,10 @@
 
 #include <chrono>
 
-#include "ismpc.h"
-#include "tools/debug.h"
-#include "tools/math/pose2.h"
-#include "types/math_types.h"
+#include "ismpc_cpp/ismpc.h"
+#include "ismpc_cpp/tools/debug.h"
+#include "ismpc_cpp/tools/math/pose2.h"
+#include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {
 

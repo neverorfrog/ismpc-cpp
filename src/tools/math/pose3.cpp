@@ -1,4 +1,4 @@
-#include "tools/math/pose3.h"
+#include "ismpc_cpp/tools/math/pose3.h"
 
 namespace ismpc {
 

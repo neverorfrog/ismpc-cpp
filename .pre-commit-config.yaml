@@ -8,7 +8,7 @@
 #
 # See https://github.com/pre-commit/pre-commit
 
-exclude: ^external/|external|include/tools/systemvars.hpp
+exclude: ^external/|external|include/ismpc_cpp/tools/systemvars.h
 repos:
 
   # Standard hooks

@@ -1,4 +1,4 @@
-#include "representations/footsteps.h"
+#include "ismpc_cpp/representations/footsteps.h"
 
 namespace ismpc {
 

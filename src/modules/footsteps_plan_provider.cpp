@@ -1,4 +1,4 @@
-#include "modules/footsteps_plan_provider.h"
+#include "ismpc_cpp/modules/footsteps_plan_provider.h"
 
 #include <iostream>
 

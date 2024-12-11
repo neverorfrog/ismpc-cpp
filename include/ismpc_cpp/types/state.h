@@ -1,12 +1,12 @@
 #pragma once
 
-#include "tools/config/config.h"
-#include "tools/config/robot_config.h"
-#include "tools/math/pose2.h"
-#include "types/end_effector.h"
-#include "types/math_types.h"
-#include "types/support_phase.h"
-#include "types/walk_state.h"
+#include "ismpc_cpp/tools/config/config.h"
+#include "ismpc_cpp/tools/config/robot_config.h"
+#include "ismpc_cpp/tools/math/pose2.h"
+#include "ismpc_cpp/types/end_effector.h"
+#include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/support_phase.h"
+#include "ismpc_cpp/types/walk_state.h"
 
 namespace ismpc {
 

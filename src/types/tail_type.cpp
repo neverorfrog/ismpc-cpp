@@ -1,4 +1,4 @@
-#include "types/tail_type.h"
+#include "ismpc_cpp/types/tail_type.h"
 
 namespace ismpc {
 

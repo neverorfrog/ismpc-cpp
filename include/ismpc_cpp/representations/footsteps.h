@@ -2,10 +2,10 @@
 
 #include <vector>
 
-#include "representations/lip_robot.h"
-#include "tools/config/config.h"
-#include "types/math_types.h"
-#include "types/support_phase.h"
+#include "ismpc_cpp/representations/lip_robot.h"
+#include "ismpc_cpp/tools/config/config.h"
+#include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/support_phase.h"
 
 namespace ismpc {
 

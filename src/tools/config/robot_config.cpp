@@ -1,4 +1,4 @@
-#include "tools/config/robot_config.h"
+#include "ismpc_cpp/tools/config/robot_config.h"
 
 namespace ismpc {
 

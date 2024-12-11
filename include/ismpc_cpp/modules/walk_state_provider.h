@@ -2,13 +2,13 @@
 
 #include <cmath>
 
-#include "representations/footsteps.h"
-#include "representations/frame_info.h"
-#include "representations/lip_robot.h"
-#include "tools/config/robot_config.h"
-#include "types/body_parts.h"
-#include "types/math_types.h"
-#include "types/walk_state.h"
+#include "ismpc_cpp/representations/footsteps.h"
+#include "ismpc_cpp/representations/frame_info.h"
+#include "ismpc_cpp/representations/lip_robot.h"
+#include "ismpc_cpp/tools/config/robot_config.h"
+#include "ismpc_cpp/types/body_parts.h"
+#include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/walk_state.h"
 
 namespace ismpc {
 

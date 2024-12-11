@@ -1,4 +1,4 @@
-#include "modules/swing_foot_provider.h"
+#include "ismpc_cpp/modules/swing_foot_provider.h"
 
 namespace ismpc {
 

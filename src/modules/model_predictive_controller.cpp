@@ -1,4 +1,4 @@
-#include "modules/model_predictive_controller.h"
+#include "ismpc_cpp/modules/model_predictive_controller.h"
 
 namespace ismpc {
 

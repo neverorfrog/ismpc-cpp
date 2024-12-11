@@ -1,4 +1,4 @@
-#include "tools/math/arithmetic.h"
+#include "ismpc_cpp/tools/math/arithmetic.h"
 
 #include <gtest/gtest.h>
 

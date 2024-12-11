@@ -1,4 +1,4 @@
-#include "types/end_effector.h"
+#include "ismpc_cpp/types/end_effector.h"
 
 namespace ismpc {
 

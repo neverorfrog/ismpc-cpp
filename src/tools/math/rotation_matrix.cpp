@@ -1,4 +1,4 @@
-#include "tools/math/rotation_matrix.h"
+#include "ismpc_cpp/tools/math/rotation_matrix.h"
 
 namespace ismpc {
 

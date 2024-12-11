@@ -3,13 +3,13 @@
 #include <cmath>
 #include <vector>
 
-#include "representations/footsteps.h"
-#include "representations/lip_robot.h"
-#include "tools/config/config.h"
-#include "tools/config/robot_config.h"
-#include "types/math_types.h"
-#include "types/optimization.h"
-#include "types/tail_type.h"
+#include "ismpc_cpp/representations/footsteps.h"
+#include "ismpc_cpp/representations/lip_robot.h"
+#include "ismpc_cpp/tools/config/config.h"
+#include "ismpc_cpp/tools/config/robot_config.h"
+#include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/optimization.h"
+#include "ismpc_cpp/types/tail_type.h"
 
 namespace ismpc {
 

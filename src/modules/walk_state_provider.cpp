@@ -1,4 +1,4 @@
-#include "modules/walk_state_provider.h"
+#include "ismpc_cpp/modules/walk_state_provider.h"
 
 namespace ismpc {
 

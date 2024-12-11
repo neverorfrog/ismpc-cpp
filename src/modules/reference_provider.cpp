@@ -1,4 +1,4 @@
-#include "modules/reference_provider.h"
+#include "ismpc_cpp/modules/reference_provider.h"
 
 namespace ismpc {
 

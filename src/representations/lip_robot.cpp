@@ -1,4 +1,4 @@
-#include "representations/lip_robot.h"
+#include "ismpc_cpp/representations/lip_robot.h"
 
 namespace ismpc {
 

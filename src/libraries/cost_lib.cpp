@@ -1,4 +1,4 @@
-#include "libraries/cost_lib.h"
+#include "ismpc_cpp/libraries/cost_lib.h"
 
 namespace ismpc {
 

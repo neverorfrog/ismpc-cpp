@@ -3,18 +3,18 @@
 #include <cmath>
 #include <proxsuite/proxqp/dense/dense.hpp>
 
-#include "libraries/constraint_lib.h"
-#include "libraries/cost_lib.h"
-#include "representations/footsteps.h"
-#include "representations/frame_info.h"
-#include "representations/lip_robot.h"
-#include "tools/config/config.h"
-#include "tools/debug.h"
-#include "types/end_effector.h"
-#include "types/math_types.h"
-#include "types/state.h"
-#include "types/support_phase.h"
-#include "types/tail_type.h"
+#include "ismpc_cpp/libraries/constraint_lib.h"
+#include "ismpc_cpp/libraries/cost_lib.h"
+#include "ismpc_cpp/representations/footsteps.h"
+#include "ismpc_cpp/representations/frame_info.h"
+#include "ismpc_cpp/representations/lip_robot.h"
+#include "ismpc_cpp/tools/config/config.h"
+#include "ismpc_cpp/tools/debug.h"
+#include "ismpc_cpp/types/end_effector.h"
+#include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/state.h"
+#include "ismpc_cpp/types/support_phase.h"
+#include "ismpc_cpp/types/tail_type.h"
 
 using proxsuite::proxqp::InitialGuessStatus;
 using proxsuite::proxqp::dense::isize;

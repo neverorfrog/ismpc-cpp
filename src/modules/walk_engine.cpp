@@ -1,4 +1,4 @@
-#include "modules/walk_engine.h"
+#include "ismpc_cpp/modules/walk_engine.h"
 
 namespace ismpc {
 

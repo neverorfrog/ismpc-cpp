@@ -14,16 +14,16 @@
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <vector>
 
-#include "libraries/constraint_lib.h"
-#include "libraries/cost_lib.h"
-#include "representations/footsteps.h"
-#include "representations/frame_info.h"
-#include "representations/lip_robot.h"
-#include "representations/reference.h"
-#include "tools/config/config.h"
-#include "tools/config/robot_config.h"
-#include "tools/math/arithmetic.h"
-#include "types/math_types.h"
+#include "ismpc_cpp/libraries/constraint_lib.h"
+#include "ismpc_cpp/libraries/cost_lib.h"
+#include "ismpc_cpp/representations/footsteps.h"
+#include "ismpc_cpp/representations/frame_info.h"
+#include "ismpc_cpp/representations/lip_robot.h"
+#include "ismpc_cpp/representations/reference.h"
+#include "ismpc_cpp/tools/config/config.h"
+#include "ismpc_cpp/tools/config/robot_config.h"
+#include "ismpc_cpp/tools/math/arithmetic.h"
+#include "ismpc_cpp/types/math_types.h"
 
 using proxsuite::proxqp::InitialGuessStatus;
 using proxsuite::proxqp::dense::isize;
