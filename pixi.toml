@@ -11,6 +11,8 @@ main = "python bindings/main.py"
 build-cpp = 'mkdir -p build && cd build && cmake .. && cmake --build . -j12'
 main-cpp = './build/executables/ismpc_main'
 main-dart = './build/executables/dart_main'
+build = 'python setup.py build'
+install = 'python setup.py install'
 
 [dependencies]
 python = "==3.11"
@@ -20,6 +22,3 @@ omegaconf = ">=2.3.0,<3"
 numpy = ">=2.2.0,<3"
 tqdm = ">=4.67.1,<5"
 setuptools = ">=75.6.0,<76"
-
-[pypi-dependencies]
-ismpc_cpp = {path = ".", editable = true}
