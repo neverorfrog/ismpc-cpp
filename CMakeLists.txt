@@ -76,16 +76,21 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(proxsuite)
 # =============================================================================================
 
-# ============================ INCLUDE DIRECTORIES ============================================
-set(ISMPC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-# =============================================================================================
-
-# ============================ LIBRARIES ======================================================
+# ============================ ISMPC LIBRARY ==================================================
 file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(ismpc ${ISMPC_SRCS})
 target_compile_options(ismpc PUBLIC -fPIC)
-target_include_directories(ismpc PUBLIC ${ISMPC_INCLUDE_DIR})
+target_include_directories(ismpc PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(ismpc PUBLIC cxx_setup Eigen3::Eigen yaml-cpp::yaml-cpp proxsuite)
+
+find_package(ament_cmake QUIET)
+if ( ament_cmake_FOUND )
+  add_definitions( -DUSING_ROS2 )
+  message(STATUS "------------------------------------------")
+  message(STATUS "BehaviourTree is being built using AMENT.")
+  message(STATUS "------------------------------------------")
+  ament_package()
+endif()
 # =============================================================================================
 
 # ============================ PYTHON BINDINGS =================================================
