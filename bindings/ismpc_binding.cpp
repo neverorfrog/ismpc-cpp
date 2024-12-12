@@ -13,7 +13,7 @@ using EigenMatrix = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
 namespace ismpc {
 namespace python {
 
-NB_MODULE(ismpc_cpp, m) {
+NB_MODULE(ismpc_py, m) {
     nb::class_<WalkEngine> WalkEngine(m, "WalkEngine");
     WalkEngine.def(nb::init<>())
         .def("update", &WalkEngine::update)

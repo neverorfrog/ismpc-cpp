@@ -21,7 +21,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/executables")
 # =============================================================================================
 
 # ============================ BUILD OPTIONS ==================================================
-set(BUILD_TESTS OFF)
+set(BUILD_TESTS ON)
 set(BUILD_PYTHON_BINDINGS ON)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)

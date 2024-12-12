@@ -14,11 +14,11 @@ enable_testing()
 file(GLOB TEST_SOURCES */*.cpp)
 
 # Create test executable
-add_executable(run_tests ${TEST_SOURCES})
+add_executable(tests ${TEST_SOURCES})
 
 # Link GoogleTest and the main project
-target_link_libraries(run_tests gtest gtest_main ismpc)
+target_link_libraries(tests gtest gtest_main ${ISMPC_CPP_LIBRARY})
 
 # Add tests
 include(GoogleTest)
-gtest_discover_tests(run_tests)
+gtest_discover_tests(tests)

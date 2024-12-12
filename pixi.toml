@@ -22,3 +22,6 @@ omegaconf = ">=2.3.0,<3"
 numpy = ">=2.2.0,<3"
 tqdm = ">=4.67.1,<5"
 setuptools = ">=75.6.0,<76"
+
+[pypi-dependencies]
+catkin-pkg = ">=1.0.0, <2"
