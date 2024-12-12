@@ -5,6 +5,7 @@
 
 # cpp build directories
 build/
+include/ismpc_cpp/tools/systemvars.h
 
 # python stuff
 __pycache__/
