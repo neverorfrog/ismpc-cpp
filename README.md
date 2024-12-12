@@ -2,7 +2,6 @@
 
 ![](docs/ismpc.png)
 
-
 ## Installation
 
 ### Python Binding
@@ -10,6 +9,8 @@
 To use also the python bindings, you need to call the setup.py script. The `pixi.toml` file will do that for you. Just run
 ```
 pixi install
+pixi run build
+pixi run install
 ```
 
 ## Run
