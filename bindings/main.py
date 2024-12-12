@@ -3,7 +3,7 @@ import time
 import numpy as np
 import yaml
 from gait import Gait
-from ismpc_cpp import WalkEngine
+from ismpc_py import WalkEngine
 from omegaconf import OmegaConf
 from plotting import PlotMode, animate
 from tqdm import tqdm

@@ -1,5 +1,5 @@
 import numpy as np
-from ismpc_cpp import LipRobot, WalkEngine
+from ismpc_py import LipRobot, WalkEngine
 
 class Gait:
 

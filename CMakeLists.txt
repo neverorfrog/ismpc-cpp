@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 # ============================= PROJECT SETUP ===============================================
 project(ismpc_cpp VERSION 0.1 LANGUAGES CXX)
+set(ISMPC_CPP_LIBRARY ${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -35,7 +36,7 @@ endif()
 message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 # =============================================================================================
 
-# ============================ TIMESTAMP ======================================================
+# ============================ UTILITY STUFF ==================================================
 execute_process(
   COMMAND date "+%Y-%m-%d %H:%M:%S"
   OUTPUT_VARIABLE TIMESTAMP
@@ -46,6 +47,13 @@ execute_process(
 set(TIMESTAMP_HEADER "${CMAKE_BINARY_DIR}/timestamp.h")
 file(WRITE ${TIMESTAMP_HEADER} "#pragma once\n")
 file(APPEND ${TIMESTAMP_HEADER} "#define BUILD_TIMESTAMP \"${TIMESTAMP}\"\n")
+
+# Config file with system variables
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/ismpc_cpp/tools/systemvars.h.in
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/ismpc_cpp/tools/systemvars.h
+  @ONLY
+)
 # =============================================================================================
 
 # ============================ EXTERNAL LIBRARIES =============================================
@@ -77,11 +85,12 @@ FetchContent_MakeAvailable(proxsuite)
 # =============================================================================================
 
 # ============================ ISMPC LIBRARY ==================================================
-file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-add_library(ismpc ${ISMPC_SRCS})
-target_compile_options(ismpc PUBLIC -fPIC)
-target_include_directories(ismpc PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(ismpc PUBLIC cxx_setup Eigen3::Eigen yaml-cpp::yaml-cpp proxsuite)
+set(ISMPC_CPP_EXTRA_LIBRARIES     
+  $<BUILD_INTERFACE:cxx_setup>
+  $<BUILD_INTERFACE:Eigen3::Eigen>
+  $<BUILD_INTERFACE:yaml-cpp::yaml-cpp>
+  $<BUILD_INTERFACE:proxsuite>
+)
 
 find_package(ament_cmake QUIET)
 if ( ament_cmake_FOUND )
@@ -89,8 +98,56 @@ if ( ament_cmake_FOUND )
   message(STATUS "------------------------------------------")
   message(STATUS "ismpc_cpp is being built using AMENT.")
   message(STATUS "------------------------------------------")
-  ament_package()
+  set(CMAKE_CONFIG_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CONFIG_PATH})
+
+  find_package(ament_index_cpp REQUIRED)
+  list( APPEND ISMPC_CPP_EXTRA_LIBRARIES $<BUILD_INTERFACE:ament_index_cpp::ament_index_cpp>)
+  ament_export_dependencies(ament_index_cpp)
+
+  set( ISMPC_CPP_LIB_DESTINATION lib )
+  set( ISMPC_CPP_INCLUDE_DESTINATION include )
+  set( ISMPC_CPP_BIN_DESTINATION bin )
+
+  mark_as_advanced( 
+    ISMPC_CPP_EXTRA_LIBRARIES 
+    ISMPC_CPP_LIB_DESTINATION 
+    ISMPC_CPP_INCLUDE_DESTINATION 
+    ISMPC_CPP_BIN_DESTINATION 
+  )
+
+  macro(export_ismpc_cpp_package)
+    ament_export_include_directories(include)
+    ament_export_libraries(${ISMPC_CPP_LIBRARY})
+    ament_export_targets(${ISMPC_CPP_LIBRARY}Targets)
+    ament_package()
+  endmacro()
 endif()
+
+message(WARNING "ISMPC_CPP_EXTRA_LIBRARIES: ${ISMPC_CPP_EXTRA_LIBRARIES}")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+add_library(${ISMPC_CPP_LIBRARY} STATIC ${ISMPC_SRCS})
+target_include_directories(${ISMPC_CPP_LIBRARY} 
+  PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+target_link_libraries(${ISMPC_CPP_LIBRARY} PUBLIC ${ISMPC_CPP_EXTRA_LIBRARIES})
+
+INSTALL(TARGETS ${ISMPC_CPP_LIBRARY}
+    EXPORT ${ISMPC_CPP_LIBRARY}Targets
+    ARCHIVE DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
+    LIBRARY DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
+    RUNTIME DESTINATION ${ISMPC_CPP_BIN_DESTINATION}
+    INCLUDES DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
+)
+
+INSTALL( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.h*")
+
+export_ismpc_cpp_package()
 # =============================================================================================
 
 # ============================ PYTHON BINDINGS =================================================
@@ -107,13 +164,5 @@ endif()
 
 # ============================ EXECUTABLES ====================================================
 add_executable(ismpc_main ${CMAKE_CURRENT_SOURCE_DIR}/src/cppmain.cpp)
-target_link_libraries(ismpc_main PRIVATE ismpc)
+target_link_libraries(ismpc_main PRIVATE ${ISMPC_CPP_LIBRARY})
 # =============================================================================================
-
-# ============================= CONFIG FILE GENERATION =======================================
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/ismpc_cpp/tools/systemvars.h.in
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/ismpc_cpp/tools/systemvars.h
-  @ONLY
-)
-# ===========================================================================================
