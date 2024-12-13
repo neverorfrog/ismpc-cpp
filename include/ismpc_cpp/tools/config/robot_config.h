@@ -52,7 +52,7 @@ struct RobotConfig {
     static inline Eigen::Matrix<Scalar, 12, 12> task_gain = Eigen::Matrix<Scalar, 12, 12>::Identity();
     static inline Scalar ik_gain{};
 
-    static void inline init_params();
+    static void init_params();
 };
 
 }  // namespace ismpc

@@ -104,6 +104,7 @@ if ( ament_cmake_FOUND )
   find_package(ament_index_cpp REQUIRED)
   list( APPEND ISMPC_CPP_EXTRA_LIBRARIES $<BUILD_INTERFACE:ament_index_cpp::ament_index_cpp>)
   ament_export_dependencies(ament_index_cpp)
+  ament_export_dependencies(yaml-cpp)
 
   set( ISMPC_CPP_LIB_DESTINATION lib )
   set( ISMPC_CPP_INCLUDE_DESTINATION include )
@@ -124,28 +125,37 @@ if ( ament_cmake_FOUND )
   endmacro()
 endif()
 
-message(WARNING "ISMPC_CPP_EXTRA_LIBRARIES: ${ISMPC_CPP_EXTRA_LIBRARIES}")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(${ISMPC_CPP_LIBRARY} STATIC ${ISMPC_SRCS})
 target_include_directories(${ISMPC_CPP_LIBRARY} 
   PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include>
 )
 target_link_libraries(${ISMPC_CPP_LIBRARY} PUBLIC ${ISMPC_CPP_EXTRA_LIBRARIES})
 
-INSTALL(TARGETS ${ISMPC_CPP_LIBRARY}
-    EXPORT ${ISMPC_CPP_LIBRARY}Targets
-    ARCHIVE DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
-    LIBRARY DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
-    RUNTIME DESTINATION ${ISMPC_CPP_BIN_DESTINATION}
-    INCLUDES DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
+INSTALL(
+  TARGETS ${ISMPC_CPP_LIBRARY}
+  EXPORT ${ISMPC_CPP_LIBRARY}Targets 
+  ARCHIVE DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
+  LIBRARY DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
+  RUNTIME DESTINATION ${ISMPC_CPP_BIN_DESTINATION}
+  INCLUDES DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
 )
 
-INSTALL( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+INSTALL( 
+    DIRECTORY 
+      ${CMAKE_CURRENT_SOURCE_DIR}/include/
+      $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include/proxsuite>
+      $<BUILD_INTERFACE:${eigen_SOURCE_DIR}>
+      $<BUILD_INTERFACE:${nanobind_SOURCE_DIR}/include/nanobind>
+      $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include/yaml-cpp>
     DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
-    FILES_MATCHING PATTERN "*.h*")
+    FILES_MATCHING PATTERN "*.h*"
+)
 
 export_ismpc_cpp_package()
 # =============================================================================================
