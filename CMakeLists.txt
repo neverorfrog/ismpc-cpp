@@ -60,12 +60,7 @@ configure_file(
 include(FetchContent)
 
 # EIGEN3
-FetchContent_Declare(
-  eigen
-  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
-  GIT_TAG master
-)
-FetchContent_MakeAvailable(eigen)
+set(EIGEN_INCLUDE_DIR /usr/include/eigen3)
 
 # YAML-CPP
 FetchContent_Declare(
@@ -87,7 +82,6 @@ FetchContent_MakeAvailable(proxsuite)
 # ============================ ISMPC LIBRARY ==================================================
 set(ISMPC_CPP_EXTRA_LIBRARIES     
   $<BUILD_INTERFACE:cxx_setup>
-  $<BUILD_INTERFACE:Eigen3::Eigen>
   $<BUILD_INTERFACE:yaml-cpp::yaml-cpp>
   $<BUILD_INTERFACE:proxsuite>
 )
@@ -134,6 +128,7 @@ target_include_directories(${ISMPC_CPP_LIBRARY}
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include>
+    ${EIGEN_INCLUDE_DIR}
 )
 target_link_libraries(${ISMPC_CPP_LIBRARY} PUBLIC ${ISMPC_CPP_EXTRA_LIBRARIES})
 
@@ -150,7 +145,7 @@ INSTALL(
     DIRECTORY 
       ${CMAKE_CURRENT_SOURCE_DIR}/include/
       $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include/proxsuite>
-      $<BUILD_INTERFACE:${eigen_SOURCE_DIR}>
+      ${EIGEN_INCLUDE_DIR}
       $<BUILD_INTERFACE:${nanobind_SOURCE_DIR}/include/nanobind>
       $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include/yaml-cpp>
     DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}

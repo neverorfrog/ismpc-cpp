@@ -6,7 +6,8 @@ EndEffector::EndEffector(const Vector3& translation) : pose(translation) {}
 
 std::string EndEffector::toString() const {
     std::ostringstream oss;
-    oss << "Pose: \n" << pose << std::endl;
+    oss << "\n" << pose << std::endl;
+    oss << "Velocity: " << vel.transpose() << std::endl;
     return oss.str();
 }
 

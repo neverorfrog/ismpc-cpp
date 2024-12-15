@@ -147,7 +147,7 @@ Pose3 Pose3::relativeTo(const Pose3& other) const {
 
 std::string Pose3::toString() const {
     std::ostringstream oss;
-    oss << "Translation: \n" << translation.transpose() << std::endl;
+    oss << "Translation: " << translation.transpose() << std::endl;
     oss << "Rotation: \n" << rotation << std::endl;
     return oss.str();
 }
