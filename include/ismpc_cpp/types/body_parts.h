@@ -1,6 +1,7 @@
 #pragma once
 
-#include <vector>
+#include <stdexcept>
+#include <string>
 
 namespace ismpc {
 
@@ -27,39 +28,39 @@ inline std::ostream& operator<<(std::ostream& os, Foot foot) {
 }
 
 enum class Limb : int {
-    torso,
-    neck,
-    head,
+    Torso,
+    Neck,
+    Head,
 
     // Right Arm
-    rShoulder,
-    rBiceps,
-    rElbow,
-    rForearm,
-    rHand,
+    RShoulder,
+    RBiceps,
+    RElbow,
+    RForearm,
+    RHand,
 
     // Left Arm
-    lShoulder,
-    lBiceps,
-    lElbow,
-    lForearm,
-    lHand,
+    LShoulder,
+    LBiceps,
+    LElbow,
+    LForearm,
+    LHand,
 
     // Right Leg
-    rPelvis,
-    rHip,
-    rThigh,
-    rTibia,
-    rAnkle,
-    rFoot,
+    RPelvis,
+    RHip,
+    RThigh,
+    RTibia,
+    RAnkle,
+    RFoot,
 
     // Left Leg
-    lPelvis,
-    lHip,
-    lThigh,
-    lTibia,
-    lAnkle,
-    lFoot,
+    LPelvis,
+    LHip,
+    LThigh,
+    LTibia,
+    LAnkle,
+    LFoot,
 
     numOfLimbs
 };

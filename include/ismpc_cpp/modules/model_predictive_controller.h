@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cmath>
-#include <proxsuite/proxqp/dense/dense.hpp>
 
 #include "ismpc_cpp/libraries/constraint_lib.h"
 #include "ismpc_cpp/libraries/cost_lib.h"
@@ -9,17 +8,9 @@
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/lip_robot.h"
 #include "ismpc_cpp/tools/config/config.h"
-#include "ismpc_cpp/tools/debug.h"
-#include "ismpc_cpp/types/end_effector.h"
 #include "ismpc_cpp/types/math_types.h"
-#include "ismpc_cpp/types/state.h"
-#include "ismpc_cpp/types/support_phase.h"
-#include "ismpc_cpp/types/tail_type.h"
+#include "ismpc_cpp/tools/proxsuite.h"
 
-using proxsuite::proxqp::InitialGuessStatus;
-using proxsuite::proxqp::dense::isize;
-using proxsuite::proxqp::dense::QP;
-using std::nullopt;
 
 namespace ismpc {
 /**

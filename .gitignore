@@ -16,3 +16,8 @@ dist
 # ros2 stuff
 install/
 log/
+
+# code stuff
+.cache/
+.vscode/
+.zed/
