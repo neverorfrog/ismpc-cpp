@@ -70,96 +70,96 @@ enum class FsrSensor : int { fr, fl, br, bl };
 // Enum for the joints of the Nao robot in the same order as in the URDF
 enum class Joint : int {
     // Head
-    headYaw,
-    headPitch,
+    HeadYaw,
+    HeadPitch,
 
     // Left Leg
-    lHipYawPitch,
-    lHipRoll,
-    lHipPitch,
-    lKneePitch,
-    lAnklePitch,
-    lAnkleRoll,
+    LHipYawPitch,
+    LHipRoll,
+    LHipPitch,
+    LKneePitch,
+    LAnklePitch,
+    LAnkleRoll,
 
     // Left Arm
-    lShoulderPitch,
-    lShoulderRoll,
-    lElbowYaw,
-    lElbowRoll,
-    lWristYaw,
-    lHand,
+    LShoulderPitch,
+    LShoulderRoll,
+    LElbowYaw,
+    LElbowRoll,
+    LWristYaw,
+    LHand,
 
     // Right Leg
-    rHipYawPitch,  // this joint is virtual but BHuman Kinematics uses it
-    rHipRoll,
-    rHipPitch,
-    rKneePitch,
-    rAnklePitch,
-    rAnkleRoll,
+    RHipYawPitch,  // this joint is virtual (not present in Lola) but present in the URDF
+    RHipRoll,
+    RHipPitch,
+    RKneePitch,
+    RAnklePitch,
+    RAnkleRoll,
 
     // Right Arm
-    rShoulderPitch,
-    rShoulderRoll,
-    rElbowYaw,
-    rElbowRoll,
-    rWristYaw,
-    rHand,
+    RShoulderPitch,
+    RShoulderRoll,
+    RElbowYaw,
+    RElbowRoll,
+    RWristYaw,
+    RHand,
 
     numOfJoints,
 };
 
 inline std::string toString(Joint joint) {
     switch (joint) {
-        case Joint::headYaw:
-            return "headYaw";
-        case Joint::headPitch:
-            return "headPitch";
-        case Joint::lShoulderPitch:
-            return "lShoulderPitch";
-        case Joint::lShoulderRoll:
-            return "lShoulderRoll";
-        case Joint::lElbowYaw:
-            return "lElbowYaw";
-        case Joint::lElbowRoll:
-            return "lElbowRoll";
-        case Joint::lWristYaw:
-            return "lWristYaw";
-        case Joint::lHipYawPitch:
-            return "lHipYawPitch";
-        case Joint::lHipRoll:
-            return "lHipRoll";
-        case Joint::lHipPitch:
-            return "lHipPitch";
-        case Joint::lKneePitch:
-            return "lKneePitch";
-        case Joint::lAnklePitch:
-            return "lAnklePitch";
-        case Joint::lAnkleRoll:
-            return "lAnkleRoll";
-        case Joint::rHipRoll:
-            return "rHipRoll";
-        case Joint::rHipPitch:
-            return "rHipPitch";
-        case Joint::rKneePitch:
-            return "rKneePitch";
-        case Joint::rAnklePitch:
-            return "rAnklePitch";
-        case Joint::rAnkleRoll:
-            return "rAnkleRoll";
-        case Joint::rShoulderPitch:
-            return "rShoulderPitch";
-        case Joint::rShoulderRoll:
-            return "rShoulderRoll";
-        case Joint::rElbowYaw:
-            return "rElbowYaw";
-        case Joint::rElbowRoll:
-            return "rElbowRoll";
-        case Joint::rWristYaw:
-            return "rWristYaw";
-        case Joint::lHand:
-            return "lHand";
-        case Joint::rHand:
-            return "rHand";
+        case Joint::HeadYaw:
+            return "HeadYaw";
+        case Joint::HeadPitch:
+            return "HeadPitch";
+        case Joint::LShoulderPitch:
+            return "LShoulderPitch";
+        case Joint::LShoulderRoll:
+            return "LShoulderRoll";
+        case Joint::LElbowYaw:
+            return "LElbowYaw";
+        case Joint::LElbowRoll:
+            return "LElbowRoll";
+        case Joint::LWristYaw:
+            return "LWristYaw";
+        case Joint::LHipYawPitch:
+            return "LHipYawPitch";
+        case Joint::LHipRoll:
+            return "LHipRoll";
+        case Joint::LHipPitch:
+            return "LHipPitch";
+        case Joint::LKneePitch:
+            return "LKneePitch";
+        case Joint::LAnklePitch:
+            return "LAnklePitch";
+        case Joint::LAnkleRoll:
+            return "LAnkleRoll";
+        case Joint::RHipRoll:
+            return "RHipRoll";
+        case Joint::RHipPitch:
+            return "RHipPitch";
+        case Joint::RKneePitch:
+            return "RKneePitch";
+        case Joint::RAnklePitch:
+            return "RAnklePitch";
+        case Joint::RAnkleRoll:
+            return "RAnkleRoll";
+        case Joint::RShoulderPitch:
+            return "RShoulderPitch";
+        case Joint::RShoulderRoll:
+            return "RShoulderRoll";
+        case Joint::RElbowYaw:
+            return "RElbowYaw";
+        case Joint::RElbowRoll:
+            return "RElbowRoll";
+        case Joint::RWristYaw:
+            return "RWristYaw";
+        case Joint::LHand:
+            return "LHand";
+        case Joint::RHand:
+            return "RHand";
         default:
             return "UNKNOWN (" + std::to_string(static_cast<int>(joint)) + ")";
             throw std::invalid_argument("Unknown Joint value");

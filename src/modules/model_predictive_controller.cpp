@@ -1,4 +1,5 @@
 #include "ismpc_cpp/modules/model_predictive_controller.h"
+#include "proxsuite/proxqp/status.hpp"
 
 namespace ismpc {
 
@@ -13,18 +14,29 @@ ModelPredictiveController::ModelPredictiveController(const FrameInfo& frame_info
 
 void ModelPredictiveController::update(LipRobot& robot) {
     QP<Scalar> qp = solve_qp(robot);
+    if (qp.results.info.status != PROXQP_SOLVED) {
+        throw std::runtime_error("QP solver failed to find a solution.");
+    }
 
-    // Extract the solution
-    isize Fprime = footsteps.num_controlled_footsteps;
     auto start = std::chrono::high_resolution_clock::now();
-    Xdz = qp.results.x.segment(0, numC);
-    Ydz = qp.results.x.segment(numC, numC);
-    Xf = qp.results.x.segment(2 * numC, Fprime);
-    Yf = qp.results.x.segment(2 * numC + Fprime, Fprime);
+    {
+        // Extract the solution
+        isize Fprime = footsteps.num_controlled_footsteps;
+        Xdz = qp.results.x.segment(0, numC);
+        Ydz = qp.results.x.segment(numC, numC);
+        Xf = qp.results.x.segment(2 * numC, Fprime);
+        Yf = qp.results.x.segment(2 * numC + Fprime, Fprime);
 
-    // Update the lip state
-    robot.state.update(Xdz(0), Ydz(0));
-
+        // Integrate the lip velocities
+        State& state = robot.state;
+        Vector3 predicted_x = state.getNextLipx(Xdz(0));
+        Vector3 predicted_y = state.getNextLipy(Ydz(0));
+        state.com.pose.translation << predicted_x(0), predicted_y(0), RobotConfig::h;
+        state.com.vel << predicted_x(1), predicted_y(1), 0;
+        state.zmp_pos << predicted_x(2), predicted_y(2), 0;
+        state.zmp_vel << Xdz(0), Ydz(0), 0;
+        state.com.acc = (RobotConfig::eta * RobotConfig::eta) * (state.com.pose.translation - state.zmp_pos);
+    }
     auto end = std::chrono::high_resolution_clock::now();
     robot.total_mpc_postprocessing_duration +=
         std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();

@@ -1,10 +1,8 @@
 #pragma once
 
 #include <cmath>
-#include <sstream>
 
 #include "ismpc_cpp/tools/math/pose3.h"
-#include "ismpc_cpp/types/body_parts.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/state.h"
 #include "ismpc_cpp/types/walk_state.h"

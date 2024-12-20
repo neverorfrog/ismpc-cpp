@@ -31,14 +31,14 @@ const Vector3 State::getLipy() const {
     return lip_y;
 }
 
-void State::update(Scalar xdz, Scalar ydz) {
+const Vector3 State::getNextLipx(Scalar xdz) const {
     Vector3 predicted_x = A * getLipx() + B * xdz;
+    return predicted_x;
+}
+
+const Vector3 State::getNextLipy(Scalar ydz) const {
     Vector3 predicted_y = A * getLipy() + B * ydz;
-    com.pose.translation << predicted_x(0), predicted_y(0), h;
-    com.vel << predicted_x(1), predicted_y(1), 0;
-    zmp_pos << predicted_x(2), predicted_y(2), 0;
-    com.acc = eta * eta * (com.pose.translation - zmp_pos);
-    zmp_vel << xdz, ydz, 0;
+    return predicted_y;
 }
 
 std::string State::toString() const {

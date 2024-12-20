@@ -2,9 +2,9 @@
 
 #include <cmath>
 
-#include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/math/pose2.h"
 #include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/tools/config/config.h"
 
 namespace ismpc {
 

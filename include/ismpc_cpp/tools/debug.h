@@ -3,7 +3,7 @@
 #include <iostream>
 
 #ifdef DEBUG
-#define PRINT(msg) std::cout << msg << std::endl
+    #define PRINT(msg) std::cout << msg << std::endl
 #else
-#define PRINT(msg)
+    #define PRINT(msg)
 #endif

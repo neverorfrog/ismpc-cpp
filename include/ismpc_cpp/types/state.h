@@ -49,12 +49,20 @@ struct State {
     const Vector3 getLipy() const;
 
     /**
-     * @brief Update the state with new velocities
+    * @brief Get the next LIP state in the x-direction
+    *
+    * @param xdz The velocity in the x-direction
+    * @return const Vector3
+    */
+    const Vector3 getNextLipx(Scalar xdz) const;
+
+    /**
+     * @brief Get the next LIP state in the y-direction
      *
-     * @param xdz The velocity in the x-direction
      * @param ydz The velocity in the y-direction
+     * @return const Vector3
      */
-    void update(Scalar xdz, Scalar ydz);
+    const Vector3 getNextLipy(Scalar ydz) const;
 
     /**
      * @brief Convert the state to a string representation

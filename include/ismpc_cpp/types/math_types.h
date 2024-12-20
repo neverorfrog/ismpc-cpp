@@ -7,6 +7,7 @@ using Scalar = double;
 using Matrix = Eigen::Matrix<Scalar, -1, -1>;
 using Matrix3 = Eigen::Matrix<Scalar, 3, 3>;
 using Matrix4 = Eigen::Matrix<Scalar, 4, 4>;
+using Matrix6 = Eigen::Matrix<Scalar, 6, 6>;
 using VectorX = Eigen::VectorX<Scalar>;
 using Vector3 = Eigen::Matrix<Scalar, 3, 1>;
 using Vector4 = Eigen::Matrix<Scalar, 4, 1>;
