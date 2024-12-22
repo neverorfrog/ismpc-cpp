@@ -8,9 +8,8 @@
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/lip_robot.h"
 #include "ismpc_cpp/tools/config/config.h"
-#include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/tools/proxsuite.h"
-
+#include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {
 /**

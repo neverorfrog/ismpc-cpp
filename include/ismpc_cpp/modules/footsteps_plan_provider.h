@@ -20,8 +20,8 @@
 #include "ismpc_cpp/representations/reference.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
-#include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/tools/proxsuite.h"
+#include "ismpc_cpp/types/math_types.h"
 
 using namespace ismpc::Arithmetic;
 namespace ismpc {

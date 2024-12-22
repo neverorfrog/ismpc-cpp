@@ -10,6 +10,18 @@ class CMakeExtension(Extension):
         self.sourcedir = os.path.abspath(sourcedir)
 
 class CMakeBuild(build_ext):
+    user_options = build_ext.user_options + [
+        ('cmake-args=', None, 'Additional arguments for CMake')
+    ]
+
+    def initialize_options(self):
+        super().initialize_options()
+        self.cmake_args = None
+
+    def finalize_options(self):
+        super().finalize_options()
+        self.cmake_args = self.cmake_args.split() if self.cmake_args else []
+
     def build_extension(self, ext: CMakeExtension) -> None:
         ext_fullpath = Path.cwd() / self.get_ext_fullpath(ext.name)
         extdir = ext_fullpath.parent.resolve()
@@ -22,7 +34,7 @@ class CMakeBuild(build_ext):
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
             f"-DCMAKE_BUILD_TYPE={cfg}",
             f"-DBUILD_PYTHON_BINDINGS=ON",
-        ]
+        ] + self.cmake_args
 
         build_args = ["--config", cfg]
 

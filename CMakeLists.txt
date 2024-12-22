@@ -22,8 +22,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/executables")
 # =============================================================================================
 
 # ============================ BUILD OPTIONS ==================================================
-set(BUILD_TESTS ON)
-set(BUILD_PYTHON_BINDINGS ON)
+option(BUILD_TESTS "Build tests" OFF)
+option(BUILD_PYTHON_BINDINGS "Build python bindings" OFF)
+option(BUILD_ROS "Build ros package" OFF)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
@@ -81,50 +82,17 @@ FetchContent_MakeAvailable(proxsuite)
 # =============================================================================================
 
 # ============================ ISMPC LIBRARY ==================================================
-set(ISMPC_CPP_EXTRA_LIBRARIES     
+set(ISMPC_CPP_EXTRA_LIBRARIES
   $<BUILD_INTERFACE:cxx_setup>
   $<BUILD_INTERFACE:yaml-cpp::yaml-cpp>
   $<BUILD_INTERFACE:proxsuite>
 )
 
-find_package(ament_cmake QUIET)
-if ( ament_cmake_FOUND )
-  add_definitions( -DUSING_ROS2 )
-  message(STATUS "------------------------------------------")
-  message(STATUS "ismpc_cpp is being built using AMENT.")
-  message(STATUS "------------------------------------------")
-  set(CMAKE_CONFIG_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
-  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CONFIG_PATH})
-
-  find_package(ament_index_cpp REQUIRED)
-  list( APPEND ISMPC_CPP_EXTRA_LIBRARIES $<BUILD_INTERFACE:ament_index_cpp::ament_index_cpp>)
-  ament_export_dependencies(ament_index_cpp)
-  ament_export_dependencies(yaml-cpp)
-
-  set( ISMPC_CPP_LIB_DESTINATION lib )
-  set( ISMPC_CPP_INCLUDE_DESTINATION include )
-  set( ISMPC_CPP_BIN_DESTINATION bin )
-
-  mark_as_advanced( 
-    ISMPC_CPP_EXTRA_LIBRARIES 
-    ISMPC_CPP_LIB_DESTINATION 
-    ISMPC_CPP_INCLUDE_DESTINATION 
-    ISMPC_CPP_BIN_DESTINATION 
-  )
-
-  macro(export_ismpc_cpp_package)
-    ament_export_include_directories(include)
-    ament_export_libraries(${ISMPC_CPP_LIBRARY})
-    ament_export_targets(${ISMPC_CPP_LIBRARY}Targets)
-    ament_package()
-  endmacro()
-endif()
-
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(${ISMPC_CPP_LIBRARY} STATIC ${ISMPC_SRCS})
-target_include_directories(${ISMPC_CPP_LIBRARY} 
-  PUBLIC 
+target_include_directories(${ISMPC_CPP_LIBRARY}
+  PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include>
@@ -133,27 +101,62 @@ target_include_directories(${ISMPC_CPP_LIBRARY}
 )
 target_link_libraries(${ISMPC_CPP_LIBRARY} PUBLIC ${ISMPC_CPP_EXTRA_LIBRARIES})
 
-INSTALL(
-  TARGETS ${ISMPC_CPP_LIBRARY}
-  EXPORT ${ISMPC_CPP_LIBRARY}Targets 
-  ARCHIVE DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
-  LIBRARY DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
-  RUNTIME DESTINATION ${ISMPC_CPP_BIN_DESTINATION}
-  INCLUDES DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
-)
+if(BUILD_ROS)
+  find_package(ament_cmake REQUIRED)
+  if ( ament_cmake_FOUND )
+    add_definitions( -DUSING_ROS2 )
+    message(STATUS "------------------------------------------")
+    message(STATUS "ismpc_cpp is being built using AMENT.")
+    message(STATUS "------------------------------------------")
+    set(CMAKE_CONFIG_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_CONFIG_PATH})
 
-INSTALL( 
-    DIRECTORY 
-      ${CMAKE_CURRENT_SOURCE_DIR}/include/
-      $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include/proxsuite>
-      ${EIGEN_INCLUDE_DIR}
-      $<BUILD_INTERFACE:${nanobind_SOURCE_DIR}/include/nanobind>
-      $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include/yaml-cpp>
-    DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
-    FILES_MATCHING PATTERN "*.h*"
-)
+    find_package(ament_index_cpp REQUIRED)
+    list( APPEND ISMPC_CPP_EXTRA_LIBRARIES $<BUILD_INTERFACE:ament_index_cpp::ament_index_cpp>)
+    ament_export_dependencies(ament_index_cpp)
+    ament_export_dependencies(yaml-cpp)
 
-export_ismpc_cpp_package()
+    set( ISMPC_CPP_LIB_DESTINATION lib )
+    set( ISMPC_CPP_INCLUDE_DESTINATION include )
+    set( ISMPC_CPP_BIN_DESTINATION bin )
+
+    mark_as_advanced(
+      ISMPC_CPP_EXTRA_LIBRARIES
+      ISMPC_CPP_LIB_DESTINATION
+      ISMPC_CPP_INCLUDE_DESTINATION
+      ISMPC_CPP_BIN_DESTINATION
+    )
+
+    macro(export_ismpc_cpp_package)
+      ament_export_include_directories(include)
+      ament_export_libraries(${ISMPC_CPP_LIBRARY})
+      ament_export_targets(${ISMPC_CPP_LIBRARY}Targets)
+      ament_package()
+    endmacro()
+  endif()
+
+  INSTALL(
+    TARGETS ${ISMPC_CPP_LIBRARY}
+    EXPORT ${ISMPC_CPP_LIBRARY}Targets
+    ARCHIVE DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
+    LIBRARY DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
+    RUNTIME DESTINATION ${ISMPC_CPP_BIN_DESTINATION}
+    INCLUDES DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
+  )
+
+  INSTALL(
+      DIRECTORY
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/
+        $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include/proxsuite>
+        ${EIGEN_INCLUDE_DIR}
+        $<BUILD_INTERFACE:${nanobind_SOURCE_DIR}/include/nanobind>
+        $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include/yaml-cpp>
+      DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
+      FILES_MATCHING PATTERN "*.h*"
+  )
+
+  export_ismpc_cpp_package()
+endif()
 # =============================================================================================
 
 # ============================ PYTHON BINDINGS =================================================

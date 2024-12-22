@@ -49,11 +49,11 @@ struct State {
     const Vector3 getLipy() const;
 
     /**
-    * @brief Get the next LIP state in the x-direction
-    *
-    * @param xdz The velocity in the x-direction
-    * @return const Vector3
-    */
+     * @brief Get the next LIP state in the x-direction
+     *
+     * @param xdz The velocity in the x-direction
+     * @return const Vector3
+     */
     const Vector3 getNextLipx(Scalar xdz) const;
 
     /**

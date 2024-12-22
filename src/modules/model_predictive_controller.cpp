@@ -1,4 +1,5 @@
 #include "ismpc_cpp/modules/model_predictive_controller.h"
+
 #include "proxsuite/proxqp/status.hpp"
 
 namespace ismpc {

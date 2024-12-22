@@ -84,5 +84,5 @@ This division ensures that each step (transition from foot $j$ to foot $j+1$) is
 
 ## References
 
-<a id="1">[1]</a> 
+<a id="1">[1]</a>
 [N. Scianca, D. De Simone, L. Lanari and G. Oriolo, "MPC for Humanoid Gait Generation: Stability and Feasibility," in IEEE Transactions on Robotics, vol. 36, no. 4, pp. 1171-1188, Aug. 2020](https://ieeexplore.ieee.org/abstract/document/8955951)
