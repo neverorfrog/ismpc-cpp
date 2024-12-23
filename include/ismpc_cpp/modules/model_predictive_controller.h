@@ -4,12 +4,15 @@
 
 #include "ismpc_cpp/libraries/constraint_lib.h"
 #include "ismpc_cpp/libraries/cost_lib.h"
+#include "ismpc_cpp/libraries/feet_lib.h"
 #include "ismpc_cpp/representations/footsteps.h"
 #include "ismpc_cpp/representations/frame_info.h"
-#include "ismpc_cpp/representations/lip_robot.h"
+#include "ismpc_cpp/representations/state.h"
+#include "ismpc_cpp/representations/walk_state.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
 #include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/optimization.h"
 
 namespace ismpc {
 /**
@@ -26,18 +29,30 @@ class ModelPredictiveController {
     Matrix Xdz, Ydz, Xf, Yf;
 
     const FrameInfo& frame_info;
-    const LipRobot& robot;
+    const State& state;
+    const WalkState& walk;
     const FootstepsPlan& footsteps;
-    const CostLib& cost_lib;
-    const ConstraintLib& constraint_lib;
+    const FeetLib& feet;
+    const CostLib& cost;
+    const ConstraintLib& constraint;
 
-    const int numC = Config::C;  // number of control points
+    // Optimization related stuff
+    const int numC = Config::C;                    // number of control points
+    isize n_eq = 2;                                // number of equality constraints
+    isize dimz = 2 * numC;                         // number of zmp variables (xdz, ydz)
+    InequalityConstraint zmp_constraint;           // zmp constraint
+    InequalityConstraint zmp_velocity_constraint;  // zmp velocity constraint
+    InequalityConstraint kinematic_constraint;     // kinematic constraint
+    Matrix C;                                      // combined inequality constraint matrix
+    VectorX l, u;                                  // combined inequality constraint bounds
 
-    QP<Scalar> solve_qp(LipRobot& robot);
+    // time related stuff
+    std::chrono::high_resolution_clock::time_point start, end;
 
    public:
-    ModelPredictiveController(const FrameInfo& frame_info, const LipRobot& robot, const FootstepsPlan& footsteps,
-                              const CostLib& cost_lib, const ConstraintLib& constraint_lib);
+    ModelPredictiveController(const FrameInfo& frame_info, const State& state, const WalkState& walk,
+                              const FootstepsPlan& footsteps, const FeetLib& feet, const CostLib& cost,
+                              const ConstraintLib& constraint);
 
     /**
      * @brief Update the MPC module
@@ -46,7 +61,11 @@ class ModelPredictiveController {
      * made of the zmp velocities. Practically, this function modifies the field
      * state.desired_state of the robot.
      */
-    void update(LipRobot& robot);
+    void update(State& state);
+
+    Scalar total_mpc_qp_duration = 0.0;
+    Scalar total_mpc_preprocessing_duration = 0.0;
+    Scalar total_mpc_postprocessing_duration = 0.0;
 };
 
 }  // namespace ismpc

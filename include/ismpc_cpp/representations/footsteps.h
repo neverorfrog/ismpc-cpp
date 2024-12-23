@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "ismpc_cpp/representations/lip_robot.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/support_phase.h"

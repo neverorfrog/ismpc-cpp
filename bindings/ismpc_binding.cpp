@@ -19,18 +19,14 @@ NB_MODULE(ismpc_py, m) {
         .def("update", &WalkEngine::update)
         .def("get_footsteps", &WalkEngine::get_footsteps)
         .def("get_reference", &WalkEngine::get_reference)
-        .def("get_robot", &WalkEngine::get_robot)
+        .def("get_state", &WalkEngine::get_state)
+        .def("get_walk_state", &WalkEngine::get_walk_state)
         .def("get_frame_info", &WalkEngine::get_frame_info)
         .def("set_reference_velocity", &WalkEngine::set_reference_velocity)
         .def("get_history", &WalkEngine::get_history)
         .def("get_walk_history", &WalkEngine::get_walk_history)
         .def("get_footstep_history", &WalkEngine::get_footstep_history)
         .def("get_timestamp_history", &WalkEngine::get_timestamp_history);
-
-    nb::class_<LipRobot> LipRobot(m, "LipRobot");
-    LipRobot.def(nb::init<>());
-    LipRobot.def_ro("state", &LipRobot::state);
-    LipRobot.def_ro("walk", &LipRobot::walk);
 
     nb::class_<EndEffector>(m, "EndEffector")
         .def(nb::init<>())

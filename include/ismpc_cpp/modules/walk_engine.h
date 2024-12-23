@@ -20,14 +20,15 @@ class WalkEngine {
     std::vector<WalkState> walk_history;
 
     // Shared Representations (owned by me but passed to the modules in my constructor)
-    LipRobot robot;
     Reference reference;
     FootstepsPlan footsteps;
+    State state;
+    WalkState walk;
 
-    // Libraries (Act as representations for modules, but treat other representations as if it were a
-    // module)
-    CostLib cost_lib;
-    ConstraintLib constraint_lib;
+    // Libraries (Act as representations for modules, are in fact modules without an update)
+    FeetLib feet;
+    CostLib cost;
+    ConstraintLib constraint;
 
     // Modules
     ReferenceProvider reference_provider;
@@ -64,8 +65,9 @@ class WalkEngine {
     // Getters
     const FootstepsPlan& get_footsteps() const;
     const Reference& get_reference() const;
-    LipRobot& get_robot();
-    FrameInfo& get_frame_info();
+    const FrameInfo& get_frame_info() const;
+    const State& get_state() const;
+    const WalkState& get_walk_state() const;
     const std::vector<State>& get_history() const;
     const std::vector<WalkState>& get_walk_history() const;
     const std::vector<Pose2>& get_footstep_history() const;

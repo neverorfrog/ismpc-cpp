@@ -19,6 +19,12 @@ Pose3::Pose3(const Pose2& pose2) {
     rotation = RotationMatrix::aroundZ(pose2.rotation);
 }
 
+Pose3& Pose3::operator=(const Pose3& other) {
+    rotation = other.rotation;
+    translation = other.translation;
+    return *this;
+}
+
 bool Pose3::operator==(const Pose3& other) const {
     return ((translation == other.translation) && (rotation == other.rotation));
 }

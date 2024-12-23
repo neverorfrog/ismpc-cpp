@@ -3,8 +3,8 @@
 #include <cmath>
 #include <vector>
 
+#include "ismpc_cpp/libraries/feet_lib.h"
 #include "ismpc_cpp/representations/footsteps.h"
-#include "ismpc_cpp/representations/lip_robot.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/types/math_types.h"
@@ -16,7 +16,7 @@ namespace ismpc {
 class ConstraintLib {
    private:
     const FootstepsPlan& footsteps;
-    const LipRobot& robot;
+    const FeetLib& feet;
 
     Scalar theta_max = RobotConfig::theta_max;
     Scalar eta = RobotConfig::eta;
@@ -34,7 +34,7 @@ class ConstraintLib {
     const int numP = Config::P;  // Number of prediction steps
 
    public:
-    ConstraintLib(const FootstepsPlan& footsteps, const LipRobot& robot);
+    ConstraintLib(const FootstepsPlan& footsteps, const FeetLib& feet);
 
     /**
      * @brief Get the Theta Constraint object to maintain the theta displacement

@@ -2,20 +2,19 @@
 
 namespace ismpc {
 
-WalkStateProvider::WalkStateProvider(const FrameInfo& frame_info, const LipRobot& robot,
-                                     const FootstepsPlan& footsteps)
-    : frame_info(frame_info), robot(robot), footsteps(footsteps) {}
+WalkStateProvider::WalkStateProvider(const FrameInfo& frame_info, const State& state, const WalkState& walk,
+                                     const FeetLib& feet, const FootstepsPlan& footsteps)
+    : frame_info(frame_info), state(state), walk(walk), feet(feet), footsteps(footsteps) {}
 
-void WalkStateProvider::update(LipRobot& robot) {
-    WalkState& walk = robot.walk;
+void WalkStateProvider::update(WalkState& walk) {
     walk.next_footstep_timestamp = footsteps.timestamps[0];
     walk.next_support_foot_pose = Pose2(footsteps.theta(0), footsteps.x(0), footsteps.y(0));
 
     // Switch support foot at the start of a new double support phase
     if (frame_info.tk >= footsteps.timestamps[0] && walk.support_phase == SupportPhase::SINGLE) {
-        switchSupportFoot(robot);
-        robot.walk.footstep_history.push_back(robot.getSupportFootPose().getPose2());
-        robot.walk.timestamp_history.push_back(frame_info.tk);
+        switchSupportFoot(walk);
+        walk.footstep_history.push_back(feet.getSupportFootPose().getPose2());
+        walk.timestamp_history.push_back(frame_info.tk);
     }
 
     // Update the support phase info
@@ -26,10 +25,8 @@ void WalkStateProvider::update(LipRobot& robot) {
         walk.support_phase = SupportPhase::DOUBLE;
 }
 
-void WalkStateProvider::switchSupportFoot(LipRobot& robot) {
-    WalkState& walk = robot.walk;
-
-    walk.previous_support_foot_pose = robot.getSupportFootPose().getPose2();
+void WalkStateProvider::switchSupportFoot(WalkState& walk) {
+    walk.previous_support_foot_pose = feet.getSupportFootPose().getPose2();
     walk.next_support_foot_pose = Pose2(footsteps.theta(1), footsteps.x(1), footsteps.y(1));
 
     walk.support_foot_type = walk.support_foot_type == Foot::right ? Foot::left : Foot::right;

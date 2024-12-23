@@ -1,7 +1,7 @@
 import os
 import subprocess
 from pathlib import Path
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 
 class CMakeExtension(Extension):
@@ -56,7 +56,10 @@ setup(
     zip_safe=False,
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.8",
-    package_data={"bindings": ["ismpc_py.pyi"]},
-    package_dir={"": "."},
-    packages=["bindings"],
+    packages=find_packages(where="bindings"),
+    package_dir={"": "bindings"},
+    package_data={
+        "ismpc_py": ["ismpc_py.pyi"],
+    },
+    include_package_data=True,
 )

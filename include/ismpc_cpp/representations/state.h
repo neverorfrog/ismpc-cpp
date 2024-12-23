@@ -1,12 +1,12 @@
 #pragma once
 
+#include "ismpc_cpp/representations/walk_state.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/math/pose2.h"
 #include "ismpc_cpp/types/end_effector.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/support_phase.h"
-#include "ismpc_cpp/types/walk_state.h"
 
 namespace ismpc {
 
@@ -31,6 +31,10 @@ struct State {
     Scalar right_foot_x = RobotConfig::right_foot_x;
     Scalar right_foot_y = RobotConfig::right_foot_y;
     Scalar h = RobotConfig::h;
+
+    Scalar total_mpc_qp_duration = 0.0;
+    Scalar total_mpc_preprocessing_duration = 0.0;
+    Scalar total_mpc_postprocessing_duration = 0.0;
 
     State();
 

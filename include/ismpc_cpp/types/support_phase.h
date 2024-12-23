@@ -1,5 +1,5 @@
 #pragma once
-
+#include <string>
 namespace ismpc {
 
 enum class SupportPhase { SINGLE, DOUBLE };

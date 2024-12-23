@@ -11,13 +11,16 @@
 #pragma once
 
 #include <cmath>
+#include <iostream>
 
 #include "ismpc_cpp/libraries/constraint_lib.h"
 #include "ismpc_cpp/libraries/cost_lib.h"
+#include "ismpc_cpp/libraries/feet_lib.h"
 #include "ismpc_cpp/representations/footsteps.h"
 #include "ismpc_cpp/representations/frame_info.h"
-#include "ismpc_cpp/representations/lip_robot.h"
 #include "ismpc_cpp/representations/reference.h"
+#include "ismpc_cpp/representations/state.h"
+#include "ismpc_cpp/representations/walk_state.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
@@ -37,10 +40,12 @@ namespace ismpc {
 class FootstepsPlanProvider {
    private:
     const FrameInfo& frame_info;
-    const LipRobot& robot;
+    const State& state;
+    const WalkState& walk;
     const Reference& reference;
-    const CostLib& cost_lib;
-    const ConstraintLib& constraint_lib;
+    const FeetLib& feet;
+    const CostLib& cost;
+    const ConstraintLib& constraint;
 
     const int numP = Config::P;
     const Scalar T_p = Config::T_p;
@@ -53,8 +58,9 @@ class FootstepsPlanProvider {
     const Scalar ds_percentage = RobotConfig::ds_percentage;
 
    public:
-    FootstepsPlanProvider(const FrameInfo& frame_info, const LipRobot& robot, const Reference& reference,
-                          const CostLib& cost_lib, const ConstraintLib& constraint_lib);
+    FootstepsPlanProvider(const FrameInfo& frame_info, const State& state, const WalkState& walk,
+                          const Reference& reference, const FeetLib& feet, const CostLib& cost,
+                          const ConstraintLib& constraint);
 
     void update(FootstepsPlan& footsteps);
 

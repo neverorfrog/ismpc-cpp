@@ -1,23 +1,23 @@
 #pragma once
 
-#include <cmath>
+#include <vector>
 
-#include "ismpc_cpp/tools/math/pose3.h"
+#include "ismpc_cpp/representations/state.h"
+#include "ismpc_cpp/representations/walk_state.h"
+#include "ismpc_cpp/tools/config/config.h"
+#include "ismpc_cpp/tools/config/robot_config.h"
+#include "ismpc_cpp/types/end_effector.h"
 #include "ismpc_cpp/types/math_types.h"
-#include "ismpc_cpp/types/state.h"
-#include "ismpc_cpp/types/walk_state.h"
 
 namespace ismpc {
 
-struct LipRobot {
-    State state{};
-    WalkState walk{};
+class FeetLib {
+   private:
+    const State& state;
+    const WalkState& walk;
 
-    Scalar total_mpc_qp_duration = 0.0;
-    Scalar total_mpc_preprocessing_duration = 0.0;
-    Scalar total_mpc_postprocessing_duration = 0.0;
-
-    LipRobot() = default;
+   public:
+    FeetLib(const State& state, const WalkState& walk);
 
     /**
      * @brief Compute the sign corresponding to the footstep index
@@ -26,11 +26,27 @@ struct LipRobot {
      */
     int getFootstepSign(int j) const;
 
-    EndEffector& getSupportFoot();
+    /**
+     * @brief Get the Support Foot Pose object
+     */
     const EndEffector& getSupportFoot() const;
 
-    EndEffector& getSwingFoot();
+    /**
+     * @brief Get the Swing Foot Pose object
+     */
     const EndEffector& getSwingFoot() const;
+
+    /**
+     * @brief Get the Swing Foot object
+     * @return EndEffector
+     */
+    EndEffector getSwingFoot();
+
+    /**
+     * @brief Set the Swing Foot object
+     * @param swing_foot
+     */
+    void setSwingFoot(const EndEffector& swing_foot, State& state) const;
 
     /**
      * @brief Get the Support Foot Pose object
@@ -55,14 +71,6 @@ struct LipRobot {
      * @return Pose3
      */
     Pose3 getRelSwingFootPose() const;
-
-    /**
-     * @brief Convert the object to a string representation
-     * @return std::string
-     */
-    std::string toString() const;
-
-    friend std::ostream& operator<<(std::ostream& os, const LipRobot& robot);
 };
 
 }  // namespace ismpc

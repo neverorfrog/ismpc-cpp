@@ -31,6 +31,16 @@ struct Pose3 {
     explicit Pose3(const Pose2& pose2);
 
     /**
+     * @brief Assignment operator to assign a Pose3 object to the current object.
+     *
+     * This operator assigns a Pose3 object to the current Pose3 object.
+     *
+     * @param other The Pose3 object to assign.
+     * @return The current Pose3 object after assignment.
+     */
+    Pose3& operator=(const Pose3& other);
+
+    /**
      * @brief Equality operator to compare two Pose3 objects.
      *
      * This operator checks if the current Pose3 object is equal to another Pose3 object.

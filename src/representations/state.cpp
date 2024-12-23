@@ -1,4 +1,4 @@
-#include "ismpc_cpp/types/state.h"
+#include "ismpc_cpp/representations/state.h"
 
 namespace ismpc {
 

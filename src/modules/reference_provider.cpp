@@ -2,13 +2,13 @@
 
 namespace ismpc {
 
-ReferenceProvider::ReferenceProvider(const FrameInfo& frame_info, const LipRobot& robot)
-    : robot(robot), frame_info(frame_info) {}
+ReferenceProvider::ReferenceProvider(const FrameInfo& frame_info, const State& state)
+    : state(state), frame_info(frame_info) {}
 
 // TODO for now the velocity is always the same
 void ReferenceProvider::update(Reference& reference) {
     Matrix traj = Matrix(3, Config::P);  // Template robot state trajectory [x, y, theta]
-    traj.col(0) = robot.state.com.pose.getPose2().getVector();
+    traj.col(0) = state.com.pose.getPose2().getVector();
     Scalar cur_t = frame_info.tk;
     for (int i = 0; i < Config::P - 1; ++i) {
         traj.col(i + 1) = traj.col(i) + Config::delta * f(traj.col(i), reference.get_velocity().vector);

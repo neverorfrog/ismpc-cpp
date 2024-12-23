@@ -2,8 +2,8 @@
 
 #include <vector>
 
+#include "ismpc_cpp/libraries/feet_lib.h"
 #include "ismpc_cpp/representations/footsteps.h"
-#include "ismpc_cpp/representations/lip_robot.h"
 #include "ismpc_cpp/representations/reference.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
@@ -16,7 +16,8 @@ class CostLib {
    private:
     const Reference& reference;
     const FootstepsPlan& footsteps;
-    const LipRobot& robot;
+    const FeetLib& feet;
+    const WalkState& walk;
 
     Scalar current_support_x;
     Scalar current_support_y;
@@ -27,7 +28,7 @@ class CostLib {
     const Scalar beta = RobotConfig::beta;
 
    public:
-    CostLib(const Reference& reference, const FootstepsPlan& footsteps, const LipRobot& robot);
+    CostLib(const Reference& reference, const FootstepsPlan& footsteps, const FeetLib& feet, const WalkState& walk);
 
     /**
      * @brief Get the Theta Cost object such as to minimize the squared error between
