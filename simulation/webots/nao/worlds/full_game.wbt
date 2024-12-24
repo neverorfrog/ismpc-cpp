@@ -1,0 +1,196 @@
+#VRML_SIM R2022b utf8
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2022b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/SPL_Field.proto"
+EXTERNPROTO "../protos/SPL_Ball.proto"
+EXTERNPROTO "../protos/NaoV6.proto"
+EXTERNPROTO "../protos/NaoJersey.proto"
+WorldInfo {
+  info [
+    "Simulation of the Robocup Standard Platform League"
+  ]
+  title "Robocup"
+  basicTimeStep 12
+  defaultDamping Damping {
+    linear 0.3
+    angular 0.75
+  }
+  contactProperties [
+    ContactProperties {
+      material1 "NAO foot material"
+      coulombFriction [
+        7
+      ]
+      bounce 0.3
+      bounceVelocity 0.003
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.4 0.4 0.8 1.77
+  position 0 -10 13
+  followType "Pan and Tilt Shot"
+}
+TexturedBackground {
+  texture "stadium"
+}
+TexturedBackgroundLight {
+  texture "stadium"
+}
+SPL_Field {
+}
+SPL_Ball {
+}
+DEF Blue1 NaoV6 {
+  translation -3.9 3.1 0.334
+  rotation 0 0 1 -1.57
+  name "Blue1"
+  controllerArgs [
+    "--listen=0.0.0.0:10010"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_1.png"
+    ]
+    jerseyColor 0 0.75 1
+  }
+}
+DEF Blue2 NaoV6 {
+  translation -3.2 -3.1 0.334
+  rotation 0 0 1 1.57
+  name "Blue2"
+  controllerArgs [
+    "--listen=0.0.0.0:10020"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_2.png"
+    ]
+    jerseyColor 0 0.75 1
+  }
+}
+DEF Blue3 NaoV6 {
+  translation -2.325 3.1 0.334
+  rotation 0 0 1 -1.57
+  name "Blue3"
+  controllerArgs [
+    "--listen=0.0.0.0:10030"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_3.png"
+    ]
+    jerseyColor 0 0.75 1
+  }
+}
+DEF Blue4 NaoV6 {
+  translation -1.6 -3.1 0.334
+  rotation 0 0 1 1.57
+  name "Blue4"
+  controllerArgs [
+    "--listen=0.0.0.0:10040"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_4.png"
+    ]
+    jerseyColor 0 0.75 1
+  }
+}
+DEF Blue5 NaoV6 {
+  translation -0.75 3.1 0.334
+  rotation 0 0 1 -1.57
+  name "Blue5"
+  controllerArgs [
+    "--listen=0.0.0.0:10050"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_5.png"
+    ]
+    jerseyColor 0 0.75 1
+  }
+}
+DEF Red1 NaoV6 {
+  translation 3.9 -3.1 0.334
+  rotation 0 0 1 1.57
+  name "Red1"
+  controllerArgs [
+    "--listen=0.0.0.0:10110"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_1.png"
+    ]
+    jerseyColor 0.5 0 0
+  }
+}
+DEF Red2 NaoV6 {
+  translation 3.2 3.1 0.334
+  rotation 0 0 1 -1.57
+  name "Red2"
+  controllerArgs [
+    "--listen=0.0.0.0:10120"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_2.png"
+    ]
+    jerseyColor 0.5 0 0
+  }
+}
+DEF Red3 NaoV6 {
+  translation 2.325 -3.1 0.334
+  rotation 0 0 1 1.57
+  name "Red3"
+  controllerArgs [
+    "--listen=0.0.0.0:10130"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_3.png"
+    ]
+    jerseyColor 0.5 0 0
+  }
+}
+DEF Red4 NaoV6 {
+  translation 1.6 3.1 0.334
+  rotation 0 0 1 -1.57
+  name "Red4"
+  controllerArgs [
+    "--listen=0.0.0.0:10140"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_4.png"
+    ]
+    jerseyColor 0.5 0 0
+  }
+}
+DEF Red5 NaoV6 {
+  translation 0.75 -3.1 0.334
+  rotation 0 0 1 1.57
+  name "Red5"
+  controllerArgs [
+    "--listen=0.0.0.0:10150"
+    "--tcp"
+  ]
+  jersey NaoJersey {
+    jerseyTexture [
+      "../protos/textures/nao_jersey_dark_5.png"
+    ]
+    jerseyColor 0.5 0 0
+  }
+}
