@@ -1,10 +1,9 @@
 import numpy as np
-from ismpc_cpp import LipRobot, WalkEngine
+from ismpc_py import WalkEngine
 
 class Gait:
 
     engine: WalkEngine
-    robot: LipRobot
 
     history: np.ndarray
     walk_history: np.ndarray
@@ -21,7 +20,6 @@ class Gait:
 
     def __init__(self, engine: WalkEngine):
         self.engine = engine
-        self.robot = engine.get_robot()
         self.extract_traj()
         self.extract_footsteps()
 

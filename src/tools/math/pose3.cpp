@@ -1,4 +1,4 @@
-#include "tools/math/pose3.h"
+#include "ismpc_cpp/tools/math/pose3.h"
 
 namespace ismpc {
 
@@ -17,6 +17,12 @@ Pose3::Pose3(const RotationMatrix& rotation, const Scalar x, const Scalar y, con
 Pose3::Pose3(const Pose2& pose2) {
     translation << pose2.translation(0), pose2.translation(1), 0;
     rotation = RotationMatrix::aroundZ(pose2.rotation);
+}
+
+Pose3& Pose3::operator=(const Pose3& other) {
+    rotation = other.rotation;
+    translation = other.translation;
+    return *this;
 }
 
 bool Pose3::operator==(const Pose3& other) const {
@@ -147,7 +153,7 @@ Pose3 Pose3::relativeTo(const Pose3& other) const {
 
 std::string Pose3::toString() const {
     std::ostringstream oss;
-    oss << "Translation: \n" << translation.transpose() << std::endl;
+    oss << "Translation: " << translation.transpose() << std::endl;
     oss << "Rotation: \n" << rotation << std::endl;
     return oss.str();
 }

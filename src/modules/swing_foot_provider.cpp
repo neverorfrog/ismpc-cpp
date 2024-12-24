@@ -1,14 +1,15 @@
-#include "modules/swing_foot_provider.h"
+#include "ismpc_cpp/modules/swing_foot_provider.h"
+
+#include "ismpc_cpp/representations/walk_state.h"
 
 namespace ismpc {
 
-SwingFootProvider::SwingFootProvider(const FrameInfo& frame_info, const LipRobot& robot,
+SwingFootProvider::SwingFootProvider(const FrameInfo& frame_info, const WalkState& walk, const FeetLib& feet,
                                      const FootstepsPlan& footsteps)
-    : frame_info(frame_info), robot(robot), footsteps(footsteps) {}
+    : frame_info(frame_info), walk(walk), feet(feet), footsteps(footsteps) {}
 
-void SwingFootProvider::update(LipRobot& robot) {
-    const WalkState& walk = robot.walk;
-    EndEffector& swing_foot = robot.getSwingFoot();
+void SwingFootProvider::update(State& state) {
+    EndEffector swing_foot{};
 
     if (walk.support_phase == SupportPhase::DOUBLE) {
         swing_foot.vel << 0, 0, 0;
@@ -44,6 +45,8 @@ void SwingFootProvider::update(LipRobot& robot) {
                 -cubic_ddot((step_completion - 0.5) * 2.0) * step_height * 4 / (ss_duration * ss_duration);
         }
     }
+
+    feet.setSwingFoot(swing_foot, state);
 }
 
 }  // namespace ismpc

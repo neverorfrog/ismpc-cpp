@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>ismpc_cpp</name>
+  <version>0.0.1</version>
+  <description>
+  This package contains the C++ implementation of the ISMPC algorithm.
+  </description>
+  <license>TODO: License declaration</license>
+  <maintainer email="97flavio.maiorana@gmail.com">neverorfrog</maintainer>
+  <author>Flavio Maiorana</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>ament_index_cpp</depend>
+
+  <test_depend>ament_cmake_gtest</test_depend>
+
+  <export>
+      <build_type>ament_cmake</build_type>
+  </export>
+</package>

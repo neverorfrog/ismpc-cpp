@@ -1,9 +1,9 @@
-#include "libraries/constraint_lib.h"
+#include "ismpc_cpp/libraries/constraint_lib.h"
 
 namespace ismpc {
 
-ConstraintLib::ConstraintLib(const FootstepsPlan& footsteps, const LipRobot& robot)
-    : footsteps(footsteps), robot(robot) {}
+ConstraintLib::ConstraintLib(const FootstepsPlan& footsteps, const FeetLib& feet)
+    : footsteps(footsteps), feet(feet) {}
 
 InequalityConstraint ConstraintLib::getThetaConstraint() const {
     int F = footsteps.num_predicted_footsteps;
@@ -33,7 +33,7 @@ InequalityConstraint ConstraintLib::getKinematicConstraint(int F) const {
     VectorX lbj = VectorX::Zero(2);
     VectorX ubj = VectorX::Zero(2);
 
-    Pose2 sf_pose = robot.getSupportFootPose().getPose2();
+    Pose2 sf_pose = feet.getSupportFootPose().getPose2();
     Scalar current_x = sf_pose.translation(0);
     Scalar current_y = sf_pose.translation(1);
 
@@ -44,8 +44,8 @@ InequalityConstraint ConstraintLib::getKinematicConstraint(int F) const {
 
             Scalar oriented_current_x = cos_theta(j) * current_x + sin_theta(j) * current_y;
             Scalar oriented_current_y = -sin_theta(j) * current_x + cos_theta(j) * current_y;
-            lbj << oriented_current_x - 0.5 * dax, oriented_current_y + robot.getFootstepSign(j) * l - 0.5 * day;
-            ubj << oriented_current_x + 0.5 * dax, oriented_current_y + robot.getFootstepSign(j) * l + 0.5 * day;
+            lbj << oriented_current_x - 0.5 * dax, oriented_current_y + feet.getFootstepSign(j) * l - 0.5 * day;
+            ubj << oriented_current_x + 0.5 * dax, oriented_current_y + feet.getFootstepSign(j) * l + 0.5 * day;
         } else {
             Cxj << -cos_theta(j), cos_theta(j), sin_theta(j), -sin_theta(j);
             Cyj << -sin_theta(j), sin_theta(j), -cos_theta(j), cos_theta(j);
@@ -53,8 +53,8 @@ InequalityConstraint ConstraintLib::getKinematicConstraint(int F) const {
             C.block(2 * j, j - 1, 2, 2) = Cxj;
             C.block(2 * j, (j - 1) + F, 2, 2) = Cyj;
 
-            lbj << -0.5 * dax, robot.getFootstepSign(j) * l - 0.5 * day;
-            ubj << 0.5 * dax, robot.getFootstepSign(j) * l + 0.5 * day;
+            lbj << -0.5 * dax, feet.getFootstepSign(j) * l - 0.5 * day;
+            ubj << 0.5 * dax, feet.getFootstepSign(j) * l + 0.5 * day;
         }
 
         lb.segment(2 * j, 2) = lbj;

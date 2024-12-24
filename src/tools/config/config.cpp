@@ -1,4 +1,4 @@
-#include "tools/config/config.h"
+#include "ismpc_cpp/tools/config/config.h"
 
 namespace ismpc {
 

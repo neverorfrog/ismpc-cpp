@@ -1,21 +1,22 @@
-#include "libraries/cost_lib.h"
+#include "ismpc_cpp/libraries/cost_lib.h"
 
 namespace ismpc {
 
-CostLib::CostLib(const Reference& reference, const FootstepsPlan& footsteps, const LipRobot& robot)
-    : reference(reference), footsteps(footsteps), robot(robot) {}
+CostLib::CostLib(const Reference& reference, const FootstepsPlan& footsteps, const FeetLib& feet,
+                 const WalkState& walk)
+    : reference(reference), footsteps(footsteps), feet(feet), walk(walk) {}
 
 Cost CostLib::getThetaCost() const {
     int F = footsteps.num_predicted_footsteps;
     VectorX delta_theta = VectorX::Zero(F);
-    Scalar t_start = robot.walk.current_footstep_timestamp;
+    Scalar t_start = walk.current_footstep_timestamp;
     Scalar t_end;
     for (int j = 0; j < F; ++j) {
         t_end = footsteps.timestamps[j];
         delta_theta(j) = reference.integrateOmega(t_start, t_end);
         t_start = t_end;
     }
-    Scalar current_theta = robot.getSupportFootPose().rotation(2);
+    Scalar current_theta = feet.getSupportFootPose().rotation(2);
     // Cost Matrix
     Matrix H = Matrix::Identity(F, F);
     H.diagonal(0) = 4 * Matrix::Ones(F, 1);
@@ -44,8 +45,8 @@ Cost CostLib::getPositionCost() const {
     // Oriented Displacements and Integrated Theta
     VectorX delta_x = VectorX::Zero(F);
     VectorX delta_y = VectorX::Zero(F);
-    Scalar integrated_theta = robot.getSupportFootPose().rotation(2);
-    Scalar t_start = robot.walk.current_footstep_timestamp;
+    Scalar integrated_theta = feet.getSupportFootPose().rotation(2);
+    Scalar t_start = walk.current_footstep_timestamp;
     Scalar t_end;
     Pose2 displacement;
     for (int j = 0; j < F; ++j) {
@@ -53,8 +54,8 @@ Cost CostLib::getPositionCost() const {
         displacement = reference.integrateVelocity(t_start, t_end, integrated_theta);
         t_start = t_end;
         Scalar optimal_theta = footsteps.theta(j);
-        delta_x(j) = displacement.translation(0) + robot.getFootstepSign(j) * (-sin(optimal_theta)) * l;
-        delta_y(j) = displacement.translation(1) + robot.getFootstepSign(j) * (cos(optimal_theta)) * l;
+        delta_x(j) = displacement.translation(0) + feet.getFootstepSign(j) * (-sin(optimal_theta)) * l;
+        delta_y(j) = displacement.translation(1) + feet.getFootstepSign(j) * (cos(optimal_theta)) * l;
         integrated_theta = displacement.rotation;
     }
 
@@ -68,7 +69,7 @@ Cost CostLib::getPositionCost() const {
     H.block(0, 0, F, F) = Hx;
     H.block(F, F, F, F) = Hx;
 
-    Pose2 sf_pose = robot.getSupportFootPose().getPose2();
+    Pose2 sf_pose = feet.getSupportFootPose().getPose2();
     Scalar current_x = sf_pose.translation(0);
     Scalar current_y = sf_pose.translation(1);
 

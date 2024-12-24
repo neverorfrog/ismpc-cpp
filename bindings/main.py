@@ -3,7 +3,7 @@ import time
 import numpy as np
 import yaml
 from gait import Gait
-from ismpc_cpp import WalkEngine
+from ismpc_py import WalkEngine
 from omegaconf import OmegaConf
 from plotting import PlotMode, animate
 from tqdm import tqdm
@@ -28,8 +28,8 @@ with tqdm(iterations, desc="Walking...") as pbar:
     for k in pbar:
         start = time.time()
         engine.update()
-        print(engine.get_robot().state)
-        print(engine.get_robot().walk)
+        print(engine.get_state())
+        print(engine.get_walk_state())
         elapsed.append((time.time() - start) * 1000)
         pbar.set_description(f"Step: {k}, Time: {engine.get_frame_info().tk:.3f}")
 sim_data = engine.get_frame_info()

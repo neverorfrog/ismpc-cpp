@@ -1,17 +1,17 @@
-#include "modules/footsteps_plan_provider.h"
-
-#include <iostream>
+#include "ismpc_cpp/modules/footsteps_plan_provider.h"
 
 namespace ismpc {
 
-FootstepsPlanProvider::FootstepsPlanProvider(const FrameInfo& frame_info, const LipRobot& robot,
-                                             const Reference& reference, const CostLib& cost_lib,
-                                             const ConstraintLib& constraint_lib)
+FootstepsPlanProvider::FootstepsPlanProvider(const FrameInfo& frame_info, const State& state, const WalkState& walk,
+                                             const Reference& reference, const FeetLib& feet, const CostLib& cost,
+                                             const ConstraintLib& constraint)
     : frame_info(frame_info),
-      robot(robot),
+      state(state),
+      walk(walk),
       reference(reference),
-      cost_lib(cost_lib),
-      constraint_lib(constraint_lib) {}
+      feet(feet),
+      cost(cost),
+      constraint(constraint) {}
 
 void FootstepsPlanProvider::update(FootstepsPlan& footsteps) {
     computeTiming(footsteps);
@@ -25,7 +25,7 @@ void FootstepsPlanProvider::computeTiming(FootstepsPlan& footsteps) {
     std::vector<Scalar> timestamps_for_zmp_midpoints;
 
     Scalar V = reference.getVelocityModule();
-    Scalar current_footstep_timestamp = robot.walk.current_footstep_timestamp;
+    Scalar current_footstep_timestamp = walk.current_footstep_timestamp;
     Scalar expected_duration = T_bar * (alpha + v_bar) / (alpha + V);
     Scalar time_of_next_step = current_footstep_timestamp + expected_duration;
     while (time_of_next_step <= frame_info.tk + T_p) {
@@ -58,14 +58,15 @@ void FootstepsPlanProvider::computeThetaSequence(FootstepsPlan& footsteps) {
     theta_qp.settings.verbose = false;
 
     // Cost
-    Cost cost = cost_lib.getThetaCost();
+    Cost theta_cost = cost.getThetaCost();
 
     // Inequality constraint matrix
-    InequalityConstraint theta_constraint = constraint_lib.getThetaConstraint();
+    InequalityConstraint theta_constraint = constraint.getThetaConstraint();
 
     // Solving the optimization problem
     theta_qp.work.timer.start();
-    theta_qp.init(cost.H, cost.g, nullopt, nullopt, theta_constraint.C, theta_constraint.l, theta_constraint.u);
+    theta_qp.init(theta_cost.H, theta_cost.g, nullopt, nullopt, theta_constraint.C, theta_constraint.l,
+                  theta_constraint.u);
     theta_qp.solve();
     theta_qp.work.timer.stop();
     footsteps.total_planner_qp_duration += theta_qp.work.timer.elapsed().user;
@@ -84,14 +85,14 @@ void FootstepsPlanProvider::computePositionSequence(FootstepsPlan& footsteps) {
     position_qp.settings.verbose = false;
 
     // Cost
-    Cost cost = cost_lib.getPositionCost();
+    Cost pos_cost = cost.getPositionCost();
 
     // Inequality constraint matrix
-    InequalityConstraint kinematic_constraint = constraint_lib.getKinematicConstraint(F);
+    InequalityConstraint kinematic_constraint = constraint.getKinematicConstraint(F);
 
     // Solving the optimization problem
     position_qp.work.timer.start();
-    position_qp.init(cost.H, cost.g, nullopt, nullopt, kinematic_constraint.C, kinematic_constraint.l,
+    position_qp.init(pos_cost.H, pos_cost.g, nullopt, nullopt, kinematic_constraint.C, kinematic_constraint.l,
                      kinematic_constraint.u);
     position_qp.solve();
     position_qp.work.timer.stop();
@@ -105,11 +106,11 @@ void FootstepsPlanProvider::computePositionSequence(FootstepsPlan& footsteps) {
 void FootstepsPlanProvider::computeZmpMidpoints(FootstepsPlan& footsteps) {
     int j = 0;
     Scalar t = frame_info.tk;
-    Scalar t_start = robot.walk.current_footstep_timestamp;
+    Scalar t_start = walk.current_footstep_timestamp;
     Scalar t_end = footsteps.timestamps_for_zmp_midpoints[0];
 
-    Vector3 current_support_foot_pose = robot.getSupportFootPose().getPose2().getVector();
-    Vector3 previous_support_foot_pose = robot.walk.previous_support_foot_pose.getVector();
+    Vector3 current_support_foot_pose = feet.getSupportFootPose().getPose2().getVector();
+    Vector3 previous_support_foot_pose = walk.previous_support_foot_pose.getVector();
 
     for (int i = 0; i < numP; ++i) {
         footsteps.footstep_indices.push_back(j);
