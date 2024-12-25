@@ -80,6 +80,18 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(proxsuite)
 
+# WEBOTS
+include(ExternalProject)
+ExternalProject_Add(
+  webots
+  SOURCE_DIR /home/neverorfrog/code/webots # Replace with the actual path to your cloned Webots repository
+  DOWNLOAD_COMMAND ""
+  CONFIGURE_COMMAND "" # Skip the configure step since Webots doesn't use CMake
+  BUILD_COMMAND make -j -C <SOURCE_DIR> # Adjust the build command as needed
+  BUILD_IN_SOURCE true
+  INSTALL_COMMAND "" # Define if there's an install step; leave empty if not applicable
+)
+
 # ============================ ISMPC LIBRARY ==================================================
 set(ISMPC_CPP_EXTRA_LIBRARIES
   $<BUILD_INTERFACE:cxx_setup>
@@ -173,4 +185,8 @@ endif()
 # ============================ EXECUTABLES ====================================================
 add_executable(ismpc_main ${CMAKE_CURRENT_SOURCE_DIR}/src/cppmain.cpp)
 target_link_libraries(ismpc_main PRIVATE ${ISMPC_CPP_LIBRARY})
+
+# link_libraries("/home/neverorfrog/code/webots/lib/controller/libCppController.so")
+include_directories("/home/neverorfrog/code/webots/include/controller/cpp")
+add_executable(webots_main ${CMAKE_CURRENT_SOURCE_DIR}/src/webotsmain.cpp)
 # =============================================================================================

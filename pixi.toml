@@ -1,4 +1,4 @@
-[project]
+[workspace]
 authors = ["neverorfrog <97flavio.maiorana@gmail.com>"]
 channels = ["conda-forge"]
 description = "Add a short description here"
@@ -7,21 +7,22 @@ platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
-build-cpp = 'mkdir -p build && cd build && cmake .. && cmake --build . -j12'
-main-cpp = './build/executables/ismpc_main'
+cpp-build = 'mkdir -p build && cd build && cmake .. && cmake --build . -j12'
+cpp-main = './build/executables/ismpc_main'
 build = 'python setup.py build_ext --cmake-args="-DBUILD_ROS=OFF"'
 install = 'python setup.py install'
 main = "python bindings/main.py"
-build-ros = 'python setup.py build_ext --cmake-args="-DBUILD_ROS=ON"'
+ros-build = 'python setup.py build_ext --cmake-args="-DBUILD_ROS=ON"'
+webots-main = "./build/executables/webots_main"
 
 [dependencies]
 python = "==3.11"
 matplotlib = ">=3.9.3,<4"
-pyyaml = ">=6.0.2,<7"
-omegaconf = ">=2.3.0,<3"
-numpy = ">=2.2.0,<3"
 tqdm = ">=4.67.1,<5"
 setuptools = ">=75.6.0,<76"
 
 [pypi-dependencies]
 catkin-pkg = ">=1.0.0, <2"
+
+[activation]
+env = { LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:$CONDA_PREFIX/lib" } # needed to find libraries from cmake
