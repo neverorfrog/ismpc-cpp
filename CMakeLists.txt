@@ -19,12 +19,13 @@ if(CMAKE_CXX_COMPILER_LOADED)
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/executables")
+
 # =============================================================================================
 
 # ============================ BUILD OPTIONS ==================================================
 option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_PYTHON_BINDINGS "Build python bindings" OFF)
-option(BUILD_ROS "Build ros package" OFF)
+option(BUILD_ROS "Build ros package" ON)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
@@ -36,6 +37,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+
 # =============================================================================================
 
 # ============================ UTILITY STUFF ==================================================
@@ -56,6 +58,7 @@ configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/include/ismpc_cpp/tools/systemvars.h
   @ONLY
 )
+
 # =============================================================================================
 
 # ============================ EXTERNAL LIBRARIES =============================================
@@ -79,6 +82,7 @@ FetchContent_Declare(
   GIT_TAG main
 )
 FetchContent_MakeAvailable(proxsuite)
+
 # =============================================================================================
 
 # ============================ ISMPC LIBRARY ==================================================
@@ -93,49 +97,40 @@ file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_library(${ISMPC_CPP_LIBRARY} STATIC ${ISMPC_SRCS})
 target_include_directories(${ISMPC_CPP_LIBRARY}
   PUBLIC
-    $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include>
-    ${EIGEN_INCLUDE_DIR}
+  $<INSTALL_INTERFACE:include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include>
+  ${EIGEN_INCLUDE_DIR}
 )
 target_link_libraries(${ISMPC_CPP_LIBRARY} PUBLIC ${ISMPC_CPP_EXTRA_LIBRARIES})
 
 if(BUILD_ROS)
   find_package(ament_cmake REQUIRED)
-  if ( ament_cmake_FOUND )
-    add_definitions( -DUSING_ROS2 )
-    message(STATUS "------------------------------------------")
-    message(STATUS "ismpc_cpp is being built using AMENT.")
-    message(STATUS "------------------------------------------")
-    set(CMAKE_CONFIG_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
-    list(APPEND CMAKE_MODULE_PATH ${CMAKE_CONFIG_PATH})
+  add_definitions(-DUSING_ROS2)
+  message(STATUS "------------------------------------------")
+  message(STATUS "ismpc_cpp is being built using AMENT.")
+  message(STATUS "------------------------------------------")
+  set(CMAKE_CONFIG_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CONFIG_PATH})
 
-    find_package(ament_index_cpp REQUIRED)
-    list( APPEND ISMPC_CPP_EXTRA_LIBRARIES $<BUILD_INTERFACE:ament_index_cpp::ament_index_cpp>)
-    ament_export_dependencies(ament_index_cpp)
-    ament_export_dependencies(yaml-cpp)
+  find_package(ament_index_cpp REQUIRED)
+  list(APPEND ISMPC_CPP_EXTRA_LIBRARIES $<BUILD_INTERFACE:ament_index_cpp::ament_index_cpp>)
+  ament_export_dependencies(ament_index_cpp)
+  ament_export_dependencies(yaml-cpp)
 
-    set( ISMPC_CPP_LIB_DESTINATION lib )
-    set( ISMPC_CPP_INCLUDE_DESTINATION include )
-    set( ISMPC_CPP_BIN_DESTINATION bin )
+  set(ISMPC_CPP_LIB_DESTINATION lib)
+  set(ISMPC_CPP_INCLUDE_DESTINATION include)
+  set(ISMPC_CPP_BIN_DESTINATION bin)
 
-    mark_as_advanced(
-      ISMPC_CPP_EXTRA_LIBRARIES
-      ISMPC_CPP_LIB_DESTINATION
-      ISMPC_CPP_INCLUDE_DESTINATION
-      ISMPC_CPP_BIN_DESTINATION
-    )
+  mark_as_advanced(
+    ISMPC_CPP_EXTRA_LIBRARIES
+    ISMPC_CPP_LIB_DESTINATION
+    ISMPC_CPP_INCLUDE_DESTINATION
+    ISMPC_CPP_BIN_DESTINATION
+  )
 
-    macro(export_ismpc_cpp_package)
-      ament_export_include_directories(include)
-      ament_export_libraries(${ISMPC_CPP_LIBRARY})
-      ament_export_targets(${ISMPC_CPP_LIBRARY}Targets)
-      ament_package()
-    endmacro()
-  endif()
-
-  INSTALL(
+  install(
     TARGETS ${ISMPC_CPP_LIBRARY}
     EXPORT ${ISMPC_CPP_LIBRARY}Targets
     ARCHIVE DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
@@ -144,34 +139,46 @@ if(BUILD_ROS)
     INCLUDES DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
   )
 
-  INSTALL(
-      DIRECTORY
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/
-        $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include/proxsuite>
-        ${EIGEN_INCLUDE_DIR}
-        $<BUILD_INTERFACE:${nanobind_SOURCE_DIR}/include/nanobind>
-        $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include/yaml-cpp>
-      DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
-      FILES_MATCHING PATTERN "*.h*"
+  install(
+    DIRECTORY
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include/proxsuite>
+    ${EIGEN_INCLUDE_DIR}
+    $<BUILD_INTERFACE:${nanobind_SOURCE_DIR}/include/nanobind>
+    $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include/yaml-cpp>
+    DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.h*"
   )
 
-  export_ismpc_cpp_package()
+  install(
+    DIRECTORY include/
+    DESTINATION include
+  )
+
+  ament_export_include_directories(include)
+  ament_export_libraries(${ISMPC_CPP_LIBRARY})
+  ament_export_targets(${ISMPC_CPP_LIBRARY}Targets HAS_LIBRARY_TARGET)
+  ament_package()
 endif()
+
 # =============================================================================================
 
 # ============================ PYTHON BINDINGS =================================================
 if(BUILD_PYTHON_BINDINGS)
   add_subdirectory(bindings)
 endif()
+
 # =============================================================================================
 
 # =========================== GOOGLE TEST =====================================================
 if(BUILD_TESTS)
   add_subdirectory(test)
 endif()
+
 # =============================================================================================
 
 # ============================ EXECUTABLES ====================================================
 add_executable(ismpc_main ${CMAKE_CURRENT_SOURCE_DIR}/src/cppmain.cpp)
 target_link_libraries(ismpc_main PRIVATE ${ISMPC_CPP_LIBRARY})
+
 # =============================================================================================
