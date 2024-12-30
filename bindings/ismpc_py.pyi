@@ -72,14 +72,13 @@ class Reference:
     def get_velocity(
         self,
     ) -> Annotated[ArrayLike, dict(dtype="float64", shape=(3), order="C")]: ...
-    def get_trajectory(
-        self,
-    ) -> Annotated[ArrayLike, dict(dtype="float64", shape=(None, None), order="F")]: ...
 
 class State:
     def __init__(self) -> None: ...
     @property
-    def com(self) -> EndEffector: ...
+    def com_pos(
+        self,
+    ) -> Annotated[ArrayLike, dict(dtype="float64", shape=(3), order="C")]: ...
     @property
     def zmp_pos(
         self,

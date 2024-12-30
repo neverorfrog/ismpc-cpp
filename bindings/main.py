@@ -35,4 +35,4 @@ with tqdm(iterations, desc="Walking...") as pbar:
 sim_data = engine.get_frame_info()
 print(f"Average elapsed time: {np.mean(elapsed):.3f} ms")
 print("Current time: ", sim_data.tk)
-animate(Gait(engine), config, robot_config, save=False, plot_mode=PlotMode.TWO_D)
+animate(Gait(engine), config, robot_config, save=False, plot_mode=PlotMode.THREE_D)

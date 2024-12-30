@@ -11,7 +11,6 @@ WalkEngine::WalkEngine()
       feet(state, walk),
       cost(reference, footsteps, feet, walk),
       constraint(footsteps, feet),
-      reference_provider(frame_info, state),
       planner(frame_info, state, walk, reference, feet, cost, constraint),
       walk_state_provider(frame_info, state, walk, feet, footsteps),
       swing_foot_provider(frame_info, walk, feet, footsteps),
@@ -24,7 +23,6 @@ void WalkEngine::update_time() {
 
 void WalkEngine::update() {
     auto start = std::chrono::high_resolution_clock::now();
-    reference_provider.update(reference);
     planner.update(footsteps);
     walk_state_provider.update(walk);
     swing_foot_provider.update(state);

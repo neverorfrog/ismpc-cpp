@@ -8,7 +8,7 @@ State::State() {
 
     Scalar com_x = left_foot_x + 0.5 * (right_foot_x - left_foot_x);
     Scalar com_y = left_foot_y + 0.5 * (right_foot_y - left_foot_y);
-    com.pose.translation << com_x, com_y, h;
+    com_pos << com_x, com_y, h;
 
     zmp_pos << com_x, com_y, 0;
     zmp_vel << 0, 0, 0;
@@ -21,13 +21,13 @@ State::State() {
 
 const Vector3 State::getLipx() const {
     Vector3 lip_x{};
-    lip_x << com.pose.translation(0), com.vel(0), zmp_pos(0);
+    lip_x << com_pos(0), com_vel(0), zmp_pos(0);
     return lip_x;
 }
 
 const Vector3 State::getLipy() const {
     Vector3 lip_y{};
-    lip_y << com.pose.translation(1), com.vel(1), zmp_pos(1);
+    lip_y << com_pos(1), com_vel(1), zmp_pos(1);
     return lip_y;
 }
 
@@ -43,7 +43,9 @@ const Vector3 State::getNextLipy(Scalar ydz) const {
 
 std::string State::toString() const {
     std::ostringstream oss;
-    oss << "Center of Mass: \n" << com.toString() << std::endl;
+    oss << "COM Position: \n" << com_pos.transpose() << std::endl;
+    oss << "COM Velocity: \n" << com_vel.transpose() << std::endl;
+    oss << "COM Acceleration: \n" << com_acc.transpose() << std::endl;
     oss << "ZMP Position: " << zmp_pos.transpose() << std::endl;
     oss << "ZMP Velocity: " << zmp_vel.transpose() << std::endl;
     oss << "Left Foot: \n" << left_foot.toString() << std::endl;

@@ -17,22 +17,11 @@ Scalar Reference::getVelocityModule() const {
     return std::sqrt(std::pow(velocity.vx, 2) + std::pow(velocity.vy, 2));
 }
 
-Trajectory Reference::get_trajectory() const {
-    return trajectory;
-}
-
 void Reference::set_velocity(Scalar vx, Scalar vy, Scalar omega) {
     velocity.vx = vx;
     velocity.vy = vy;
     velocity.omega = omega;
     velocity.vector << vx, vy, omega;
-}
-
-void Reference::set_trajectory(Matrix traj) {
-    trajectory.matrix = traj;
-    trajectory.x = traj.row(0);
-    trajectory.y = traj.row(1);
-    trajectory.theta = traj.row(2);
 }
 
 Scalar Reference::integrateOmega(Scalar start, Scalar end) const {

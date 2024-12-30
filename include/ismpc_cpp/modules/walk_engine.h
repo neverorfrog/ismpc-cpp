@@ -31,7 +31,6 @@ class WalkEngine {
     ConstraintLib constraint;
 
     // Modules
-    ReferenceProvider reference_provider;
     FootstepsPlanProvider planner;
     WalkStateProvider walk_state_provider;
     SwingFootProvider swing_foot_provider;

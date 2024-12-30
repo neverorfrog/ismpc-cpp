@@ -60,17 +60,6 @@ class FeetLib {
      */
     const Pose3& getSwingFootPose() const;
 
-    /**
-     * @brief Get the Rel Com Pose
-     * @return Pose3
-     */
-    Pose3 getRelComPose() const;
-
-    /**
-     * @brief Get the Rel Swing Foot Pose
-     * @return Pose3
-     */
-    Pose3 getRelSwingFootPose() const;
 };
 
 }  // namespace ismpc

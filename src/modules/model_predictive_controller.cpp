@@ -84,11 +84,11 @@ void ModelPredictiveController::update(State& state) {
     // Integrate the lip velocities
     Vector3 predicted_x = state.getNextLipx(Xdz(0));
     Vector3 predicted_y = state.getNextLipy(Ydz(0));
-    state.com.pose.translation << predicted_x(0), predicted_y(0), RobotConfig::h;
-    state.com.vel << predicted_x(1), predicted_y(1), 0;
+    state.com_pos << predicted_x(0), predicted_y(0), RobotConfig::h;
+    state.com_vel << predicted_x(1), predicted_y(1), 0;
     state.zmp_pos << predicted_x(2), predicted_y(2), 0;
     state.zmp_vel << Xdz(0), Ydz(0), 0;
-    state.com.acc = (RobotConfig::eta * RobotConfig::eta) * (state.com.pose.translation - state.zmp_pos);
+    state.com_acc = (RobotConfig::eta * RobotConfig::eta) * (state.com_pos - state.zmp_pos);
     auto end = std::chrono::high_resolution_clock::now();
     total_mpc_postprocessing_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     // ==================================================

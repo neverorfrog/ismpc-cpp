@@ -1,7 +1,5 @@
 #include "ismpc_cpp/modules/swing_foot_provider.h"
 
-#include "ismpc_cpp/representations/walk_state.h"
-
 namespace ismpc {
 
 SwingFootProvider::SwingFootProvider(const FrameInfo& frame_info, const WalkState& walk, const FeetLib& feet,
@@ -9,41 +7,41 @@ SwingFootProvider::SwingFootProvider(const FrameInfo& frame_info, const WalkStat
     : frame_info(frame_info), walk(walk), feet(feet), footsteps(footsteps) {}
 
 void SwingFootProvider::update(State& state) {
-    EndEffector swing_foot{};
+    EndEffector swing_foot = feet.getSwingFoot();
 
     if (walk.support_phase == SupportPhase::DOUBLE) {
-        swing_foot.vel << 0, 0, 0;
-        swing_foot.acc << 0, 0, 0;
+        swing_foot.lin_vel << 0, 0, 0;
+        swing_foot.lin_acc << 0, 0, 0;
+        swing_foot.ang_vel << 0, 0, 0;
+        swing_foot.ang_acc << 0, 0, 0;
     } else if (walk.support_phase == SupportPhase::SINGLE) {
-        const Pose2& start_pose = walk.previous_support_foot_pose;
-        const Pose2& end_pose = walk.next_support_foot_pose;
-        const Vector2& start_pos = start_pose.translation;
-        const Vector2& end_pos = end_pose.translation;
-        const Scalar& start_theta = start_pose.rotation;
-        const Scalar& end_theta = end_pose.rotation;
+        Vector2 start_pos = walk.previous_support_foot_pose.translation;
+        Vector2 end_pos = walk.next_support_foot_pose.translation;
+        Vector2 step = end_pos - start_pos;
+        Scalar start_theta = walk.previous_support_foot_pose.rotation;
+        Scalar end_theta = walk.next_support_foot_pose.rotation;
 
         Scalar ss_duration = (walk.next_footstep_timestamp - walk.current_footstep_timestamp) * ss_percentage;
         Scalar ds_duration = (walk.next_footstep_timestamp - walk.current_footstep_timestamp) * ds_percentage;
-        Scalar step_completion = (frame_info.tk - (walk.current_footstep_timestamp + ds_duration)) / (ss_duration);
+        Scalar time_in_step = (frame_info.tk - (walk.current_footstep_timestamp + ds_duration)) / (ss_duration);
 
-        Vector2 desired_pos = start_pos + (end_pos - start_pos) * cubic(step_completion);
-        Scalar desired_theta = start_theta + (end_theta - start_theta) * cubic(step_completion);
+        // 2D Pose with cubic polynomial interpolation
+        Vector2 desired_pos = start_pos + step * cubic(time_in_step);
+        Scalar desired_theta = start_theta + (end_theta - start_theta) * cubic(time_in_step);
         swing_foot.pose = Pose3(RotationMatrix::aroundZ(desired_theta), Vector3(desired_pos(0), desired_pos(1), 0));
-        swing_foot.vel.segment(0, 2) = (end_pos - start_pos) * cubic_dot(step_completion) / ss_duration;
-        swing_foot.acc.segment(0, 2) =
-            (end_pos - start_pos) * cubic_ddot(step_completion) / (ss_duration * ss_duration);
 
-        // Compute the desired swing foot position (z)
-        if (step_completion <= 0.5) {
-            swing_foot.pose.translation(2) += cubic(2 * step_completion) * step_height;
-            swing_foot.vel(2) += cubic_dot(step_completion * 2) * step_height * 2 / ss_duration;
-            swing_foot.acc(2) += cubic_ddot(step_completion * 2) * step_height * 4 / (ss_duration * ss_duration);
-        } else if (step_completion > 0.5) {
-            swing_foot.pose.translation(2) += step_height - cubic(2 * (step_completion - 0.5)) * step_height;
-            swing_foot.vel(2) += -cubic_dot((step_completion - 0.5) * 2.0) * step_height * 2 / ss_duration;
-            swing_foot.acc(2) +=
-                -cubic_ddot((step_completion - 0.5) * 2.0) * step_height * 4 / (ss_duration * ss_duration);
-        }
+        // Linear Velocity with cubic polynomial interpolation
+        swing_foot.lin_vel.segment(0, 2) = step * cubic_dot(time_in_step) / ss_duration;
+        swing_foot.lin_acc.segment(0, 2) = step * cubic_ddot(time_in_step) / (std::pow(ss_duration, 2));
+
+        // Angular Velocity with cubic polynomial interpolation
+        swing_foot.ang_vel(2) = (end_theta - start_theta) * cubic_dot(time_in_step) / ss_duration;
+        swing_foot.ang_acc(2) = (end_theta - start_theta) * cubic_ddot(time_in_step) / (ss_duration * ss_duration);
+
+        // Height with quartic polynomial interpolation
+        swing_foot.pose.translation(2) = step_height * quartic(time_in_step);
+        swing_foot.lin_vel(2) = step_height * quartic_dot(time_in_step) / ss_duration;
+        swing_foot.lin_acc(2) = step_height * quartic_ddot(time_in_step) / (ss_duration * ss_duration);
     }
 
     feet.setSwingFoot(swing_foot, state);

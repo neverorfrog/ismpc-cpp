@@ -13,7 +13,9 @@ namespace ismpc {
 struct State {
     EndEffector left_foot{};
     EndEffector right_foot{};
-    EndEffector com{};
+    Vector3 com_pos{};
+    Vector3 com_vel{};
+    Vector3 com_acc{};
     Vector3 zmp_pos{};
     Vector3 zmp_vel{};
 

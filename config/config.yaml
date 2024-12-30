@@ -1,21 +1,21 @@
 save_log: false
 
 # Time step for simulation [s]
-delta: 0.01
+delta: 0.02
 
 # Duration parameters
 N: 1000
-P: 150
-C: 50
+P: 100
+C: 40
 W: 100 # iterations to wait before starting
 
 # Which robot to simulate
-robot: nao
+robot: hrp4
 
 # Input Velocities
-des_vel_x: 0.1 # [m/s]
+des_vel_x: 0.2 # [m/s]
 des_vel_y: 0 # [m/s]
 des_omega: 0 # [rad/s]
 
 # Tail: PERIODIC, TRUNCATED, or ANTICIPATIVE
-tail_type: ANTICIPATIVE
+tail_type: PERIODIC

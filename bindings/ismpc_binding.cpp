@@ -31,8 +31,10 @@ NB_MODULE(ismpc_py, m) {
     nb::class_<EndEffector>(m, "EndEffector")
         .def(nb::init<>())
         .def_ro("pose", &EndEffector::pose)
-        .def_ro("vel", &EndEffector::vel)
-        .def_ro("acc", &EndEffector::acc)
+        .def_ro("lin_vel", &EndEffector::lin_vel)
+        .def_ro("ang_vel", &EndEffector::ang_vel)
+        .def_ro("lin_acc", &EndEffector::lin_acc)
+        .def_ro("ang_acc", &EndEffector::ang_acc)
         .def("__str__", &EndEffector::toString);
 
     nb::class_<Pose2>(m, "Pose2")
@@ -47,7 +49,9 @@ NB_MODULE(ismpc_py, m) {
 
     nb::class_<State>(m, "State")
         .def(nb::init<>())
-        .def_ro("com", &State::com)
+        .def_ro("com_pos", &State::com_pos)
+        .def_ro("com_vel", &State::com_vel)
+        .def_ro("com_acc", &State::com_acc)
         .def_ro("zmp_pos", &State::zmp_pos)
         .def_ro("zmp_vel", &State::zmp_vel)
         .def_ro("left_foot", &State::left_foot)
@@ -71,8 +75,7 @@ NB_MODULE(ismpc_py, m) {
 
     nb::class_<Reference>(m, "Reference")
         .def(nb::init<>())
-        .def("get_velocity", [](Reference &ref) { return ref.get_velocity().vector; })
-        .def("get_trajectory", [](Reference &ref) { return ref.get_trajectory().matrix; });
+        .def("get_velocity", [](Reference &ref) { return ref.get_velocity().vector; });
 
     nb::class_<FrameInfo>(m, "FrameInfo").def(nb::init<>()).def_ro("tk", &FrameInfo::tk).def_ro("k", &FrameInfo::k);
 };

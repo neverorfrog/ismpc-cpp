@@ -30,7 +30,7 @@ class Gait:
         left_foot_traj = np.ndarray(shape=(3, len(history)), dtype=float)
         right_foot_traj = np.ndarray(shape=(3, len(history)), dtype=float)
         for i, state in enumerate(history):
-            com_traj[:, i] = state.com.pose.translation
+            com_traj[:, i] = state.com_pos
             zmp_traj[:, i] = state.zmp_pos
             left_foot_traj[:, i] = state.left_foot.pose.translation
             right_foot_traj[:, i] = state.right_foot.pose.translation

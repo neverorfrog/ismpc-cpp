@@ -40,12 +40,4 @@ const Pose3& FeetLib::getSwingFootPose() const {
     return getSwingFoot().pose;
 }
 
-Pose3 FeetLib::getRelComPose() const {
-    return state.com.pose.relativeTo(getSupportFootPose());
-}
-
-Pose3 FeetLib::getRelSwingFootPose() const {
-    return getSwingFootPose().relativeTo(getSupportFootPose());
-}
-
 }  // namespace ismpc
