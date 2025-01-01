@@ -40,7 +40,7 @@ zmp_vx_max: 5.0
 zmp_vy_max: 5.0
 
 # Timing Stuff
-ds_percentage: 0.4 # percentage of the entire step time
+ds_percentage: 0.3 # percentage of the entire step time
 
 task_gain:
   torso_orientation:

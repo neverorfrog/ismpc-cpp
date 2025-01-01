@@ -7,7 +7,9 @@
 #include <dart/utils/urdf/urdf.hpp>
 #include <dart/utils/utils.hpp>
 
+#include "ismpc_cpp/dart/kalman_filter.h"
 #include "ismpc_cpp/dart/simulated_robot.h"
+#include "ismpc_cpp/dart/state_provider.h"
 #include "ismpc_cpp/modules/walk_engine.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/debug.h"
@@ -17,8 +19,14 @@ namespace ismpc {
 
 class Controller : public dart::gui::osg::WorldNode {
    private:
+    // representations
     SimulatedRobot robot;
     dart::simulation::WorldPtr world;
+
+    // modules
+    WalkEngine walk_engine;
+    StateProvider state_provider;
+    KalmanFilter kalman_filter;
 
     // Stuff for drawing
     dart::dynamics::SimpleFramePtr com, desired_com, zmp;
@@ -50,7 +58,6 @@ class Controller : public dart::gui::osg::WorldNode {
 
     // Time related stuff
     Scalar total_elapsed_time = 0;
-
 };
 
 }  // namespace ismpc
