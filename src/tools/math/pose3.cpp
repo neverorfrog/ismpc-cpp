@@ -76,6 +76,12 @@ Pose3& Pose3::operator*=(const RotationMatrix& rot) {
     return *this;
 }
 
+Pose3 Pose3::operator-(const Pose3& other) const {
+    Vector3 translation = this->translation - other.translation;
+    RotationMatrix rotation = this->rotation.inverse() * other.rotation;
+    return Pose3(rotation, translation);
+}
+
 Pose3& Pose3::conc(const Pose3& other) {
     return *this *= other;
 }
@@ -137,12 +143,10 @@ Pose2 Pose3::getPose2() const {
 }
 
 Vector6 Pose3::getVector() const {
-    Vector6 pose{};
-    pose(0) = rotation.getXAngle();
-    pose(1) = rotation.getYAngle();
-    pose(2) = rotation.getZAngle();
-    pose.segment(3, 3) = translation;
-    return pose;
+    Vector6 pose_vector{};
+    pose_vector.segment(0, 3) = translation;
+    pose_vector.segment(3, 3) = rotation.getRPY();
+    return pose_vector;
 }
 
 Pose3 Pose3::relativeTo(const Pose3& other) const {

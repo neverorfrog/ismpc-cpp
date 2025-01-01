@@ -7,21 +7,26 @@ platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
-build-cpp = 'mkdir -p build && cd build && cmake .. && cmake --build . -j12'
-main-cpp = './build/executables/ismpc_main'
-build = 'python setup.py build_ext --cmake-args="-DBUILD_ROS=OFF"'
-install = 'python setup.py install'
-main = "python bindings/main.py"
-build-ros = 'python setup.py build_ext --cmake-args="-DBUILD_ROS=ON"'
+cpp-build = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . -j12'
+cpp-build-debug = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j12'
+cpp-main = './build/executables/ismpc_main'
+py-build = 'python setup.py build_ext --cmake-args="-DBUILD_ROS=OFF"'
+py-install = 'python setup.py install'
+py-main = "python bindings/main.py"
+ros-build = 'mkdir -p build && cd build && cmake .. -DBUILD_ROS=ON && cmake --build . -j12'
+dart-build = 'mkdir -p build && cd build && cmake .. -DBUILD_DART=ON && cmake --build . -j12'
+dart-main = "./build/executables/dart_main"
 
 [dependencies]
 python = "==3.11"
 matplotlib = ">=3.9.3,<4"
-pyyaml = ">=6.0.2,<7"
-omegaconf = ">=2.3.0,<3"
-numpy = ">=2.2.0,<3"
 tqdm = ">=4.67.1,<5"
 setuptools = ">=75.6.0,<76"
 
 [pypi-dependencies]
 catkin-pkg = ">=1.0.0, <2"
+pyyaml = ">=6.0.2, <7"
+omegaconf = ">=2.3.0, <3"
+
+[activation]
+env = { LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:$CONDA_PREFIX/lib" } # needed to find libraries from cmake

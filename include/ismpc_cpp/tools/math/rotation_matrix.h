@@ -41,6 +41,8 @@ class RotationMatrix : public Matrix3 {
 
     Vector3 getRPY() const;
 
+    Quaternion getQuaternion() const;
+
     static RotationMatrix aroundX(const Scalar angle);
     static RotationMatrix aroundY(const Scalar angle);
     static RotationMatrix aroundZ(const Scalar angle);

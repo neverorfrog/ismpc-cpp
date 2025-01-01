@@ -14,7 +14,7 @@ ModelPredictiveController::ModelPredictiveController(const FrameInfo& frame_info
       cost(cost),
       constraint(constraint) {}
 
-void ModelPredictiveController::update(State& state) {
+void ModelPredictiveController::update(State& desired_state) {
     // ================== PREPROCESSING ==================
     start = std::chrono::high_resolution_clock::now();
     // State related stuff
@@ -74,7 +74,6 @@ void ModelPredictiveController::update(State& state) {
     // =============================================
 
     // ================== POSTPROCESSING ==================
-    auto start = std::chrono::high_resolution_clock::now();
     // Extract the solution
     Xdz = qp.results.x.segment(0, numC);
     Ydz = qp.results.x.segment(numC, numC);
@@ -84,13 +83,14 @@ void ModelPredictiveController::update(State& state) {
     // Integrate the lip velocities
     Vector3 predicted_x = state.getNextLipx(Xdz(0));
     Vector3 predicted_y = state.getNextLipy(Ydz(0));
-    state.com_pos << predicted_x(0), predicted_y(0), RobotConfig::h;
-    state.com_vel << predicted_x(1), predicted_y(1), 0;
-    state.zmp_pos << predicted_x(2), predicted_y(2), 0;
-    state.zmp_vel << Xdz(0), Ydz(0), 0;
-    state.com_acc = (RobotConfig::eta * RobotConfig::eta) * (state.com_pos - state.zmp_pos);
-    auto end = std::chrono::high_resolution_clock::now();
-    total_mpc_postprocessing_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+    // Set desired state
+    desired_state.com_pos << predicted_x(0), predicted_y(0), RobotConfig::h;
+    desired_state.com_vel << predicted_x(1), predicted_y(1), 0.0;
+    desired_state.zmp_pos << predicted_x(2), predicted_y(2), 0.0;
+    desired_state.zmp_vel << Xdz(0), Ydz(0), 0.0;
+    desired_state.com_acc = (RobotConfig::eta * RobotConfig::eta) * (state.com_pos - state.zmp_pos);
+    desired_state.com_acc(2) = 0.0;
     // ==================================================
 }
 

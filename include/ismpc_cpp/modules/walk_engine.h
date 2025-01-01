@@ -23,6 +23,7 @@ class WalkEngine {
     Reference reference;
     FootstepsPlan footsteps;
     State state;
+    State desired_state;
     WalkState walk;
 
     // Libraries (Act as representations for modules, are in fact modules without an update)
@@ -44,7 +45,7 @@ class WalkEngine {
      * desired zmp velocity to be tracked by the com through the intrinsically stable mpc algorithm
      *
      */
-    void update();
+    void update(State& desired_state);
 
     /**
      * @brief Updates time information (needed for the python binding)
@@ -66,6 +67,8 @@ class WalkEngine {
     const Reference& get_reference() const;
     const FrameInfo& get_frame_info() const;
     const State& get_state() const;
+    void set_state(const State& state);
+    State& get_desired_state();
     const WalkState& get_walk_state() const;
     const std::vector<State>& get_history() const;
     const std::vector<WalkState>& get_walk_history() const;

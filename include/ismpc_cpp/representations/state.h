@@ -13,6 +13,9 @@ namespace ismpc {
 struct State {
     EndEffector left_foot{};
     EndEffector right_foot{};
+    EndEffector torso{};
+    EndEffector base{};  // TODO ??????????
+
     Vector3 com_pos{};
     Vector3 com_vel{};
     Vector3 com_acc{};
@@ -43,32 +46,34 @@ struct State {
     /**
      * @brief Get the LIP state in the x-direction
      *
-     * @return const Vector3
+     * @return Vector3
      */
-    const Vector3 getLipx() const;
+    Vector3 getLipx() const;
 
     /**
      * @brief Get the LIP state in the y-direction
      *
-     * @return const Vector3
+     * @return Vector3
      */
-    const Vector3 getLipy() const;
+    Vector3 getLipy() const;
+
+    Vector6 getLipState() const;
 
     /**
      * @brief Get the next LIP state in the x-direction
      *
      * @param xdz The velocity in the x-direction
-     * @return const Vector3
+     * @return Vector3
      */
-    const Vector3 getNextLipx(Scalar xdz) const;
+    Vector3 getNextLipx(Scalar xdz) const;
 
     /**
      * @brief Get the next LIP state in the y-direction
      *
      * @param ydz The velocity in the y-direction
-     * @return const Vector3
+     * @return Vector3
      */
-    const Vector3 getNextLipy(Scalar ydz) const;
+    Vector3 getNextLipy(Scalar ydz) const;
 
     /**
      * @brief Convert the state to a string representation

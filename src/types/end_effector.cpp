@@ -4,6 +4,18 @@ namespace ismpc {
 
 EndEffector::EndEffector(const Vector3& translation) : pose(translation) {}
 
+Vector6 EndEffector::getVelocity() const {
+    Vector6 vel{};
+    vel << lin_vel, ang_vel;
+    return vel;
+}
+
+Vector6 EndEffector::getAcceleration() const {
+    Vector6 acc{};
+    acc << lin_acc, ang_acc;
+    return acc;
+}
+
 std::string EndEffector::toString() const {
     std::ostringstream oss;
     oss << "\n" << pose << std::endl;

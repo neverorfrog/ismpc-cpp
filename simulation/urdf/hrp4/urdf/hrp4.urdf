@@ -9,7 +9,6 @@
    FIXME: fill missing data: sole, gripper and sensors
   -->
 <robot name="hrp4" xmlns:xacro="http://ros.org/wiki/xacro">
-  <link name="base_link"/>
   <link name="body">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0215609 0.00145914 0.14111505"/>
@@ -145,12 +144,17 @@
   </link>
 
   <link name="r_sole">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+
    <visual>
       <geometry>
         <box size="0.18 0.1 0.007"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 -0.01 0.0029"/>
-      <material name="blue"/>
     </visual>
    <collision>
      <geometry>
@@ -158,12 +162,11 @@
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 -0.01 0.0029"/>
     </collision>
-    <inertial>
-      <mass value="1"/>
+    <!--inertial>
+      <mass value="1.0"/>
       <mu value="0.5"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
-    </inertial>
--->
+    </inertial-->
 
   </link>
 <!--
@@ -295,13 +298,17 @@
   </link>
 
   <link name="l_sole">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
 
    <visual>
       <geometry>
         <box size="0.18 0.1 0.007"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 0.010 0.0029"/>
-      <material name="blue"/>
     </visual>
    <collision>
       <geometry>
@@ -309,9 +316,9 @@
       </geometry>
       <origin rpy="0 0 0" xyz="0.0 0.010 0.0029"/>
     </collision>
-    <inertial>
-      <mass value="0.0001"/>
-      <mu value="1"/>
+    <!--inertial>
+      <mass value="1.0"/>
+      <mu value="0.5"/>
       <inertia ixx="1.1e-09" ixy="0" ixz="0" iyy="1.1e-09" iyz="0" izz="1.1e-09"/>
     </inertial>
 -->
@@ -1065,11 +1072,6 @@
     </collision>
   </link>
   <!--   Joints following below -->
-  <joint name="waist" type="fixed">
-    <parent link="base_link"/>
-    <child link="body"/>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-  </joint>
   <joint name="R_HIP_Y" type="revolute">
     <origin rpy="0 0 0" xyz="0 -0.0875 0"/>
     <axis xyz="0 0 1"/>
@@ -1210,35 +1212,35 @@
     <child link="R_ELBOW_P_LINK"/>
     <limit effort="46.99" lower="-2.14675494333333" upper="0.0349065844444444" velocity="2.64940980453"/>
   </joint>
-  <joint name="R_WRIST_Y" type="revolute">
+  <joint name="R_WRIST_Y" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <axis xyz="0 0 1"/>
     <parent link="R_ELBOW_P_LINK"/>
     <child link="R_WRIST_Y_LINK"/>
     <limit effort="12.4" lower="-1.60570288444444" upper="1.60570288444444" velocity="4.1154863762"/>
   </joint>
-  <joint name="R_WRIST_P" type="revolute">
+  <joint name="R_WRIST_P" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.234"/>
     <axis xyz="0 1 0"/>
     <parent link="R_WRIST_Y_LINK"/>
     <child link="R_WRIST_P_LINK"/>
     <limit effort="12.4" lower="-0.715584981111111" upper="0.715584981111111" velocity="4.1154863762"/>
   </joint>
-  <joint name="R_WRIST_R" type="revolute">
+  <joint name="R_WRIST_R" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <axis xyz="1 0 0"/>
     <parent link="R_WRIST_P_LINK"/>
     <child link="r_wrist"/>
     <limit effort="12.4" lower="-1.60570288444444" upper="1.60570288444444" velocity="4.1154863762"/>
   </joint>
-  <joint name="R_HAND_J0" type="revolute">
+  <joint name="R_HAND_J0" type="fixed">
     <origin rpy="0 0.4118977034707 0" xyz="0.03419 0 -0.039"/>
     <axis xyz="0 0 1"/>
     <parent link="r_wrist"/>
     <child link="R_HAND_J0_LINK"/>
     <limit effort="1.06" lower="0" upper="1.5707963" velocity="16.9541283539"/>
   </joint>
-  <joint name="R_HAND_J1" type="revolute">
+  <joint name="R_HAND_J1" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.111"/>
     <axis xyz="1 0 0"/>
     <parent link="r_wrist"/>
@@ -1273,35 +1275,35 @@
     <child link="L_ELBOW_P_LINK"/>
     <limit effort="46.99" lower="-2.14675494333333" upper="0.0349065844444444" velocity="2.64940980453"/>
   </joint>
-  <joint name="L_WRIST_Y" type="revolute">
+  <joint name="L_WRIST_Y" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <axis xyz="0 0 1"/>
     <parent link="L_ELBOW_P_LINK"/>
     <child link="L_WRIST_Y_LINK"/>
     <limit effort="12.4" lower="-1.60570288444444" upper="1.60570288444444" velocity="4.1154863762"/>
   </joint>
-  <joint name="L_WRIST_P" type="revolute">
+  <joint name="L_WRIST_P" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.234"/>
     <axis xyz="0 1 0"/>
     <parent link="L_WRIST_Y_LINK"/>
     <child link="L_WRIST_P_LINK"/>
     <limit effort="12.4" lower="-0.715584981111111" upper="0.715584981111111" velocity="4.1154863762"/>
   </joint>
-  <joint name="L_WRIST_R" type="revolute">
+  <joint name="L_WRIST_R" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <axis xyz="1 0 0"/>
     <parent link="L_WRIST_P_LINK"/>
     <child link="l_wrist"/>
     <limit effort="12.4" lower="-1.60570288444444" upper="1.60570288444444" velocity="4.1154863762"/>
   </joint>
-  <joint name="L_HAND_J0" type="revolute">
+  <joint name="L_HAND_J0" type="fixed">
     <origin rpy="0 0.4118977034707 0" xyz="0.03419 0 -0.039"/>
     <axis xyz="0 0 1"/>
     <parent link="l_wrist"/>
     <child link="L_HAND_J0_LINK"/>
     <limit effort="1.06" lower="-1.5707963" upper="0" velocity="16.9541283539"/>
   </joint>
-  <joint name="L_HAND_J1" type="revolute">
+  <joint name="L_HAND_J1" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.111"/>
     <axis xyz="1 0 0"/>
     <parent link="l_wrist"/>
@@ -1318,79 +1320,8 @@
     <child link="r_sole"/>
     <origin rpy="0 0 0" xyz="0 0 -0.093"/>
   </joint>
-  <!-- Sensors: accelerometer and gyro -->
-  <joint name="AccelerometerJoint" type="fixed">
-    <parent link="body"/>
-    <child link="Accelerometer"/>
-    <origin rpy="0 0 0" xyz="-0.0325 0 0.1095"/>
-  </joint>
-  <link name="Accelerometer"/>
-  <joint name="GyroJoint" type="fixed">
-    <parent link="body"/>
-    <child link="Gyro"/>
-    <origin rpy="0 0 0" xyz="-0.0325 0 0.1095"/>
-  </joint>
-  <link name="Gyro"/>
-  <!-- Sensors: force sensors -->
-  <joint name="RightFootForceSensorJoint" type="fixed">
-    <parent link="R_ANKLE_R_LINK"/>
-    <child link="RightFootForceSensor"/>
-    <origin rpy="0 0 0" xyz="0 0 -0.093"/>
-  </joint>
-  <link name="RightFootForceSensor"/>
-  <joint name="LeftFootForceSensorJoint" type="fixed">
-    <parent link="L_ANKLE_R_LINK"/>
-    <child link="LeftFootForceSensor"/>
-    <origin rpy="0 0 0" xyz="0 0 -0.093"/>
-    <!-- FIXME: missing rotation -->
-  </joint>
-  <link name="LeftFootForceSensor"/>
-  <joint name="LeftHandForceSensorJoint" type="fixed">
-    <parent link="l_wrist"/>
-    <child link="LeftHandForceSensor"/>
-    <origin rpy="3.14159 0 -1.57079" xyz="0 0 -0.04435"/>
-  </joint>
-  <link name="LeftHandForceSensor"/>
-  <joint name="RightHandForceSensorJoint" type="fixed">
-    <parent link="r_wrist"/>
-    <child link="RightHandForceSensor"/>
-    <origin rpy="3.14159 0 -1.57079" xyz="0 0 -0.04435"/>
-  </joint>
-  <link name="RightHandForceSensor"/>
-  <!--
-     Humanoid standard frames
 
-     This section defines anchor joint renaming to respect the
-     REP 120 (http://www.ros.org/reps/rep-0120.html):
-     Coordinate Frames for Humanoids Robots
-    -->
-  <!-- Humanoid standard frames: wrists and hands -->
-  <joint name="l_gripper_joint" type="fixed">
-    <parent link="l_wrist"/>
-    <child link="l_gripper"/>
-    <origin rpy="3.14159 1.57079  0" xyz="0 -0.04 -0.09"/>
-  </joint>
-  <link name="l_gripper"/>
-  <joint name="r_gripper_sensor" type="fixed">
-    <parent link="r_wrist"/>
-    <child link="r_gripper_sensor"/>
-    <origin rpy="-0.00186 0.00065 1.56968" xyz="0 0.0 -0.045"/>
-  </joint>
-  <link name="r_gripper_sensor"/>
-  <joint name="r_gripper_joint" type="fixed">
-    <parent link="r_wrist"/>
-    <child link="r_gripper"/>
-    <origin rpy="0 1.57079   0" xyz="0 0.04 -0.09"/>
-  </joint>
-  <link name="r_gripper"/>
-  <!-- Humanoid standard frame: gaze TODO -->
-  <joint name="gaze_joint" type="fixed">
-    <parent link="NECK_P_LINK"/>
-    <child link="gaze"/>
-    <origin rpy="-1.57079632679 0 -1.57079632679" xyz="0.1 0 0"/>
-  </joint>
-  <link name="gaze"/>
-  <joint name="R_F22" type="revolute">
+  <joint name="R_F22" type="fixed">
     <origin rpy="0 -0 3.1415926535" xyz="0.0253 0 -0.045"/>
     <axis xyz="1 0 0"/>
     <parent link="R_HAND_J1_LINK"/>
@@ -1398,7 +1329,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="R_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="R_F23" type="revolute">
+  <joint name="R_F23" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.024"/>
     <axis xyz="1 0 0"/>
     <parent link="R_F22_LINK"/>
@@ -1406,7 +1337,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="R_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="R_F32" type="revolute">
+  <joint name="R_F32" type="fixed">
     <origin rpy="0 -0 3.1415926535" xyz="0.0051 0 -0.045"/>
     <axis xyz="1 0 0"/>
     <parent link="R_HAND_J1_LINK"/>
@@ -1414,7 +1345,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="R_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="R_F33" type="revolute">
+  <joint name="R_F33" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.024"/>
     <axis xyz="1 0 0"/>
     <parent link="R_F32_LINK"/>
@@ -1422,7 +1353,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="R_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="R_F42" type="revolute">
+  <joint name="R_F42" type="fixed">
     <origin rpy="0 -0 3.1415926535" xyz="-0.0151 0 -0.045"/>
     <axis xyz="1 0 0"/>
     <parent link="R_HAND_J1_LINK"/>
@@ -1430,7 +1361,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="R_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="R_F43" type="revolute">
+  <joint name="R_F43" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.024"/>
     <axis xyz="1 0 0"/>
     <parent link="R_F42_LINK"/>
@@ -1438,7 +1369,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="R_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="R_F52" type="revolute">
+  <joint name="R_F52" type="fixed">
     <origin rpy="0 -0 3.1415926535" xyz="-0.0353 0 -0.045"/>
     <axis xyz="1 0 0"/>
     <parent link="R_HAND_J1_LINK"/>
@@ -1446,7 +1377,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="R_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="R_F53" type="revolute">
+  <joint name="R_F53" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.024"/>
     <axis xyz="1 0 0"/>
     <parent link="R_F52_LINK"/>
@@ -1454,7 +1385,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="R_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="L_F22" type="revolute">
+  <joint name="L_F22" type="fixed">
     <origin rpy="0 0 0" xyz="0.0253 0 -0.045"/>
     <axis xyz="1 0 0"/>
     <parent link="L_HAND_J1_LINK"/>
@@ -1462,7 +1393,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="L_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="L_F23" type="revolute">
+  <joint name="L_F23" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.024"/>
     <axis xyz="1 0 0"/>
     <parent link="L_F22_LINK"/>
@@ -1470,7 +1401,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="L_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="L_F32" type="revolute">
+  <joint name="L_F32" type="fixed">
     <origin rpy="0 0 0" xyz="0.0051 0 -0.045"/>
     <axis xyz="1 0 0"/>
     <parent link="L_HAND_J1_LINK"/>
@@ -1478,7 +1409,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="L_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="L_F33" type="revolute">
+  <joint name="L_F33" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.024"/>
     <axis xyz="1 0 0"/>
     <parent link="L_F32_LINK"/>
@@ -1486,7 +1417,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="L_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="L_F42" type="revolute">
+  <joint name="L_F42" type="fixed">
     <origin rpy="0 0 0" xyz="-0.0151 0 -0.045"/>
     <axis xyz="1 0 0"/>
     <parent link="L_HAND_J1_LINK"/>
@@ -1494,7 +1425,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="L_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="L_F43" type="revolute">
+  <joint name="L_F43" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.024"/>
     <axis xyz="1 0 0"/>
     <parent link="L_F42_LINK"/>
@@ -1502,7 +1433,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="L_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="L_F52" type="revolute">
+  <joint name="L_F52" type="fixed">
     <origin rpy="0 0 0" xyz="-0.0353 0 -0.045"/>
     <axis xyz="1 0 0"/>
     <parent link="L_HAND_J1_LINK"/>
@@ -1510,7 +1441,7 @@
     <limit effort="1" lower="-1.22173045555556" upper="0" velocity="1"/>
     <mimic joint="L_HAND_J1" multiplier="1" offset="0"/>
   </joint>
-  <joint name="L_F53" type="revolute">
+  <joint name="L_F53" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 -0.024"/>
     <axis xyz="1 0 0"/>
     <parent link="L_F52_LINK"/>

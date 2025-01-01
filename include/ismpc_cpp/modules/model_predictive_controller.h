@@ -61,7 +61,7 @@ class ModelPredictiveController {
      * made of the zmp velocities. Practically, this function modifies the field
      * state.desired_state of the robot.
      */
-    void update(State& state);
+    void update(State& desired_state);
 
     Scalar total_mpc_qp_duration = 0.0;
     Scalar total_mpc_preprocessing_duration = 0.0;

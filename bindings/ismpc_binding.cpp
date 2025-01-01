@@ -20,6 +20,7 @@ NB_MODULE(ismpc_py, m) {
         .def("get_footsteps", &WalkEngine::get_footsteps)
         .def("get_reference", &WalkEngine::get_reference)
         .def("get_state", &WalkEngine::get_state)
+        .def("set_state", &WalkEngine::set_state)
         .def("get_walk_state", &WalkEngine::get_walk_state)
         .def("get_frame_info", &WalkEngine::get_frame_info)
         .def("set_reference_velocity", &WalkEngine::set_reference_velocity)

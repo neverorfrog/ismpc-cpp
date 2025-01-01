@@ -1,4 +1,5 @@
 #include "ismpc_cpp/modules/walk_engine.h"
+#include "ismpc_cpp/representations/state.h"
 
 namespace ismpc {
 
@@ -21,16 +22,16 @@ void WalkEngine::update_time() {
     frame_info.tk += delta;
 }
 
-void WalkEngine::update() {
+void WalkEngine::update(State& desired_state) {
     auto start = std::chrono::high_resolution_clock::now();
     planner.update(footsteps);
     walk_state_provider.update(walk);
-    swing_foot_provider.update(state);
     auto end = std::chrono::high_resolution_clock::now();
     total_planner_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
     start = std::chrono::high_resolution_clock::now();
-    mpc.update(state);
+    mpc.update(desired_state);
+    swing_foot_provider.update(desired_state);
     end = std::chrono::high_resolution_clock::now();
     total_mpc_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
@@ -44,8 +45,8 @@ void WalkEngine::set_reference_velocity(Scalar vx, Scalar vy, Scalar omega) {
 }
 
 void WalkEngine::print() const {
-    PRINT("State: \n" << robot.state);
-    PRINT("Walk state: \n" << robot.walk);
+    PRINT("State: \n" << state);
+    PRINT("Walk state: \n" << walk);
     PRINT("Next planned footstep: " << footsteps.theta(0) << " " << footsteps.x(0) << " " << footsteps.y(0));
     PRINT("");
 }
@@ -60,6 +61,14 @@ const FootstepsPlan& WalkEngine::get_footsteps() const {
 
 const State& WalkEngine::get_state() const {
     return state;
+}
+
+void WalkEngine::set_state(const State& state) {
+    this->state = state;
+}
+
+State& WalkEngine::get_desired_state() {
+    return desired_state;
 }
 
 const WalkState& WalkEngine::get_walk_state() const {

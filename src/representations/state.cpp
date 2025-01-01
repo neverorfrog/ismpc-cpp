@@ -19,24 +19,30 @@ State::State() {
     B << delta - sinh / eta, 1 - cosh, delta;
 }
 
-const Vector3 State::getLipx() const {
+Vector3 State::getLipx() const {
     Vector3 lip_x{};
     lip_x << com_pos(0), com_vel(0), zmp_pos(0);
     return lip_x;
 }
 
-const Vector3 State::getLipy() const {
+Vector3 State::getLipy() const {
     Vector3 lip_y{};
     lip_y << com_pos(1), com_vel(1), zmp_pos(1);
     return lip_y;
 }
 
-const Vector3 State::getNextLipx(Scalar xdz) const {
+Vector6 State::getLipState() const {
+    Vector6 lip_state{};
+    lip_state << getLipx(), getLipy();
+    return lip_state;
+}
+
+Vector3 State::getNextLipx(Scalar xdz) const {
     Vector3 predicted_x = A * getLipx() + B * xdz;
     return predicted_x;
 }
 
-const Vector3 State::getNextLipy(Scalar ydz) const {
+Vector3 State::getNextLipy(Scalar ydz) const {
     Vector3 predicted_y = A * getLipy() + B * ydz;
     return predicted_y;
 }

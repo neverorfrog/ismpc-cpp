@@ -1,4 +1,6 @@
 #include "ismpc_cpp/modules/swing_foot_provider.h"
+#include <Eigen/src/Core/util/Constants.h>
+#include <Eigen/src/Geometry/RotationBase.h>
 
 namespace ismpc {
 
@@ -6,7 +8,7 @@ SwingFootProvider::SwingFootProvider(const FrameInfo& frame_info, const WalkStat
                                      const FootstepsPlan& footsteps)
     : frame_info(frame_info), walk(walk), feet(feet), footsteps(footsteps) {}
 
-void SwingFootProvider::update(State& state) {
+void SwingFootProvider::update(State& desired_state) {
     EndEffector swing_foot = feet.getSwingFoot();
 
     if (walk.support_phase == SupportPhase::DOUBLE) {
@@ -29,6 +31,7 @@ void SwingFootProvider::update(State& state) {
         Vector2 desired_pos = start_pos + step * cubic(time_in_step);
         Scalar desired_theta = start_theta + (end_theta - start_theta) * cubic(time_in_step);
         swing_foot.pose = Pose3(RotationMatrix::aroundZ(desired_theta), Vector3(desired_pos(0), desired_pos(1), 0));
+        swing_foot.pose.euler = Vector3(0, 0, desired_theta);
 
         // Linear Velocity with cubic polynomial interpolation
         swing_foot.lin_vel.segment(0, 2) = step * cubic_dot(time_in_step) / ss_duration;
@@ -44,7 +47,20 @@ void SwingFootProvider::update(State& state) {
         swing_foot.lin_acc(2) = step_height * quartic_ddot(time_in_step) / (ss_duration * ss_duration);
     }
 
-    feet.setSwingFoot(swing_foot, state);
+    feet.setSwingFoot(swing_foot, desired_state);
+
+    // Set desired torso and base
+    const EndEffector& support_foot = feet.getSupportFoot();
+    desired_state.torso.pose.rotation = RotationMatrix(
+        support_foot.pose.rotation.getQuaternion().slerp(0.5, swing_foot.pose.rotation.getQuaternion()));
+
+    
+
+    desired_state.torso.ang_vel = (support_foot.ang_vel + swing_foot.ang_vel) / 2;
+    desired_state.torso.ang_acc = (support_foot.ang_acc + swing_foot.ang_acc) / 2;
+    desired_state.base.pose.rotation = desired_state.torso.pose.rotation;
+    desired_state.base.ang_vel = desired_state.torso.ang_vel;
+    desired_state.base.ang_acc = desired_state.torso.ang_acc;
 }
 
 }  // namespace ismpc

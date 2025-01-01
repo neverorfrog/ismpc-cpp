@@ -23,6 +23,16 @@ class EndEffector {
     EndEffector() = default;
     EndEffector(const Vector3& translation);
 
+    /**
+     * @brief Get linear and angular velocity stacked in a Vector6
+     */
+    Vector6 getVelocity() const;
+
+    /**
+     * @brief Get linear and angular acceleration stacked in a Vector6
+     */
+    Vector6 getAcceleration() const;
+
     std::string toString() const;
 
     /**
