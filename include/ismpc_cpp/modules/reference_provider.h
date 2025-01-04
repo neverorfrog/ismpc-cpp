@@ -1,10 +1,9 @@
 #pragma once
 
-#include "ismpc_cpp/representations/footsteps.h"
+#include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/reference.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/representations/walk_state.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/math/rotation_matrix.h"
 #include "ismpc_cpp/types/math_types.h"

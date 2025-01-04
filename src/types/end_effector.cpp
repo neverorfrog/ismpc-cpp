@@ -16,6 +16,10 @@ Vector6 EndEffector::getAcceleration() const {
     return acc;
 }
 
+Pose2 EndEffector::getPose2() const {
+    return pose.getPose2();
+}
+
 std::string EndEffector::toString() const {
     std::ostringstream oss;
     oss << "\n" << pose << std::endl;

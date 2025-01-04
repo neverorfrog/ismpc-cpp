@@ -17,6 +17,16 @@ struct Cost {
         os << "H:\n" << cost.H << "\ng:\n" << cost.g << "\n";
         return os;
     }
+
+    void validateMatrices() const {
+        if (H.maxCoeff() > 1e6 || H.minCoeff() < 1e-6) {
+            std::cout << "Warning: H matrix poorly scaled\n";
+        }
+
+        if (g.maxCoeff() > 1e6 || H.minCoeff() < 1e-6) {
+            std::cout << "Warning: g vector poorly scaled\n";
+        }
+    }
 };
 
 struct InequalityConstraint {
@@ -34,6 +44,16 @@ struct InequalityConstraint {
            << inequality.l.format(HeavyFmt) << "\nu:\n"
            << inequality.u.format(HeavyFmt) << "\n";
         return os;
+    }
+
+    void validateMatrices() const {
+        if (C.maxCoeff() > 1e6) {
+            std::cout << "Warning: C matrix poorly scaled\n";
+        }
+
+        if ((u - l).minCoeff() < 1e-10) {
+            std::cout << "Warning: Tight/inconsistent bounds\n";
+        }
     }
 };
 

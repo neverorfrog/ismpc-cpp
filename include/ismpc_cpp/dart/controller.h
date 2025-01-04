@@ -21,6 +21,7 @@ class Controller : public dart::gui::osg::WorldNode {
    private:
     // representations
     SimulatedRobot robot;
+    State state;
     dart::simulation::WorldPtr world;
 
     // modules

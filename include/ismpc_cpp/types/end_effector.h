@@ -33,6 +33,11 @@ class EndEffector {
      */
     Vector6 getAcceleration() const;
 
+    /**
+     * @brief Extract the two dimensional pose (ignoring the z-axis)
+     */
+    Pose2 getPose2() const;
+
     std::string toString() const;
 
     /**

@@ -2,13 +2,9 @@
 
 #include <cmath>
 
-#include "ismpc_cpp/libraries/constraint_lib.h"
-#include "ismpc_cpp/libraries/cost_lib.h"
-#include "ismpc_cpp/libraries/feet_lib.h"
-#include "ismpc_cpp/representations/footsteps.h"
+#include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/representations/walk_state.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
 #include "ismpc_cpp/types/math_types.h"
@@ -30,11 +26,7 @@ class ModelPredictiveController {
 
     const FrameInfo& frame_info;
     const State& state;
-    const WalkState& walk;
-    const FootstepsPlan& footsteps;
-    const FeetLib& feet;
-    const CostLib& cost;
-    const ConstraintLib& constraint;
+    const FootstepPlan& plan;
 
     // Optimization related stuff
     const int numC = Config::C;                    // number of control points
@@ -46,13 +38,51 @@ class ModelPredictiveController {
     Matrix C;                                      // combined inequality constraint matrix
     VectorX l, u;                                  // combined inequality constraint bounds
 
+    // Parameters
+    const Scalar dxz = RobotConfig::dxz;
+    const Scalar dyz = RobotConfig::dyz;
+    const Scalar zmp_vx_max = RobotConfig::zmp_vx_max;
+    const Scalar zmp_vy_max = RobotConfig::zmp_vy_max;
+    const TailType tail_type = Config::tail_type;
+
+    /**
+     * @brief Get the Mpc Cost object such as to minimize the squared sum of zmp velocities
+     * and the squared errore between proposed footsteps by the planner and dfootsteps
+     * treated as decision variables
+     *
+     * @return Cost
+     */
+    Cost getCost() const;
+
+    /**
+     * @brief Get the Zmp Constraint object such as to keep the zmp always inside the convex hull.
+     * In single support phase this corresponds to the support foot itself, while in double support
+     * it is a moving rectangle (same size of the feet approximately) from the previous
+     * support foot to the current one
+     *
+     * @return InequalityConstraint
+     */
+    InequalityConstraint getZmpConstraint(const Vector3& lipx, const Vector3& lipy) const;
+
+    /**
+     * @brief Get the Zmp Velocity Constraint object to keep the zmp velocity within a certain limit
+     *
+     * @return InequalityConstraint
+     */
+    InequalityConstraint getZmpVelocityConstraint() const;
+
+    /**
+     * @brief Get the Stability Constraint object (TODO doc)
+     *
+     * @return EqualityConstraint
+     */
+    EqualityConstraint getStabilityConstraint(const Vector3& lipx, const Vector3& lipy) const;
+
     // time related stuff
     std::chrono::high_resolution_clock::time_point start, end;
 
    public:
-    ModelPredictiveController(const FrameInfo& frame_info, const State& state, const WalkState& walk,
-                              const FootstepsPlan& footsteps, const FeetLib& feet, const CostLib& cost,
-                              const ConstraintLib& constraint);
+    ModelPredictiveController(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan);
 
     /**
      * @brief Update the MPC module
@@ -61,7 +91,7 @@ class ModelPredictiveController {
      * made of the zmp velocities. Practically, this function modifies the field
      * state.desired_state of the robot.
      */
-    void update(State& desired_state);
+    void update(State& state);
 
     Scalar total_mpc_qp_duration = 0.0;
     Scalar total_mpc_preprocessing_duration = 0.0;

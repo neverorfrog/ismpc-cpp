@@ -7,9 +7,9 @@ void StateProvider::update(SimulatedRobot& robot) {
     State& state = robot.state;
 
     // Update the com of the robot
-    state.com_pos = robot.skeleton->getCOM();
-    state.com_vel = robot.skeleton->getCOMLinearVelocity();
-    state.com_acc = robot.skeleton->getCOMLinearAcceleration();
+    state.lip.com_pos = robot.skeleton->getCOM();
+    state.lip.com_vel = robot.skeleton->getCOMLinearVelocity();
+    state.lip.com_acc = robot.skeleton->getCOMLinearAcceleration();
 
     // Left foot
     Eigen::Isometry3d l_foot_transform = robot.d_left_foot->getWorldTransform();
@@ -47,13 +47,13 @@ void StateProvider::update(SimulatedRobot& robot) {
     }
 
     if (left_contact && right_contact) {
-        state.zmp_pos =
+        state.lip.zmp_pos =
             Eigen::Vector3d((left_cop(0) * grf_L[5] + right_cop(0) * grf_R[5]) / (grf_L[5] + grf_R[5]),
                             (left_cop(1) * grf_L[5] + right_cop(1) * grf_R[5]) / (grf_L[5] + grf_R[5]), 0.0);
     } else if (left_contact) {
-        state.zmp_pos = Eigen::Vector3d(left_cop(0), left_cop(1), 0.0);
+        state.lip.zmp_pos = Eigen::Vector3d(left_cop(0), left_cop(1), 0.0);
     } else if (right_contact) {
-        state.zmp_pos = Eigen::Vector3d(right_cop(0), right_cop(1), 0.0);
+        state.lip.zmp_pos = Eigen::Vector3d(right_cop(0), right_cop(1), 0.0);
     }
 
 }

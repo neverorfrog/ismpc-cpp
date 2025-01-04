@@ -7,7 +7,6 @@
 #include "dart/dart.hpp"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/representations/walk_state.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/debug.h"
