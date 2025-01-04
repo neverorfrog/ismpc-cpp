@@ -38,6 +38,8 @@ struct Config {
     static inline Scalar des_vel_x{}, des_vel_y{}, des_omega{};  // Reference velocity
     static inline TailType tail_type{};                          // Tail type
 
+    static inline Eigen::IOFormat CleanFmt{2, 0, ", ", "\n", "[", "]"};
+
     static void init_params();
 };
 

@@ -1,6 +1,6 @@
 # Geometric parameters
 h: 0.75
-l: 0.3
+l: 0.2
 theta_max: 0.45 # np.pi/8
 step_height: 0.02 # [m]
 foot_com_height: 0.0 # [m]
@@ -10,23 +10,11 @@ left_foot_x: 0
 left_foot_y: 0.1
 right_foot_x: 0
 right_foot_y: -0.1
-initial_configuration:
-  right_hip_roll: -0
-  right_ankle_roll: 0
-  right_hip_pitch: -26
-  right_ankle_pitch: -24
-  left_hip_roll: 0
-  left_ankle_roll: -0
-  left_hip_pitch: -26
-  left_ankle_pitch: -24
-  base_pitch: 0
-  chest_pitch: 2
-  chest_yaw: 0
 
 # Cruise parameters
-T_bar: 0.1
+T_bar: 0.3
 L_bar: 0.3
-alpha: 0.5
+alpha: 1.2
 
 # Footsteps stuff
 dax: 0.3
@@ -40,23 +28,4 @@ zmp_vx_max: 10.0
 zmp_vy_max: 10.0
 
 # Timing stuff
-ds_percentage: 0.35 # percentage of the entire step time
-
-task_gain:
-  torso_orientation:
-    alpha: 1
-    beta: 4
-    gamma: 2
-  com_position:
-    x: 5
-    y: 5
-    z: 2
-  swing_foot_orientation:
-    alpha: 8
-    beta: 8
-    gamma: 1
-  swing_foot_position:
-    x: 5
-    y: 5
-    z: 1
-ik_gain: 9
+ds_percentage: 0.3 # percentage of the entire step time
