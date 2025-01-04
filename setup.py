@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
+import shutil
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
@@ -25,6 +26,12 @@ class CMakeBuild(build_ext):
     def build_extension(self, ext: CMakeExtension) -> None:
         ext_fullpath = Path.cwd() / self.get_ext_fullpath(ext.name)
         extdir = ext_fullpath.parent.resolve()
+        
+        # Copy .pyi file to the build directory
+        pyi_source = Path('bindings/ismpc_py.pyi')
+        pyi_dest = extdir / 'ismpc_py.pyi'
+        if pyi_source.exists():
+            shutil.copy2(pyi_source, pyi_dest)
 
         cfg = "Release" if not self.debug else "Debug"
         build_temp = Path.cwd() / "build"
@@ -59,7 +66,7 @@ setup(
     packages=find_packages(where="bindings"),
     package_dir={"": "bindings"},
     package_data={
-        "ismpc_py": ["ismpc_py.pyi"],
+        "ismpc_py": ["*.pyi"],
     },
     include_package_data=True,
 )

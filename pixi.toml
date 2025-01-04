@@ -11,17 +11,19 @@ cpp-build = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. &
 cpp-build-debug = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j12'
 cpp-main = './build/executables/ismpc_main'
 py-build = 'python setup.py build_ext --cmake-args="-DBUILD_ROS=OFF"'
-py-install = 'python setup.py install'
+py-install = 'python setup.py install && python -m nanobind.stubgen -m ismpc_py'
 py-main = "python bindings/main.py"
 ros-build = 'mkdir -p build && cd build && cmake .. -DBUILD_ROS=ON && cmake --build . -j12'
 dart-build = 'mkdir -p build && cd build && cmake .. -DBUILD_DART=ON && cmake --build . -j12'
 dart-main = "./build/executables/dart_main"
+generate-stub = 'python -m nanobind.stubgen -m ismpc_py'
 
 [dependencies]
 python = "==3.11"
 matplotlib = ">=3.9.3,<4"
 tqdm = ">=4.67.1,<5"
 setuptools = ">=75.6.0,<76"
+nanobind = ">=2.4.0,<3"
 
 [pypi-dependencies]
 catkin-pkg = ">=1.0.0, <2"
