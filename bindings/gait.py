@@ -6,7 +6,6 @@ class Gait:
     engine: WalkEngine
 
     history: np.ndarray
-    walk_history: np.ndarray
     com_traj: np.ndarray
     zmp_traj: np.ndarray
     left_foot_traj: np.ndarray
