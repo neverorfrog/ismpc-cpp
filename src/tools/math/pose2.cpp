@@ -117,8 +117,7 @@ Vector3 Pose2::getVector() const {
 
 std::string Pose2::toString() const {
     std::ostringstream oss;
-    oss << "Rotation: " << rotation.toDegrees() << "°" << std::endl;
-    oss << "Translation: " << translation.transpose() << std::endl;
+    oss << this->getVector().transpose().format(Config::CleanFmt);
     return oss.str();
 }
 

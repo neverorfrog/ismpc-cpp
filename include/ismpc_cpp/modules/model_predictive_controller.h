@@ -22,28 +22,42 @@ namespace ismpc {
  */
 class ModelPredictiveController {
    private:
-    Matrix Xdz, Ydz, Xf, Yf;
-
     const FrameInfo& frame_info;
     const State& state;
     const FootstepPlan& plan;
 
-    // Optimization related stuff
-    const int numC = Config::C;                    // number of control points
-    isize n_eq = 2;                                // number of equality constraints
-    isize dimz = 2 * numC;                         // number of zmp variables (xdz, ydz)
-    InequalityConstraint zmp_constraint;           // zmp constraint
-    InequalityConstraint zmp_velocity_constraint;  // zmp velocity constraint
-    InequalityConstraint kinematic_constraint;     // kinematic constraint
-    Matrix C;                                      // combined inequality constraint matrix
-    VectorX l, u;                                  // combined inequality constraint bounds
-
     // Parameters
+    const int numC = Config::C;  // number of control points
+    const int numP = Config::P;  // number of planning points
+    const Scalar delta = Config::delta;
+    const Scalar eta = RobotConfig::eta;
     const Scalar dxz = RobotConfig::dxz;
     const Scalar dyz = RobotConfig::dyz;
     const Scalar zmp_vx_max = RobotConfig::zmp_vx_max;
     const Scalar zmp_vy_max = RobotConfig::zmp_vy_max;
     const TailType tail_type = Config::tail_type;
+
+    // Optimization related stuff
+    isize d = 2 * numC;                            // number of primal variables (xdz, ydz)
+    isize n_in = 2 * d;                            // number of inequality constraints (zmp pos, zmp vel)
+    isize n_eq = 2;                                // number of equality constraints
+    InequalityConstraint zmp_constraint;           // zmp constraint
+    InequalityConstraint zmp_velocity_constraint;  // zmp velocity constraint
+    InequalityConstraint kinematic_constraint;     // kinematic constraint
+    Cost mpc_cost;                                 // cost function
+    EqualityConstraint stability_constraint;       // stability constraint
+    Matrix C;                                      // combined inequality constraint matrix
+    VectorX l, u;                                  // combined inequality constraint bounds
+
+    // Var buffers
+    Matrix Xdz, Ydz;     // ZMP velocities
+    Matrix Xc, Yc;       // CoM positions
+    Matrix Xdc, Ydc;     // CoM velocities
+    Matrix Xz, Yz;       // ZMP positions
+    Vector3 lipx, lipy;  // current lip position
+
+    // Testing
+    int fs_index = 0;
 
     /**
      * @brief Get the Mpc Cost object such as to minimize the squared sum of zmp velocities

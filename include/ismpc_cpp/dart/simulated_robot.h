@@ -1,22 +1,21 @@
 #pragma once
 
 #include <Eigen/Core>
-
 #include <iostream>
 
 #include "dart/dart.hpp"
+#include "ismpc_cpp/dart/qp_solver.h"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/debug.h"
 #include "ismpc_cpp/tools/math/rotation_matrix.h"
+#include "ismpc_cpp/tools/proxsuite.h"
 #include "ismpc_cpp/types/body_parts.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/support_phase.h"
 #include "ismpc_cpp/types/tail_type.h"
-#include "ismpc_cpp/tools/proxsuite.h"
-#include "ismpc_cpp/dart/qp_solver.h"
 
 namespace ismpc {
 

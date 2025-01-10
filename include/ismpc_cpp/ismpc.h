@@ -1,9 +1,10 @@
 #pragma once
 
+#include "ismpc_cpp/modules/foot_trajectory_generator.h"
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
 #include "ismpc_cpp/modules/model_predictive_controller.h"
+#include "ismpc_cpp/modules/moving_constraint_provider.h"
 #include "ismpc_cpp/modules/reference_provider.h"
-#include "ismpc_cpp/modules/foot_trajectory_generator.h"
 #include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/reference.h"

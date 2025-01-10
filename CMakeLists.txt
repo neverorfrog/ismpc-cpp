@@ -88,7 +88,7 @@ FetchContent_MakeAvailable(proxsuite)
 # CASADI
 set(CASADI_INCLUDE_DIR /usr/local/include/casadi)
 include_directories(
-    SYSTEM ${CASADI_INCLUDE_DIR} 
+    SYSTEM ${CASADI_INCLUDE_DIR}
 )
 set(LIBRARY_DIRS /usr/local/lib)
 link_directories(${LIBRARY_DIRS})

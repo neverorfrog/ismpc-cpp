@@ -33,6 +33,14 @@ const EndEffector& State::getSwingFoot() const {
     return footstep.support_foot == Foot::right ? left_foot : right_foot;
 }
 
+void State::setDesiredSwingFoot(const EndEffector& foot) {
+    if (footstep.support_foot == Foot::right) {
+        desired_right_foot = foot;
+    } else {
+        desired_left_foot = foot;
+    }
+}
+
 std::string State::toString() const {
     std::ostringstream oss;
     oss << "Left Foot: \n" << left_foot.toString() << std::endl;

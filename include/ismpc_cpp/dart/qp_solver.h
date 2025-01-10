@@ -1,9 +1,9 @@
 #include <casadi/casadi.hpp>
+#include <core/dm.hpp>
+#include <core/mx.hpp>
 #include <core/sparsity_interface.hpp>
 
 #include "ismpc_cpp/types/math_types.h"
-#include <core/mx.hpp>
-#include <core/dm.hpp>
 
 using casadi::MX, casadi::DM;
 

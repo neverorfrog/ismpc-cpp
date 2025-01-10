@@ -1,4 +1,5 @@
 #include "ismpc_cpp/dart/state_provider.h"
+
 #include "ismpc_cpp/tools/math/rotation_matrix.h"
 
 namespace ismpc {
@@ -55,7 +56,6 @@ void StateProvider::update(SimulatedRobot& robot) {
     } else if (right_contact) {
         state.lip.zmp_pos = Eigen::Vector3d(right_cop(0), right_cop(1), 0.0);
     }
-
 }
 
 }  // namespace ismpc

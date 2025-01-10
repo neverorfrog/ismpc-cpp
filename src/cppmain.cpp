@@ -4,6 +4,7 @@
 #include "ismpc_cpp/modules/foot_trajectory_generator.h"
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
 #include "ismpc_cpp/modules/model_predictive_controller.h"
+#include "ismpc_cpp/modules/moving_constraint_provider.h"
 #include "ismpc_cpp/modules/reference_provider.h"
 #include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/representations/frame_info.h"
@@ -20,7 +21,8 @@ int main() {
     // Modules
     ismpc::FootstepPlanProvider planner = ismpc::FootstepPlanProvider(frame_info, reference, state, plan);
     ismpc::ModelPredictiveController mpc = ismpc::ModelPredictiveController(frame_info, state, plan);
-    ismpc::FootTrajectoryGenerator generator = ismpc::FootTrajectoryGenerator(frame_info, state, plan);
+    ismpc::FootTrajectoryGenerator ft_generator = ismpc::FootTrajectoryGenerator(frame_info, state, plan);
+    ismpc::MovingConstraintProvider mc_provider = ismpc::MovingConstraintProvider(frame_info, state, plan);
 
     // Timing stuff
     std::chrono::system_clock::time_point start, end;
@@ -28,28 +30,36 @@ int main() {
     long total_mpc_duration = 0.0;
     long total_feet_duration = 0.0;
 
+    // Update the footstep planner
+    start = std::chrono::high_resolution_clock::now();
+    planner.update(plan);
+    end = std::chrono::high_resolution_clock::now();
+    total_planner_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
     for (int k = 0; k < ismpc::Config::N; ++k) {
         std::cout << "------- k: " << k << "  tk: " << frame_info.tk << " -------" << std::endl;
 
-        // Update the footstep planner
+        // Update the moving constraint provider
         start = std::chrono::high_resolution_clock::now();
-        planner.update(plan);
+        mc_provider.update(plan);
         end = std::chrono::high_resolution_clock::now();
-        total_planner_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
         // Update the MPC module
-        // start = std::chrono::high_resolution_clock::now();
-        // mpc.update(state);
-        // end = std::chrono::high_resolution_clock::now();
-        // total_mpc_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        start = std::chrono::high_resolution_clock::now();
+        mpc.update(state);
+        end = std::chrono::high_resolution_clock::now();
+        total_mpc_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
         // Generate the foot trajectory
-        // start = std::chrono::high_resolution_clock::now();
-        // generator.update(state);
-        // end = std::chrono::high_resolution_clock::now();
-        // total_feet_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        start = std::chrono::high_resolution_clock::now();
+        ft_generator.update(state);
+        end = std::chrono::high_resolution_clock::now();
+        total_feet_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
         // Update the actual state
+        state.lip = state.desired_lip;
+        state.left_foot = state.desired_left_foot;
+        state.right_foot = state.desired_right_foot;
 
         // Update time
         frame_info.k += 1;

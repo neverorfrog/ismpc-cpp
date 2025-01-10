@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-
 namespace ismpc {
 
 KalmanFilter::KalmanFilter(const SimulatedRobot& robot) : robot(robot) {
@@ -27,24 +26,24 @@ KalmanFilter::KalmanFilter(const SimulatedRobot& robot) : robot(robot) {
 }
 
 void KalmanFilter::update(State& state) {
-    // // Predict
-    // x = A * x + B * state.zmp_vel.segment<2>(0);
-    // P = A * P * A.transpose() + Q;
+    // Predict
+    x = A * x + B * state.lip.zmp_vel.segment<2>(0);
+    P = A * P * A.transpose() + Q;
 
-    // // Update
-    // K = P * H.transpose() * (H * P * H.transpose() + R).inverse();
-    // x = x + K * (state.lip.getLipState() - H * x);
-    // P = (Matrix6::Identity() - K * H) * P;
+    // Update
+    K = P * H.transpose() * (H * P * H.transpose() + R).inverse();
+    x = x + K * (state.lip.getState() - H * x);
+    P = (Matrix6::Identity() - K * H) * P;
 
-    // // Update the state
-    // state.lip.com_pos(0) = x(0);
-    // state.lip.com_pos(1) = x(3);
-    // state.lip.com_vel(0) = x(1);
-    // state.lip.com_vel(1) = x(4);
-    // state.lip.zmp_pos(0) = x(2);
-    // state.lip.zmp_pos(1) = x(5);
-    // state.lip.com_acc(0) = eta2 * (x(0) - x(2));
-    // state.lip.com_acc(1) = eta2 * (x(3) - x(5));
+    // Update the state
+    state.lip.com_pos(0) = x(0);
+    state.lip.com_pos(1) = x(3);
+    state.lip.com_vel(0) = x(1);
+    state.lip.com_vel(1) = x(4);
+    state.lip.zmp_pos(0) = x(2);
+    state.lip.zmp_pos(1) = x(5);
+    state.lip.com_acc(0) = eta2 * (x(0) - x(2));
+    state.lip.com_acc(1) = eta2 * (x(3) - x(5));
 }
 
 }  // namespace ismpc

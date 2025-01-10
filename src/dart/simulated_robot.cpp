@@ -47,38 +47,38 @@ VectorX SimulatedRobot::getJointRequest(const State& state) {
     Jtrans = J.transpose();                                                  // d x 3
     Jdot = skeleton->getCOMLinearJacobianDeriv();                            // 3 x d
     pos_error = state.desired_lip.com_pos - state.lip.com_pos;               // 3 x 1
-    vel_error = state.desired_lip.com_vel - state.lip.com_vel;                             // 3 x 1
-    ff = state.desired_lip.com_acc;                                                    // 3 x 1
+    vel_error = state.desired_lip.com_vel - state.lip.com_vel;               // 3 x 1
+    ff = state.desired_lip.com_acc;                                          // 3 x 1
     H += Jtrans * J;                                                         // d x d
     g += -Jtrans * (-Jdot * qvel + ff + 0.1 * pos_error + 1.0 * vel_error);  // d x 1
 
-    // // Left foot cost
-    // J = skeleton->getJacobian(d_left_foot, dart::dynamics::Frame::World());                 // 6 x d
-    // Jtrans = J.transpose();                                                                 // d x 6
-    // Jdot = skeleton->getJacobianClassicDeriv(d_left_foot, dart::dynamics::Frame::World());  // 6 x d
-    // pos_error = (desired.left_foot.pose - state.left_foot.pose).getVector();                // 6 x 1
-    // std::cout << "Left Foot Pos Error: " << pos_error.transpose() << std::endl;
-    // vel_error = desired.left_foot.getVelocity() - state.left_foot.getVelocity();  // 6 x 1
-    // ff = desired.left_foot.getAcceleration();                                     // 6 x 1
-    // H += Jtrans * J;                                                              // d x d
-    // g += -Jtrans * (-Jdot * qvel + ff + 0.1 * pos_error + 1.0 * vel_error);       // d x 1
+    // Left foot cost
+    J = d_left_foot->getWorldJacobian();                                                // 6 x d
+    Jtrans = J.transpose();                                                             // d x 6
+    Jdot = d_left_foot->getJacobianClassicDeriv();                                      // 6 x d
+    pos_error = (state.desired_left_foot.pose - state.left_foot.pose).getVector();      // 6 x 1
+    vel_error = state.desired_left_foot.getVelocity() - state.left_foot.getVelocity();  // 6 x 1
+    ff = state.desired_left_foot.getAcceleration();                                     // 6 x 1
+    H += Jtrans * J;                                                                    // d x d
+    g += -Jtrans * (-Jdot * qvel + ff + 0.1 * pos_error + 1.0 * vel_error);             // d x 1
+    std::cout << "Left Foot Pos Error: " << pos_error.transpose() << std::endl;
 
-    // // Right foot cost
-    // J = skeleton->getJacobian(d_right_foot, dart::dynamics::Frame::World());                 // 6 x d
-    // Jtrans = J.transpose();                                                                  // d x 6
-    // Jdot = skeleton->getJacobianClassicDeriv(d_right_foot, dart::dynamics::Frame::World());  // 6 x d
-    // pos_error = (desired.right_foot.pose - state.right_foot.pose).getVector();               // 6 x 1
-    // std::cout << "Right Foot Pos Error: " << pos_error.transpose() << std::endl;
-    // vel_error = desired.right_foot.getVelocity() - state.right_foot.getVelocity();  // 6 x 1
-    // ff = desired.right_foot.getAcceleration();                                      // 6 x 1
-    // H += Jtrans * J;                                                                // d x d
-    // g += -Jtrans * (-Jdot * qvel + ff + 0.1 * pos_error + 1.0 * vel_error);         // d x 1
+    // Right foot cost
+    J = d_right_foot->getWorldJacobian();                                                 // 6 x d
+    Jtrans = J.transpose();                                                               // d x 6
+    Jdot = d_right_foot->getJacobianClassicDeriv();                                       // 6 x d
+    pos_error = (state.desired_right_foot.pose - state.right_foot.pose).getVector();      // 6 x 1
+    vel_error = state.desired_right_foot.getVelocity() - state.right_foot.getVelocity();  // 6 x 1
+    ff = state.desired_right_foot.getAcceleration();                                      // 6 x 1
+    H += Jtrans * J;                                                                      // d x d
+    g += -Jtrans * (-Jdot * qvel + ff + 0.1 * pos_error + 1.0 * vel_error);               // d x 1
+    std::cout << "Right Foot Pos Error: " << pos_error.transpose() << std::endl;
 
-    // // Redundant dofs cost
-    // pos_error = initial_configuration - qpos;                             // d x 1
-    // vel_error = -qvel;                                                    // d x 1
-    // H += 1e-2 * joint_selection;                                          // d x d
-    // g += 1e-2 * joint_selection * (0.01 * pos_error + 10.0 * vel_error);  // d x 1
+    // Redundant dofs cost
+    pos_error = initial_configuration - qpos;                             // d x 1
+    vel_error = -qvel;                                                    // d x 1
+    H += 1e-2 * joint_selection;                                          // d x d
+    g += 1e-2 * joint_selection * (0.01 * pos_error + 10.0 * vel_error);  // d x 1
 
     // // Torso cost
     // J = d_torso->getAngularJacobian();

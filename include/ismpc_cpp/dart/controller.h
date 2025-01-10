@@ -10,7 +10,12 @@
 #include "ismpc_cpp/dart/kalman_filter.h"
 #include "ismpc_cpp/dart/simulated_robot.h"
 #include "ismpc_cpp/dart/state_provider.h"
-#include "ismpc_cpp/modules/walk_engine.h"
+#include "ismpc_cpp/modules/casadi_mpc.h"
+#include "ismpc_cpp/modules/foot_trajectory_generator.h"
+#include "ismpc_cpp/modules/footstep_plan_provider.h"
+#include "ismpc_cpp/modules/model_predictive_controller.h"
+#include "ismpc_cpp/modules/moving_constraint_provider.h"
+#include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/debug.h"
 #include "ismpc_cpp/types/math_types.h"
@@ -19,13 +24,22 @@ namespace ismpc {
 
 class Controller : public dart::gui::osg::WorldNode {
    private:
-    // representations
-    SimulatedRobot robot;
+    // walkengine representations
     State state;
+    FootstepPlan plan;
+    FrameInfo frame_info;
+    Reference reference;
+
+    // dart representations
+    SimulatedRobot robot;
     dart::simulation::WorldPtr world;
 
     // modules
-    WalkEngine walk_engine;
+    FootstepPlanProvider planner;
+    ModelPredictiveController mpc;
+    MovingConstraintProvider mc_provider;
+    FootTrajectoryGenerator ft_generator;
+    CasadiMPC casadi_mpc;
     StateProvider state_provider;
     KalmanFilter kalman_filter;
 

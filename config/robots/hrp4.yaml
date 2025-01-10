@@ -1,7 +1,7 @@
 # Geometric parameters
 h: 0.75
 l: 0.2
-theta_max: 0.45 # np.pi/8
+theta_max: 0.3927 # np.pi/8
 step_height: 0.02 # [m]
 foot_com_height: 0.0 # [m]
 
@@ -23,9 +23,9 @@ beta: 1000
 
 # ZMP stuff
 dxz: 0.2
-dyz: 0.2
-zmp_vx_max: 10.0
-zmp_vy_max: 10.0
+dyz: 0.15
+zmp_vx_max: 1.0
+zmp_vy_max: 1.0
 
 # Timing stuff
-ds_percentage: 0.3 # percentage of the entire step time
+ds_percentage: 0.4 # percentage of the entire step time

@@ -26,7 +26,7 @@ class KalmanFilter {
     Eigen::Matrix<Scalar, 6, 6> R;  // Measurement noise covariance (6x6)
     Eigen::Matrix<Scalar, 6, 6> P;  // Covariance matrix (6x6)
     Eigen::Matrix<Scalar, 6, 6> K;  // Kalman gain (6x6)
-    Vector6 x;  // State vector (6x1)
+    Vector6 x;                      // State vector (6x1)
 };
 
 }  // namespace ismpc

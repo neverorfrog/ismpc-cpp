@@ -2,7 +2,7 @@
 h: 0.23
 l: 0.1
 theta_max: 0.3927 # np.pi/8
-step_height: 0.005 # [m]
+step_height: 0.008 # [m]
 foot_com_height: 0 # [m]
 
 # Initial Position
@@ -12,7 +12,7 @@ right_foot_x: 0
 right_foot_y: -0.05
 
 # Cruise parameters
-T_bar: 0.05
+T_bar: 0.1
 L_bar: 0.2
 alpha: 0.5
 
@@ -22,8 +22,8 @@ day: 0.05
 beta: 10000
 
 # ZMP stuff
-dxz: 0.03
-dyz: 0.03
+dxz: 0.1
+dyz: 0.07
 zmp_vx_max: 5.0
 zmp_vy_max: 5.0
 

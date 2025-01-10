@@ -18,7 +18,7 @@ namespace ismpc {
  */
 struct Pose3 {
     RotationMatrix rotation{};
-    Vector3 euler{0, 0, 0}; // Euler angles in radians
+    Vector3 euler{0, 0, 0};  // Euler angles in radians
     Vector3 translation{0, 0, 0};
 
     Pose3() = default;

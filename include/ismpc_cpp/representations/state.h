@@ -44,23 +44,13 @@ struct State {
     Scalar total_mpc_preprocessing_duration = 0.0;
     Scalar total_mpc_postprocessing_duration = 0.0;
 
+    // Plotting related stuff
+    std::vector<Footstep> fs_history;
+    std::vector<LipState> lip_history;
+    std::vector<EndEffector> left_foot_history;
+    std::vector<EndEffector> right_foot_history;
+
     State();
-
-    /**
-     * @brief Get the next LIP state in the x-direction
-     *
-     * @param xdz The velocity in the x-direction
-     * @return Vector3
-     */
-    Vector3 getNextLipx(Scalar xdz) const;
-
-    /**
-     * @brief Get the next LIP state in the y-direction
-     *
-     * @param ydz The velocity in the y-direction
-     * @return Vector3
-     */
-    Vector3 getNextLipy(Scalar ydz) const;
 
     /**
      * @brief Compute the sign corresponding to the footstep index
@@ -78,6 +68,8 @@ struct State {
      * @brief Get the Swing Foot Pose object
      */
     const EndEffector& getSwingFoot() const;
+
+    void setDesiredSwingFoot(const EndEffector& foot);
 
     /**
      * @brief Convert the state to a string representation

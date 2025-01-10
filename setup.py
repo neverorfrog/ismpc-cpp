@@ -26,7 +26,7 @@ class CMakeBuild(build_ext):
     def build_extension(self, ext: CMakeExtension) -> None:
         ext_fullpath = Path.cwd() / self.get_ext_fullpath(ext.name)
         extdir = ext_fullpath.parent.resolve()
-        
+
         # Copy .pyi file to the build directory
         pyi_source = Path('bindings/ismpc_py.pyi')
         pyi_dest = extdir / 'ismpc_py.pyi'

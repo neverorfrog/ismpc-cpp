@@ -20,6 +20,7 @@
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
+#include "ismpc_cpp/types/end_effector.h"
 #include "ismpc_cpp/types/footstep.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/optimization.h"
@@ -73,14 +74,6 @@ class FootstepPlanProvider {
      * theta and position sequence by tracking a virtual unicycle model.
      */
     void update(FootstepPlan& plan);
-
-    // /**
-    //  * @brief Compute the ZMP midpoints for the moving constraint. The goal
-    //  * is to have the ZMP midpoints passing from one foot to another in the
-    //  * double support phase and to be on the support foot in the single
-    //  * support phase. Thus,
-    //  */
-    // void computeZmpMidpoints(FootstepPlan& plan);
 
     /**
      * @brief Get the duration of each footstep. Sets the timestamps in

@@ -71,12 +71,12 @@ T cubic_ddot(T t) {
 
 template <Number T>
 T quartic(T t) {
-    return 16  * std::pow(t, 4) - 32 * std::pow(t, 3) + 16 * std::pow(t, 2);
+    return 16 * std::pow(t, 4) - 32 * std::pow(t, 3) + 16 * std::pow(t, 2);
 }
 
 template <Number T>
 T quartic_dot(T t) {
-    return 64 * std::pow(t, 3) - 96  * std::pow(t, 2) + 32 * t;
+    return 64 * std::pow(t, 3) - 96 * std::pow(t, 2) + 32 * t;
 }
 
 template <Number T>
