@@ -43,58 +43,56 @@ VectorX SimulatedRobot::getJointRequest(const State& state) {
     VectorX ff;
 
     // COM cost
-    J = skeleton->getCOMLinearJacobian();                                    // 3 x d
-    Jtrans = J.transpose();                                                  // d x 3
-    Jdot = skeleton->getCOMLinearJacobianDeriv();                            // 3 x d
-    pos_error = state.desired_lip.com_pos - state.lip.com_pos;               // 3 x 1
-    vel_error = state.desired_lip.com_vel - state.lip.com_vel;               // 3 x 1
-    ff = state.desired_lip.com_acc;                                          // 3 x 1
-    H += Jtrans * J;                                                         // d x d
-    g += -Jtrans * (-Jdot * qvel + ff + 0.1 * pos_error + 1.0 * vel_error);  // d x 1
+    J = skeleton->getCOMLinearJacobian();                                     // 3 x d
+    Jtrans = J.transpose();                                                   // d x 3
+    Jdot = skeleton->getCOMLinearJacobianDeriv();                             // 3 x d
+    pos_error = state.desired_lip.com_pos - state.lip.com_pos;                // 3 x 1
+    vel_error = state.desired_lip.com_vel - state.lip.com_vel;                // 3 x 1
+    ff = state.desired_lip.com_acc;                                           // 3 x 1
+    H += Jtrans * J;                                                          // d x d
+    g += -Jtrans * (-Jdot * qvel + ff + 5.0 * pos_error + 10.0 * vel_error);  // d x 1
 
     // Left foot cost
-    J = d_left_foot->getWorldJacobian();                                                // 6 x d
+    J = skeleton->getJacobian(d_left_foot);                                             // 6 x d
     Jtrans = J.transpose();                                                             // d x 6
-    Jdot = d_left_foot->getJacobianClassicDeriv();                                      // 6 x d
+    Jdot = skeleton->getJacobianClassicDeriv(d_left_foot);                              // 6 x d
     pos_error = (state.desired_left_foot.pose - state.left_foot.pose).getVector();      // 6 x 1
     vel_error = state.desired_left_foot.getVelocity() - state.left_foot.getVelocity();  // 6 x 1
     ff = state.desired_left_foot.getAcceleration();                                     // 6 x 1
     H += Jtrans * J;                                                                    // d x d
-    g += -Jtrans * (-Jdot * qvel + ff + 0.1 * pos_error + 1.0 * vel_error);             // d x 1
-    std::cout << "Left Foot Pos Error: " << pos_error.transpose() << std::endl;
+    g += -Jtrans * (-Jdot * qvel + ff + 5.0 * pos_error + 10.0 * vel_error);            // d x 1
 
     // Right foot cost
-    J = d_right_foot->getWorldJacobian();                                                 // 6 x d
+    J = skeleton->getJacobian(d_right_foot);                                              // 6 x d
     Jtrans = J.transpose();                                                               // d x 6
-    Jdot = d_right_foot->getJacobianClassicDeriv();                                       // 6 x d
+    Jdot = skeleton->getJacobianClassicDeriv(d_right_foot);                               // 6 x d
     pos_error = (state.desired_right_foot.pose - state.right_foot.pose).getVector();      // 6 x 1
     vel_error = state.desired_right_foot.getVelocity() - state.right_foot.getVelocity();  // 6 x 1
     ff = state.desired_right_foot.getAcceleration();                                      // 6 x 1
     H += Jtrans * J;                                                                      // d x d
-    g += -Jtrans * (-Jdot * qvel + ff + 0.1 * pos_error + 1.0 * vel_error);               // d x 1
-    std::cout << "Right Foot Pos Error: " << pos_error.transpose() << std::endl;
+    g += -Jtrans * (-Jdot * qvel + ff + 5.0 * pos_error + 10.0 * vel_error);              // d x 1
 
     // Redundant dofs cost
-    pos_error = initial_configuration - qpos;                             // d x 1
-    vel_error = -qvel;                                                    // d x 1
-    H += 1e-2 * joint_selection;                                          // d x d
-    g += 1e-2 * joint_selection * (0.01 * pos_error + 10.0 * vel_error);  // d x 1
+    pos_error = initial_configuration - qpos;                            // d x 1
+    vel_error = -qvel;                                                   // d x 1
+    H += 1e-2 * joint_selection;                                         // d x d
+    g += 1e-2 * joint_selection * (10.0 * pos_error + 1.0 * vel_error);  // d x 1
 
     // // Torso cost
     // J = d_torso->getAngularJacobian();
     // Jdot = d_torso->getAngularJacobianDeriv();
-    // pos_error = (desired.torso.pose.rotation.inverse() * state.torso.pose.rotation).getRPY();
-    // vel_error = desired.torso.ang_vel - state.torso.ang_vel;
-    // ff = desired.torso.ang_acc;
+    // pos_error = (state.desired_torso.pose.rotation.inverse() * state.torso.pose.rotation).getRPY();
+    // vel_error = state.desired_torso.ang_vel - state.torso.ang_vel;
+    // ff = state.desired_torso.ang_acc;
     // H += J.transpose() * J;
     // g += J.transpose() * (Jdot * qvel - ff - 1. * pos_error - 1. * vel_error);
 
     // // Base cost
     // J = d_base->getAngularJacobian();
     // Jdot = d_base->getAngularJacobianDeriv();
-    // pos_error = (desired.base.pose.rotation.inverse() * state.base.pose.rotation).getRPY();
-    // vel_error = desired.base.ang_vel - state.base.ang_vel;
-    // ff = desired.base.ang_acc;
+    // pos_error = (state.desired_base.pose.rotation.inverse() * state.base.pose.rotation).getRPY();
+    // vel_error = state.desired_base.ang_vel - state.base.ang_vel;
+    // ff = state.desired_base.ang_acc;
     // H += J.transpose() * J;
     // g += J.transpose() * (Jdot * qvel - ff - 1. * pos_error - 10. * vel_error);
 

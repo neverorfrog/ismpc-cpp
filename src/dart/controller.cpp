@@ -47,7 +47,6 @@ void Controller::customPreStep() {
     state_provider.update(state);  // Reading sensors
     kalman_filter.update(state);   // Filtering the state
 
-    std::cout << std::endl << "--------------------------------" << std::endl;
     std::cout << "CURRENT STATE AFTER FILTERING" << std::endl;
     std::cout << "COM POS: " << state.lip.com_pos.transpose().format(Config::CleanFmt) << std::endl;
     std::cout << "COM VEL: " << state.lip.com_vel.transpose().format(Config::CleanFmt) << std::endl;
@@ -63,6 +62,9 @@ void Controller::customPreStep() {
     std::cout << "Left Foot Acc: " << state.left_foot.lin_acc.transpose().format(Config::CleanFmt) << std::endl;
     std::cout << "Right Foot Acc: " << state.right_foot.lin_acc.transpose().format(Config::CleanFmt) << std::endl;
     std::cout << "" << std::endl;
+
+    std::cout << "CURRENT TIME: " << frame_info.tk << std::endl;
+    std::cout << "CURRENT PLANNED FOOTSTEP: \n" << state.footstep.toString() << std::endl;
 
     // Step of MPC
     mc_provider.update(plan);
@@ -104,6 +106,8 @@ void Controller::customPreStep() {
 
     auto end = std::chrono::high_resolution_clock::now();
     total_elapsed_time += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+    std::cout << "Average execution time: " << total_elapsed_time / frame_info.k << " microseconds" << std::endl;
 }
 
 dart::simulation::WorldPtr Controller::get_world() {
