@@ -8,10 +8,13 @@ namespace ismpc {
  * Namely, compute the lip state.
  */
 class StateProvider {
-   public:
-    StateProvider() = default;
+   private:
+    const SimulatedRobot& robot;
 
-    void update(SimulatedRobot& robot);
+   public:
+    StateProvider(const SimulatedRobot& robot);
+
+    void update(State& state);
 };
 
 }  // namespace ismpc

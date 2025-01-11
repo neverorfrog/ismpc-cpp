@@ -14,7 +14,7 @@ Controller::Controller(const dart::simulation::WorldPtr world, const dart::dynam
       mc_provider(frame_info, state, plan),
       ft_generator(frame_info, state, plan),
       casadi_mpc(frame_info, state, plan),
-      state_provider(),
+      state_provider(robot),
       kalman_filter(robot) {
     robot = SimulatedRobot(skeleton);
     world->setTimeStep(Config::delta);
@@ -44,7 +44,7 @@ void Controller::customPreStep() {
     std::cout << "" << std::endl;
 
     // Update the state of the robot
-    state_provider.update(robot);  // Reading sensors
+    state_provider.update(state);  // Reading sensors
     kalman_filter.update(state);   // Filtering the state
 
     std::cout << std::endl << "--------------------------------" << std::endl;
@@ -66,7 +66,7 @@ void Controller::customPreStep() {
 
     // Step of MPC
     mc_provider.update(plan);
-    casadi_mpc.update(state);
+    mpc.update(state);
     ft_generator.update(state);
 
     std::cout << "DESIRED STATE" << std::endl;

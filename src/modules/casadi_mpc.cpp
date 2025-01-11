@@ -13,7 +13,7 @@ CasadiMPC::CasadiMPC(const FrameInfo& frame_info, const State& state, const Foot
     options["expand"] = true;
     options["print_time"] = false;
     solver_options["max_iter"] = 1000;
-    opti.solver("proxqp", options, solver_options);
+    opti.solver("osqp", options, solver_options);
 
     X = opti.variable(6, numC + 1);
     U = opti.variable(2, numC);
@@ -36,9 +36,9 @@ CasadiMPC::CasadiMPC(const FrameInfo& frame_info, const State& state, const Foot
     opti.subject_to(X(5, all_but_first).T() <= zmp_y_param + dyz / 2);
     opti.subject_to(X(5, all_but_first).T() >= zmp_y_param - dyz / 2);
 
-    opti.subject_to(X(1, 0) + std::pow(eta, 3) + (X(0, 0) - X(2, 0)) ==
+    opti.subject_to(X(1, 0) + std::pow(eta, 3) * (X(0, 0) - X(2, 0)) ==
                     X(1, numC) + std::pow(eta, 3) * (X(0, numC) - X(2, numC)));
-    opti.subject_to(X(4, 0) + std::pow(eta, 3) + (X(3, 0) - X(5, 0)) ==
+    opti.subject_to(X(4, 0) + std::pow(eta, 3) * (X(3, 0) - X(5, 0)) ==
                     X(4, numC) + std::pow(eta, 3) * (X(3, numC) - X(5, numC)));
 
     opti.minimize(cost);
@@ -74,8 +74,7 @@ void CasadiMPC::update(State& state) {
     state.desired_lip.com_vel << x_sol[1], x_sol[4], 0.0;
     state.desired_lip.zmp_pos << x_sol[2], x_sol[5], 0.0;
     state.desired_lip.zmp_vel << u_sol[0], u_sol[1], 0.0;
-    VectorX com_acc =
-        (RobotConfig::eta * RobotConfig::eta) * (state.desired_lip.com_pos - state.desired_lip.zmp_pos);
+    VectorX com_acc = (eta * eta) * (state.desired_lip.com_pos - state.desired_lip.zmp_pos);
     state.desired_lip.com_acc << com_acc(0), com_acc(1), 0.0;
 
     state.lip_history.push_back(state.lip);
@@ -90,8 +89,6 @@ void CasadiMPC::update(State& state) {
         state.footstep = plan.footsteps[fs_index];
         fs_index++;
     }
-
-    // std::cout << "TIME: " << frame_info.tk << std::endl;
 
     // Update the support phase info
     if (frame_info.tk >= state.footstep.ds_start)

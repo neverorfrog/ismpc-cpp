@@ -30,9 +30,6 @@ struct SimulatedRobot {
     dart::dynamics::BodyNode* d_left_foot;
     dart::dynamics::BodyNode* d_right_foot;
 
-    // Internal State
-    State state;
-
     // Utility functions
     VectorX getJointRequest(const State& desired);
     void setInitialConfiguration();

@@ -1,12 +1,10 @@
 #include "ismpc_cpp/dart/state_provider.h"
 
-#include "ismpc_cpp/tools/math/rotation_matrix.h"
-
 namespace ismpc {
 
-void StateProvider::update(SimulatedRobot& robot) {
-    State& state = robot.state;
+StateProvider::StateProvider(const SimulatedRobot& robot) : robot(robot) {}
 
+void StateProvider::update(State& state) {
     // Update the com of the robot
     state.lip.com_pos = robot.skeleton->getCOM();
     state.lip.com_vel = robot.skeleton->getCOMLinearVelocity();

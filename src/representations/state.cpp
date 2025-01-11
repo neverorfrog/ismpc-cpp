@@ -5,6 +5,8 @@ namespace ismpc {
 State::State() {
     left_foot.pose.translation << left_foot_x, left_foot_y, 0;
     right_foot.pose.translation << right_foot_x, right_foot_y, 0;
+    desired_left_foot.pose.translation << left_foot_x, left_foot_y, 0;
+    desired_right_foot.pose.translation << right_foot_x, right_foot_y, 0;
 
     // Walk Initialization
     footstep.start_pose = right_foot.getPose2();
@@ -34,7 +36,7 @@ const EndEffector& State::getSwingFoot() const {
 }
 
 void State::setDesiredSwingFoot(const EndEffector& foot) {
-    if (footstep.support_foot == Foot::right) {
+    if (footstep.support_foot == Foot::left) {
         desired_right_foot = foot;
     } else {
         desired_left_foot = foot;

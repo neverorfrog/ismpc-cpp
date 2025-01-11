@@ -3,6 +3,7 @@
 #include <casadi/casadi.hpp>
 #include <cmath>
 
+#include "ismpc_cpp/dart/simulated_robot.h"
 #include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
