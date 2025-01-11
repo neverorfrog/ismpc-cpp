@@ -48,8 +48,7 @@ int main() {
 
         // Update the MPC module
         start = std::chrono::high_resolution_clock::now();
-        // mpc.update(state);
-        casadi_mpc.update(state);
+        mpc.update(state);
         std::cout << "Desired Lip: " << state.desired_lip << std::endl;
         end = std::chrono::high_resolution_clock::now();
         total_mpc_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();

@@ -36,7 +36,7 @@ mc_provider = MovingConstraintProvider(frame_info, state, plan)
 elapsed = []
 iterations = range(config.N)
 planner.update(plan)
-state_plotter = StatePlotter()
+# state_plotter = StatePlotter()
 
 with tqdm(iterations, desc="Walking...") as pbar:
     for k in pbar:
@@ -67,9 +67,8 @@ with tqdm(iterations, desc="Walking...") as pbar:
 
         # pbar.set_description(f"Step: {k}, Time: {frame_info.tk:.3f}")
 
-        state_plotter.update_plot(state)
+        # state_plotter.update_plot(state)
         print("\n")
 
 print(f"Average elapsed time: {np.mean(elapsed):.3f} ms")
-
-# animate(Gait(state), config, robot_config, save=False, plot_mode=PlotMode.TWO_D)
+animate(Gait(state), config, robot_config, save=False, plot_mode=PlotMode.TWO_D)
