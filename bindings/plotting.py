@@ -202,8 +202,8 @@ def animate(
     max_y = max(gait.zmp_traj[1, :]) + 0.2
     min_y = min(gait.zmp_traj[1, :]) - 0.2
 
-    x_pad = 0.3 * (max_x - min_x)
-    y_pad = 0.5 * (max_y - min_y)
+    x_pad = 0.3 * (max_x - min_x) + 0.2
+    y_pad = 0.5 * (max_y - min_y) - 0.2
 
     if not os.path.exists(f"videos/{plot_mode.value}"):
         os.makedirs(f"videos/{plot_mode.value}")

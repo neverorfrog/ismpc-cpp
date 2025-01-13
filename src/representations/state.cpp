@@ -15,7 +15,7 @@ State::State() {
     footstep.support_foot = Foot::right;
     footstep.start = 0;
     footstep.ds_start = 0;
-    footstep.end = 0.5;  // DEFAULT VALUE
+    footstep.end = Config::first_fs_duration;  // DEFAULT VALUE
 
     previous_sf_pose = left_foot.getPose2();
     previous_support_foot = Foot::left;

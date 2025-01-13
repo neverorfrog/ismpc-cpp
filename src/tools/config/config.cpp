@@ -12,6 +12,7 @@ void Config::init_params() {
     GREEN << 0.0, 1.0, 0.0;
     save_log = config["save_log"].as<bool>();
     delta = config["delta"].as<Scalar>();
+    first_fs_duration = config["first_fs_duration"].as<Scalar>();
 
     N = config["N"].as<int>();
     P = config["P"].as<int>();

@@ -40,14 +40,14 @@ class CasadiMPC {
     const TailType tail_type = Config::tail_type;
 
     // Lip Model
-    casadi::DM A = casadi::DM({{0, 1, 0}, {eta * eta, 0, -eta* eta}, {0, 0, 0}});
+    casadi::DM A = casadi::DM({{0, 1, 0}, {eta * eta, 0, -eta * eta}, {0, 0, 0}});
     casadi::DM B = casadi::DM({0, 0, 1});
 
     // Optimization related stuff
     casadi::Slice all = casadi::Slice();
     casadi::Slice first_half = casadi::Slice(0, 3);
     casadi::Slice second_half = casadi::Slice(3, 6);
-    casadi::Slice all_but_first = casadi::Slice(1);
+    casadi::Slice all_but_first = casadi::Slice(1, numC + 1);
     casadi::MX cost;
     casadi::DM x;
     casadi::Opti opti;
