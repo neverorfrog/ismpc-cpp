@@ -22,6 +22,7 @@ class MovingConstraintProvider {
 
     // Parameters
     const int numP = Config::P;  // number of planning points
+    const int numC = Config::C;  // number of control points
 
     VectorX sigmaFunction(VectorX time, Scalar t0, Scalar t1) const;
 

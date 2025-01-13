@@ -15,9 +15,9 @@ class FootstepPlan {
     std::vector<Footstep> footsteps;
     std::vector<int> footstep_indices;
     std::vector<SupportPhase> support_phases;
-    Matrix zmp_midpoints_x = VectorX::Zero(Config::P);
-    Matrix zmp_midpoints_y = VectorX::Zero(Config::P);
-    Matrix zmp_midpoints_theta = VectorX::Zero(Config::P);
+    Matrix zmp_midpoints_x = VectorX::Zero(Config::C);
+    Matrix zmp_midpoints_y = VectorX::Zero(Config::C);
+    Matrix zmp_midpoints_theta = VectorX::Zero(Config::C);
 
     Scalar total_planner_qp_duration;
 

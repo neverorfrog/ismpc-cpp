@@ -12,9 +12,9 @@ void MovingConstraintProvider::update(FootstepPlan& plan) {
     // Vector3 midpoint = (state.getSupportFoot().getPose2().getVector() + state.footstep.start_pose.getVector()) /
     // 2;
     Vector3 midpoint = Vector3::Zero();
-    plan.zmp_midpoints_x = VectorX::Constant(numP, midpoint(0));
-    plan.zmp_midpoints_y = VectorX::Constant(numP, midpoint(1));
-    plan.zmp_midpoints_theta = VectorX::Constant(numP, midpoint(2));
+    plan.zmp_midpoints_x = VectorX::Constant(numC, midpoint(0));
+    plan.zmp_midpoints_y = VectorX::Constant(numC, midpoint(1));
+    plan.zmp_midpoints_theta = VectorX::Constant(numC, midpoint(2));
 
     // std::cout << "CURRENT FOOTSTEP: " << state.footstep.toString() << std::endl;
     // std::cout << "CURRENT SUPPORT PHASE: " << state.support_phase << std::endl;
@@ -44,15 +44,6 @@ void MovingConstraintProvider::update(FootstepPlan& plan) {
     plan.zmp_midpoints_y = plan.zmp_midpoints_y + sigma * (end_pose.translation(1) - start_pose.translation(1));
     plan.zmp_midpoints_theta = plan.zmp_midpoints_theta + sigma * (end_pose.rotation - start_pose.rotation);
 
-    // Regularize ZMP midpoints by setting very small numbers to zero
-    const double epsilon = 1e-10;
-    plan.zmp_midpoints_x = (plan.zmp_midpoints_x.array().abs() < epsilon).select(0.0, plan.zmp_midpoints_x);
-    plan.zmp_midpoints_y = (plan.zmp_midpoints_y.array().abs() < epsilon).select(0.0, plan.zmp_midpoints_y);
-    plan.zmp_midpoints_theta =
-        (plan.zmp_midpoints_theta.array().abs() < epsilon).select(0.0, plan.zmp_midpoints_theta);
-
-    // std::cout << "ZMP Midpoints X: " << plan.zmp_midpoints_x.transpose().format(Config::CleanFmt) << std::endl;
-    // std::cout << "ZMP Midpoints Y: " << plan.zmp_midpoints_y.transpose().format(Config::CleanFmt) << std::endl;
 }
 
 VectorX MovingConstraintProvider::sigmaFunction(VectorX time, Scalar t0, Scalar t1) const {
