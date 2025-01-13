@@ -13,7 +13,7 @@ CasadiMPC::CasadiMPC(const FrameInfo& frame_info, const State& state, const Foot
     options["expand"] = true;
     options["print_time"] = false;
     solver_options["max_iter"] = 1000;
-    opti.solver("osqp", options, solver_options);
+    opti.solver("proxqp", options, solver_options);
 
     X = opti.variable(6, numC + 1);
     U = opti.variable(2, numC);

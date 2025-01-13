@@ -31,14 +31,14 @@ void StateProvider::update(State& state) {
     Eigen::VectorXd grf_R = robot.d_right_foot->getConstraintImpulse();
     Eigen::Vector3d left_cop, right_cop;
 
-    if (abs(grf_L[5]) > 0.01) {
+    if (abs(grf_L[5]) > 0.1) {
         left_cop << -grf_L(1) / grf_L(5), grf_L(0) / grf_L(5), 0.0;
         left_cop = robot.d_left_foot->getWorldTransform().translation() +
                    robot.d_left_foot->getWorldTransform().rotation() * left_cop;
         left_contact = true;
     }
 
-    if (abs(grf_R[5]) > 0.01) {
+    if (abs(grf_R[5]) > 0.1) {
         right_cop << -grf_R(1) / grf_R(5), grf_R(0) / grf_R(5), 0.0;
         right_cop = robot.d_right_foot->getWorldTransform().translation() +
                     robot.d_right_foot->getWorldTransform().rotation() * right_cop;

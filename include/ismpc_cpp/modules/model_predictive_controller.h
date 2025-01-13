@@ -6,11 +6,14 @@
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
 #include "ismpc_cpp/tools/config/config.h"
+#include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
+#include "ismpc_cpp/types/ismpc_qp.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/optimization.h"
 
 namespace ismpc {
+
 /**
  * @brief Model Predictive Control class
  *
@@ -31,66 +34,15 @@ class ModelPredictiveController {
     const int numP = Config::P;  // number of planning points
     const Scalar delta = Config::delta;
     const Scalar eta = RobotConfig::eta;
-    const Scalar dxz = RobotConfig::dxz;
-    const Scalar dyz = RobotConfig::dyz;
-    const Scalar zmp_vx_max = RobotConfig::zmp_vx_max;
-    const Scalar zmp_vy_max = RobotConfig::zmp_vy_max;
-    const TailType tail_type = Config::tail_type;
 
-    // Optimization related stuff
-    isize d = 2 * numC;                            // number of primal variables (xdz, ydz)
-    isize n_in = 2 * d;                            // number of inequality constraints (zmp pos, zmp vel)
-    isize n_eq = 2;                                // number of equality constraints
-    InequalityConstraint zmp_constraint;           // zmp constraint
-    InequalityConstraint zmp_velocity_constraint;  // zmp velocity constraint
-    InequalityConstraint kinematic_constraint;     // kinematic constraint
-    Cost mpc_cost;                                 // cost function
-    EqualityConstraint stability_constraint;       // stability constraint
-    Matrix C;                                      // combined inequality constraint matrix
-    VectorX l, u;                                  // combined inequality constraint bounds
-
-    // Var buffers
-    Matrix Xdz, Ydz;     // ZMP velocities
-    Matrix Xc, Yc;       // CoM positions
-    Matrix Xdc, Ydc;     // CoM velocities
-    Matrix Xz, Yz;       // ZMP positions
-    Vector3 lipx, lipy;  // current lip position
+    // QP Struct
+    IsmpcQp qpx = IsmpcQp();
+    IsmpcQp qpy = IsmpcQp();
+    VectorX x_sol;
+    VectorX y_sol;
 
     // Testing
     int fs_index = 0;
-
-    /**
-     * @brief Get the Mpc Cost object such as to minimize the squared sum of zmp velocities
-     * and the squared errore between proposed footsteps by the planner and dfootsteps
-     * treated as decision variables
-     *
-     * @return Cost
-     */
-    Cost getCost() const;
-
-    /**
-     * @brief Get the Zmp Constraint object such as to keep the zmp always inside the convex hull.
-     * In single support phase this corresponds to the support foot itself, while in double support
-     * it is a moving rectangle (same size of the feet approximately) from the previous
-     * support foot to the current one
-     *
-     * @return InequalityConstraint
-     */
-    InequalityConstraint getZmpConstraint(const Vector3& lipx, const Vector3& lipy) const;
-
-    /**
-     * @brief Get the Zmp Velocity Constraint object to keep the zmp velocity within a certain limit
-     *
-     * @return InequalityConstraint
-     */
-    InequalityConstraint getZmpVelocityConstraint() const;
-
-    /**
-     * @brief Get the Stability Constraint object (TODO doc)
-     *
-     * @return EqualityConstraint
-     */
-    EqualityConstraint getStabilityConstraint(const Vector3& lipx, const Vector3& lipy) const;
 
     // time related stuff
     std::chrono::high_resolution_clock::time_point start, end;

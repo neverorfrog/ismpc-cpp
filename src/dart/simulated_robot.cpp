@@ -76,31 +76,27 @@ VectorX SimulatedRobot::getJointRequest(const State& state) {
     pos_error = initial_configuration - qpos;                            // d x 1
     vel_error = -qvel;                                                   // d x 1
     H += 1e-2 * joint_selection;                                         // d x d
-    g += 1e-2 * joint_selection * (10.0 * pos_error + 1.0 * vel_error);  // d x 1
+    g += 1e-2 * joint_selection * (10.0 * pos_error + 0.1 * vel_error);  // d x 1
 
-    // // Torso cost
-    // J = d_torso->getAngularJacobian();
-    // Jdot = d_torso->getAngularJacobianDeriv();
-    // pos_error = (state.desired_torso.pose.rotation.inverse() * state.torso.pose.rotation).getRPY();
-    // vel_error = state.desired_torso.ang_vel - state.torso.ang_vel;
-    // ff = state.desired_torso.ang_acc;
-    // H += J.transpose() * J;
-    // g += J.transpose() * (Jdot * qvel - ff - 1. * pos_error - 1. * vel_error);
+    // Torso cost
+    J = skeleton->getAngularJacobian(d_torso);                                                       // 3 x d
+    Jtrans = J.transpose();                                                                          // d x 3
+    Jdot = skeleton->getAngularJacobianDeriv(d_torso);                                               // 3 x d
+    pos_error = (state.desired_torso.pose.rotation.inverse() * state.torso.pose.rotation).getRPY();  // 3 x 1
+    vel_error = state.desired_torso.ang_vel - state.torso.ang_vel;                                   // 3 x 1
+    ff = state.desired_torso.ang_acc;
+    H += Jtrans * J;                                                     // d x d
+    g += Jtrans * (Jdot * qvel - ff - 1. * pos_error - 1. * vel_error);  // d x 1
 
-    // // Base cost
-    // J = d_base->getAngularJacobian();
-    // Jdot = d_base->getAngularJacobianDeriv();
-    // pos_error = (state.desired_base.pose.rotation.inverse() * state.base.pose.rotation).getRPY();
-    // vel_error = state.desired_base.ang_vel - state.base.ang_vel;
-    // ff = state.desired_base.ang_acc;
-    // H += J.transpose() * J;
-    // g += J.transpose() * (Jdot * qvel - ff - 1. * pos_error - 10. * vel_error);
-
-    // // Equality constraint
-    // Eigen::MatrixXd A = Eigen::MatrixXd::Zero(6, d);
-    // Eigen::VectorXd b = Eigen::VectorXd::Zero(6, 1);
-    // A = J;
-    // b = -Jdot * qvel + 0.1 * pos_error + 10. * vel_error;
+    // Base cost
+    J = skeleton->getAngularJacobian(d_base);                                                        // 3 x d
+    Jtrans = J.transpose();                                                                          // d x 3
+    Jdot = skeleton->getAngularJacobianDeriv(d_base);                                                // 3 x d
+    pos_error = (state.desired_torso.pose.rotation.inverse() * state.torso.pose.rotation).getRPY();  // 3 x 1
+    vel_error = state.desired_torso.ang_vel - state.torso.ang_vel;                                   // 3 x 1
+    ff = state.desired_torso.ang_acc;
+    H += Jtrans * J;                                                     // d x d
+    g += Jtrans * (Jdot * qvel - ff - 1. * pos_error - 1. * vel_error);  // d x 1
 
     if (!H.allFinite()) {
         throw std::runtime_error("H contains NaN or Inf values");

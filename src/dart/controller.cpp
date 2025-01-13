@@ -27,6 +27,18 @@ void Controller::customPreStep() {
     auto start = std::chrono::high_resolution_clock::now();
 
     std::cout << std::endl << "--------------------------------" << std::endl;
+    // Update the state of the robot
+    state_provider.update(state);  // Reading sensors
+    kalman_filter.update(state);   // Filtering the state
+
+    state.lip.zmp_pos = state.desired_lip.zmp_pos;
+
+    if (frame_info.k == 0) {
+        state.footstep.start_pose.translation(0) = state.right_foot.pose.translation(0);
+        state.footstep.end_pose.translation(0) = state.right_foot.pose.translation(0);
+        state.desired_right_foot.pose.translation(0) = state.right_foot.pose.translation(0);
+    }
+
     std::cout << "CURRENT STATE" << std::endl;
     std::cout << "COM POS: " << state.lip.com_pos.transpose().format(Config::CleanFmt) << std::endl;
     std::cout << "COM VEL: " << state.lip.com_vel.transpose().format(Config::CleanFmt) << std::endl;
@@ -37,30 +49,6 @@ void Controller::customPreStep() {
               << std::endl;
     std::cout << "RFoot Pose: " << state.right_foot.pose.getVector().transpose().format(Config::CleanFmt)
               << std::endl;
-    std::cout << "Left Foot Vel: " << state.left_foot.lin_vel.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "Right Foot Vel: " << state.right_foot.lin_vel.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "Left Foot Acc: " << state.left_foot.lin_acc.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "Right Foot Acc: " << state.right_foot.lin_acc.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "" << std::endl;
-
-    // Update the state of the robot
-    state_provider.update(state);  // Reading sensors
-    kalman_filter.update(state);   // Filtering the state
-
-    std::cout << "CURRENT STATE AFTER FILTERING" << std::endl;
-    std::cout << "COM POS: " << state.lip.com_pos.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "COM VEL: " << state.lip.com_vel.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "COM ACC: " << state.lip.com_acc.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "ZMP POS: " << state.lip.zmp_pos.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "ZMP VEL: " << state.lip.zmp_vel.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "LFoot Pose: " << state.left_foot.pose.getVector().transpose().format(Config::CleanFmt)
-              << std::endl;
-    std::cout << "RFoot Pose: " << state.right_foot.pose.getVector().transpose().format(Config::CleanFmt)
-              << std::endl;
-    std::cout << "Left Foot Vel: " << state.left_foot.lin_vel.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "Right Foot Vel: " << state.right_foot.lin_vel.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "Left Foot Acc: " << state.left_foot.lin_acc.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "Right Foot Acc: " << state.right_foot.lin_acc.transpose().format(Config::CleanFmt) << std::endl;
     std::cout << "" << std::endl;
 
     std::cout << "CURRENT TIME: " << frame_info.tk << std::endl;
@@ -68,7 +56,7 @@ void Controller::customPreStep() {
 
     // Step of MPC
     mc_provider.update(plan);
-    mpc.update(state);
+    casadi_mpc.update(state);
     ft_generator.update(state);
 
     std::cout << "DESIRED STATE" << std::endl;
@@ -81,15 +69,15 @@ void Controller::customPreStep() {
               << std::endl;
     std::cout << "Right Foot Pose: "
               << state.desired_right_foot.pose.getVector().transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "Left Foot Vel: " << state.desired_left_foot.lin_vel.transpose().format(Config::CleanFmt)
-              << std::endl;
-    std::cout << "Right Foot Vel: " << state.desired_right_foot.lin_vel.transpose().format(Config::CleanFmt)
-              << std::endl;
-    std::cout << "Left Foot Acc: " << state.desired_left_foot.lin_acc.transpose().format(Config::CleanFmt)
-              << std::endl;
-    std::cout << "Right Foot Acc: " << state.desired_right_foot.lin_acc.transpose().format(Config::CleanFmt)
-              << std::endl;
     std::cout << "--------------------------------" << std::endl;
+
+    // Setting Desired Torso based on the feet
+    RotationMatrix desired_torso_orientation = RotationMatrix(state.desired_left_foot.pose.rotation.getQuaternion().slerp(0.5, state.desired_right_foot.pose.rotation.getQuaternion()));
+    Vector3 desired_torso_ang_vel = (state.desired_left_foot.ang_vel + state.desired_right_foot.ang_vel) / 2;
+    Vector3 desired_torso_ang_acc = (state.desired_left_foot.ang_acc + state.desired_right_foot.ang_acc) / 2;
+    state.desired_torso.pose.rotation = desired_torso_orientation;
+    state.desired_torso.ang_vel = desired_torso_ang_vel;
+    state.desired_torso.ang_acc = desired_torso_ang_acc;
 
     // Get and send the joint request
     VectorX joint_request = robot.getJointRequest(state);

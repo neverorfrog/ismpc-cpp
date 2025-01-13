@@ -19,19 +19,6 @@ void FootstepPlanProvider::update(FootstepPlan& plan) {
     y_sequence.insert(y_sequence.begin(), sf_pose.translation(1));
     timestamps.insert(timestamps.begin(), state.footstep.start);
 
-    // std::cout << "Theta Sequence: "
-    //           << VectorX::Map(theta_sequence.data(), theta_sequence.size()).transpose().format(Config::CleanFmt)
-    //           << std::endl;
-    // std::cout << "X Sequence: "
-    //           << VectorX::Map(x_sequence.data(), x_sequence.size()).transpose().format(Config::CleanFmt)
-    //           << std::endl;
-    // std::cout << "Y Sequence: "
-    //           << VectorX::Map(y_sequence.data(), y_sequence.size()).transpose().format(Config::CleanFmt)
-    //           << std::endl;computeTiming
-    // std::cout << "Timestamps: "
-    //           << VectorX::Map(timestamps.data(), timestamps.size()).transpose().format(Config::CleanFmt)
-    //           << std::endl;
-
     for (int j = 1; j < num_predicted_footsteps + 1; ++j) {
         Footstep footstep{};
 
@@ -51,20 +38,12 @@ void FootstepPlanProvider::update(FootstepPlan& plan) {
 
         plan.footsteps.push_back(footstep);
     }
-
-    // print footstep plan
-    // for (int j = 0; j < num_predicted_footsteps; ++j) {
-    //     std::cout << "\n"
-    //               << "Footstep " << j << ": "
-    //               << "\n"
-    //               << plan.footsteps[j] << std::endl;
-    // }
 }
 
 void FootstepPlanProvider::computeTiming() {
-    Scalar V = reference.getVelocityModule();
+    // Scalar V = reference.getVelocityModule();
     Scalar current_footstep_timestamp = state.footstep.start;
-    Scalar expected_duration = 0.5; //T_bar * (alpha + v_bar) / (alpha + V);
+    Scalar expected_duration = Config::first_fs_duration; //T_bar * (alpha + v_bar) / (alpha + V);
     Scalar time_of_next_step = current_footstep_timestamp + expected_duration;
 
     while (time_of_next_step <= frame_info.tk + T_p) {
