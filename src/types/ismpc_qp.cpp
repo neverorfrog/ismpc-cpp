@@ -1,11 +1,13 @@
 #include <ismpc_cpp/types/ismpc_qp.h>
 
+#include "ismpc_cpp/tools/config/config.h"
+
 namespace ismpc {
 
 IsmpcQp::IsmpcQp() {
     // Options
     qp.settings.max_iter = 100;
-    qp.settings.initial_guess = InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
+    qp.settings.initial_guess = InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
     qp.settings.verbose = false;
     qp.settings.compute_timings = true;
     qp.settings.eps_abs = 1e-3;
@@ -13,78 +15,66 @@ IsmpcQp::IsmpcQp() {
 
     // Cost Function
     cost = Cost(d);
-    cost.H = Matrix::Identity(d, d) * 2;  // Square Sum of xz, xdz
-    cost.H(0, 0) = 0;                     // xz_0
-    for (int i = 1; i < numC; ++i) {
-        cost.H(2 * i, 2 * i) = 2 * beta;  // xz_i
+    for (int i = 0; i < numC; ++i) {
+        cost.H(nv * i + 3, nv * i + 3) = 2;                     // dzmp
+        cost.H(nv * (i + 1) + 2, nv * (i + 1) + 2) = 2 * beta;  // zmp
     }
-    cost.H(numC, numC) = 2 * beta;  // xz_n
 
     // Initial Constraint
-    initial_constraint = EqualityConstraint(1, d);
-    initial_constraint.A(0, 0) = 1;
-    A.block(0, 0, 1, d) = initial_constraint.A;
+    initial_constraint = EqualityConstraint(nl, d);
+    initial_constraint.A.block(0, 0, nl, nl) = Matrix::Identity(nl, nl);
+    A.block(0, 0, nl, d) = initial_constraint.A;
 
     // Model Constraint (Ax = b) -> b are all zeros
-    model_constraint = EqualityConstraint(numC, d);
+    model_constraint = EqualityConstraint(nl * numC, d);
+    Matrix Ak = Matrix::Zero(nl, nv + nl);
+    Ak.block(0, 0, nl, nl) = Matrix::Identity(nl, nl);        // current lip state
+    Ak.block(0, nv, nl, nl) = -1 * Matrix::Identity(nl, nl);  // next lip state
+    Ak(0, 1) = delta;                                         // current com vel
+    Ak(2, 3) = delta;                                         // current zmp vel
+    Ak(1, 0) = std::pow(eta, 2) * delta;                      // current com pos
+    Ak(1, 2) = -std::pow(eta, 2) * delta;                     // current zmp pos
     for (int i = 0; i < numC; ++i) {
-        model_constraint.A(i, 2 * i) = 1;          // current zmp
-        model_constraint.A(i, 2 * i + 1) = delta;  // current zmp_dot
-        model_constraint.A(i, 2 * i + 2) = -1;     // next zmp
+        model_constraint.A.block(nl * i, nv * i, nl, nv + nl) = Ak;
     }
-    A.block(1, 0, numC, d) = model_constraint.A;
+    A.block(nl, 0, nl * numC, d) = model_constraint.A;
 
     // Stability Constraint
     stability_constraint = EqualityConstraint(1, d);
-    for (int i = 1; i < numC; ++i) {  // Summation of zmp velocities
-        stability_constraint.A(0, 2 * i + 1) = std::exp(-(i - 1) * delta * eta);
-    }
-    A.block(1 + numC, 0, 1, d) = stability_constraint.A;
+    stability_constraint.A(0, 0) = eta;              // initial com pos
+    stability_constraint.A(0, 2) = -eta;             // initial zmp pos
+    stability_constraint.A(0, 1) = 1;                // initial com vel
+    stability_constraint.A(0, nv * numC) = -eta;     // final com pos
+    stability_constraint.A(0, nv * numC + 2) = eta;  // final zmp pos
+    stability_constraint.A(0, nv * numC + 1) = -1;   // final com vel
+    A.block(nl + nl * numC, 0, 1, d) = stability_constraint.A;
 
     // Zmp Constraint
-    zmp_constraint = InequalityConstraint(d, d);
-    zmp_constraint.C = Matrix::Identity(d, d);
+    zmp_constraint = InequalityConstraint(n_in, d);
+    for (int i = 1; i < numC + 1; ++i) {
+        zmp_constraint.C(i, nv * i + 2) = 1;
+    }
 }
 
 void IsmpcQp::update(const Vector3 &lip, const VectorX &mc) {
     // Cost Function
-    for (int i = 1; i < numC; ++i) {
-        cost.g(2 * i) = -2 * beta * mc(i - 1);
+    for (int i = 0; i < numC; ++i) {
+        cost.g(nv * (i+1) + 2) = -2 * beta * mc(i);
     }
-    cost.g(numC) = -2 * beta * mc(numC - 1);
 
     // Initial Constraint
-    Scalar zmp = lip(2);
-    initial_constraint.b(0) = zmp;
-
-    // Model Constraint
-    model_constraint.b = VectorX::Zero(numC);
-
-    // Stability Constraint
-    Scalar unstable = lip(0) + lip(1) / eta;
-    Scalar temp = eta / (1 - std::exp(-delta * eta));
-    if (tail_type == TailType::PERIODIC) {
-        stability_constraint.b(0) = temp * (unstable - zmp) * (1 - std::exp(-delta * eta * numC));
-    } else if (tail_type == TailType::TRUNCATED) {
-        stability_constraint.b(0) = temp * (unstable - zmp);
-    }
-    std::cout << "STABILITY CONSTRAINTS B: " << stability_constraint.b.transpose().format(Config::CleanFmt)
-              << std::endl;
-
-    // Fuse equality constraints
-    b.segment(0, 1) = initial_constraint.b;
-    b.segment(1, 1 + numC) = model_constraint.b;
-    b.segment(1 + numC, 1) = stability_constraint.b;
+    initial_constraint.b = lip;
+    b.segment(0, nl) = initial_constraint.b;
 
     // ZMP Constraint
-    for (int i = 1; i < numC; ++i) {
-        zmp_constraint.u(2 * i) = mc(i - 1) - zmp + 0.5 * dxz;
-        zmp_constraint.l(2 * i) = mc(i - 1) - zmp - 0.5 * dxz;
-        zmp_constraint.u(2 * i + 1) = zmp_vx_max;
-        zmp_constraint.l(2 * i + 1) = -zmp_vx_max;
+    // std::cout << "MOVING CONSTRAINT: \n" << mc.transpose().format(Config::CleanFmt) << std::endl;
+    for (int i = 0; i < numC; ++i) {
+        zmp_constraint.u(i+1) = mc(i) + 0.5 * dxz;
+        zmp_constraint.l(i+1) = mc(i) - 0.5 * dxz;
     }
-    zmp_constraint.u(numC) = mc(numC - 1) + 0.5 * dxz;
-    zmp_constraint.l(numC) = mc(numC - 1) - 0.5 * dxz;
+    // std::cout << "ZMP CONSTRAINT CONSTRAINT: \n" << zmp_constraint.C.format(Config::CleanFmt) << std::endl;
+    // std::cout << "ZMP CONSTRAINT UPPER: \n" << zmp_constraint.u.transpose().format(Config::CleanFmt) << std::endl;
+    // std::cout << "ZMP CONSTRAINT LOWER: \n" << zmp_constraint.l.transpose().format(Config::CleanFmt) << std::endl;
 }
 
 VectorX IsmpcQp::solve() {
@@ -99,41 +89,5 @@ VectorX IsmpcQp::solve() {
 
     return sol;
 }
-
-
-// InequalityConstraint ConstraintLib::getZmpConstraint(const Vector3& lipx, const Vector3& lipy) const {
-//     int d = 2 * numC;
-//     Matrix C = Matrix::Zero(d, d);
-//     VectorX lb = VectorX::Zero(d);
-//     VectorX ub = VectorX::Zero(d);
-
-//     VectorX theta = footsteps.get_zmp_midpoints_theta();
-//     VectorX cos_theta = theta.array().cos();
-//     VectorX sin_theta = theta.array().sin();
-//     VectorX xf = footsteps.get_zmp_midpoints_x();
-//     VectorX yf = footsteps.get_zmp_midpoints_y();
-
-//     Scalar xz = lipx(2);
-//     Scalar yz = lipy(2);
-
-//     for (int i = 0; i < numC; ++i) {
-//         C.block(i, 0, 1, i + 1).setConstant(delta * cos_theta(i));
-//         C.block(i, numC, 1, i + 1).setConstant(delta * sin_theta(i));
-//         C.block(i + numC, 0, 1, i + 1).setConstant(-delta * sin_theta(i));
-//         C.block(i + numC, numC, 1, i + 1).setConstant(delta * cos_theta(i));
-
-//         Scalar x_displacement = (xf(i) - xz);
-//         Scalar y_displacement = (yf(i) - yz);
-//         Scalar rotated_x_displacement = cos_theta(i) * x_displacement + sin_theta(i) * y_displacement;
-//         Scalar rotated_y_displacement = -sin_theta(i) * x_displacement + cos_theta(i) * y_displacement;
-
-//         ub(i) = rotated_x_displacement + 0.5 * dxz;
-//         ub(i + numC) = rotated_y_displacement + 0.5 * dyz;
-//         lb(i) = rotated_x_displacement - 0.5 * dxz;
-//         lb(i + numC) = rotated_y_displacement - 0.5 * dyz;
-//     }
-
-//     return InequalityConstraint(C, lb, ub);
-// }
 
 }  // namespace ismpc

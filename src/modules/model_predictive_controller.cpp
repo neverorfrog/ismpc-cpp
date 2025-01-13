@@ -29,14 +29,16 @@ void ModelPredictiveController::update(State& state) {
 
     // ================== POSTPROCESSING ==================
     // Integrate the lip velocities
-    Vector3 predicted_x = state.lip.integrateX(x_sol(1));
-    Vector3 predicted_y = state.lip.integrateY(y_sol(1));
+    Vector3 predicted_x = x_sol.segment(4, 3);
+    Vector3 predicted_y = y_sol.segment(4, 3);
+    Scalar xdz = x_sol(3);
+    Scalar ydz = y_sol(3);
 
     // Set desired state
     state.desired_lip.com_pos << predicted_x(0), predicted_y(0), RobotConfig::h;
     state.desired_lip.com_vel << predicted_x(1), predicted_y(1), 0.0;
-    state.desired_lip.zmp_pos << x_sol(2), y_sol(2), 0.0;
-    state.desired_lip.zmp_vel << x_sol(1), y_sol(1), 0.0;
+    state.desired_lip.zmp_pos << predicted_x(2), predicted_y(2), 0.0;
+    state.desired_lip.zmp_vel << xdz, ydz, 0.0;
     Vector3 com_acc = (eta * eta) * (state.desired_lip.com_pos - state.desired_lip.zmp_pos);
     state.desired_lip.com_acc << com_acc(0), com_acc(1), 0.0;
 
