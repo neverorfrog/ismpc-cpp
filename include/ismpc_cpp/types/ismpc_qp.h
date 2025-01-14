@@ -34,7 +34,7 @@ class IsmpcQp {
     const int d = nv * numC + nl;         // number of primal variables (xc, xdc, xz, xdz)
     const int n_in = 2 * numC;            // number of inequality constraints (zmp pos, zmp vel)
     const int n_eq = nl + nl * numC + 1;  // number of equality constraints (initial, model, stability)
-    QP<Scalar> qp = QP<Scalar>(d, n_eq, n_in);
+    proxsuite::proxqp::sparse::QP<Scalar, int> qp = proxsuite::proxqp::sparse::QP<Scalar, int>(d, n_eq, n_in);
     Matrix A = Matrix(n_eq, d);
     VectorX b = VectorX(n_eq);
 

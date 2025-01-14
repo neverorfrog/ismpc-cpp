@@ -42,8 +42,6 @@ CasadiMPC::CasadiMPC(const FrameInfo& frame_info, const State& state, const Foot
                     X(4, numC) + std::pow(eta, 3) * (X(3, numC) - X(5, numC)));
 
     opti.minimize(cost);
-
-    std::cout << "Casadi MPC Initialized" << std::endl;
 }
 
 void CasadiMPC::update(State& state) {

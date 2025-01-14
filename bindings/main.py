@@ -43,32 +43,19 @@ with tqdm(iterations, desc="Walking...") as pbar:
         start = time.time()
         mc_provider.update(plan)
         mpc.update(state)
-
-        print("TIME:", frame_info.tk)
-        print("LIP", state.lip)
-        print("DESIRED LIP", state.desired_lip)
-        print("FOOTSTEP:\n", state.footstep)
-
         ft_generator.update(state)
-
-        print("LEFT FOOT", state.desired_left_foot.pose.translation)
-        print("RIGHT FOOT", state.desired_right_foot.pose.translation)
-
         elapsed.append((time.time() - start) * 1000)
 
         # Update the time
         frame_info.tk += config.delta
         frame_info.k += 1
 
-        # print("DESIRED LIP", state.desired_lip)
-
         # Update the state
         state.lip = state.desired_lip
         state.left_foot = state.desired_left_foot
         state.right_foot = state.desired_right_foot
 
-        # pbar.set_description(f"Step: {k}, Time: {frame_info.tk:.3f}")
-
+        pbar.set_description(f"Step: {k}, Time: {frame_info.tk:.3f}")
         # state_plotter.update_plot(state)
         print("\n")
 
