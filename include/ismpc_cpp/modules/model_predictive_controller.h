@@ -2,19 +2,18 @@
 
 #include <cmath>
 
-#include "ismpc_cpp/libraries/constraint_lib.h"
-#include "ismpc_cpp/libraries/cost_lib.h"
-#include "ismpc_cpp/libraries/feet_lib.h"
-#include "ismpc_cpp/representations/footsteps.h"
+#include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/representations/walk_state.h"
 #include "ismpc_cpp/tools/config/config.h"
+#include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
+#include "ismpc_cpp/types/ismpc_qp.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/optimization.h"
 
 namespace ismpc {
+
 /**
  * @brief Model Predictive Control class
  *
@@ -26,33 +25,30 @@ namespace ismpc {
  */
 class ModelPredictiveController {
    private:
-    Matrix Xdz, Ydz, Xf, Yf;
-
     const FrameInfo& frame_info;
     const State& state;
-    const WalkState& walk;
-    const FootstepsPlan& footsteps;
-    const FeetLib& feet;
-    const CostLib& cost;
-    const ConstraintLib& constraint;
+    const FootstepPlan& plan;
 
-    // Optimization related stuff
-    const int numC = Config::C;                    // number of control points
-    isize n_eq = 2;                                // number of equality constraints
-    isize dimz = 2 * numC;                         // number of zmp variables (xdz, ydz)
-    InequalityConstraint zmp_constraint;           // zmp constraint
-    InequalityConstraint zmp_velocity_constraint;  // zmp velocity constraint
-    InequalityConstraint kinematic_constraint;     // kinematic constraint
-    Matrix C;                                      // combined inequality constraint matrix
-    VectorX l, u;                                  // combined inequality constraint bounds
+    // Parameters
+    const int numC = Config::C;  // number of control points
+    const int numP = Config::P;  // number of planning points
+    const Scalar delta = Config::delta;
+    const Scalar eta = RobotConfig::eta;
+
+    // QP Struct
+    IsmpcQp qpx = IsmpcQp();
+    IsmpcQp qpy = IsmpcQp();
+    VectorX x_sol;
+    VectorX y_sol;
+
+    // Testing
+    int fs_index = 0;
 
     // time related stuff
     std::chrono::high_resolution_clock::time_point start, end;
 
    public:
-    ModelPredictiveController(const FrameInfo& frame_info, const State& state, const WalkState& walk,
-                              const FootstepsPlan& footsteps, const FeetLib& feet, const CostLib& cost,
-                              const ConstraintLib& constraint);
+    ModelPredictiveController(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan);
 
     /**
      * @brief Update the MPC module

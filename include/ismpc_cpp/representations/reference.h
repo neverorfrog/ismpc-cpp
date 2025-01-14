@@ -15,16 +15,8 @@ struct Velocity {
     Vector3 vector{};
 };
 
-struct Trajectory {
-    Matrix x;
-    Matrix y;
-    Matrix theta;
-    Matrix matrix;
-};
-
 struct Reference {
     Velocity velocity;
-    Trajectory trajectory;
 
     Reference();
 
@@ -41,20 +33,9 @@ struct Reference {
     Scalar getVelocityModule() const;
 
     /**
-     * @brief Get the reference trajectory
-     * @return Reference trajectory
-     */
-    Trajectory get_trajectory() const;
-
-    /**
      * @brief Set the reference input velocity
      */
     void set_velocity(Scalar vx, Scalar vy, Scalar omega);
-
-    /**
-     * @brief Update the reference trajectory
-     */
-    void set_trajectory(Matrix traj);
 
     /**
      * @brief Integrate the reference angular velocity over a time interval [start, end]

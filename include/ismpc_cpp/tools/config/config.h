@@ -23,9 +23,11 @@ struct Config {
     static inline bool constructed = false;
     static inline Initializer initializer{};
 
+    static inline Eigen::Vector3d RED, PURPLE, GREEN;
     static inline bool save_log;  // Save log file
 
     static inline Scalar delta{};  // Sampling interval
+    static inline Scalar first_fs_duration{};
 
     static inline int N{};       // Simulation steps
     static inline int P{};       // Preview horizon steps
@@ -36,6 +38,8 @@ struct Config {
 
     static inline Scalar des_vel_x{}, des_vel_y{}, des_omega{};  // Reference velocity
     static inline TailType tail_type{};                          // Tail type
+
+    static inline Eigen::IOFormat CleanFmt{2, 0, ", ", "\n", "[", "]"};
 
     static void init_params();
 };

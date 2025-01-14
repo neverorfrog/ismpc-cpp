@@ -9,7 +9,70 @@ from matplotlib.patches import Rectangle
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from omegaconf import OmegaConf
 
+from ismpc_py import State
 from gait import Gait
+
+class StatePlotter:
+    def __init__(self):
+        self.fig, self.ax = plt.subplots(3, 1, figsize=(10, 10))
+        self.com_x_data, self.com_y_data, self.com_z_data = [], [], []
+        self.zmp_x_data, self.zmp_y_data, self.zmp_z_data = [], [], []
+        self.des_com_x_data, self.des_com_y_data, self.des_com_z_data = [], [], []
+        self.des_zmp_x_data, self.des_zmp_y_data, self.des_zmp_z_data = [], [], []
+
+        self.line_com_x,  = self.ax[0].plot([], [], label="COM X", color="blue")
+        self.line_com_y,  = self.ax[1].plot([], [], label="COM Y", color="blue")
+        self.line_com_z,  = self.ax[2].plot([], [], label="COM Z", color="blue")
+        self.line_zmp_x,  = self.ax[0].plot([], [], label="ZMP X", color="red")
+        self.line_zmp_y,  = self.ax[1].plot([], [], label="ZMP Y", color="red")
+        self.line_zmp_z,  = self.ax[2].plot([], [], label="ZMP Z", color="red")
+        self.line_des_com_x,  = self.ax[0].plot([], [], label="Desired COM X", color="green")
+        self.line_des_com_y,  = self.ax[1].plot([], [], label="Desired COM Y", color="green")
+        self.line_des_com_z,  = self.ax[2].plot([], [], label="Desired COM Z", color="green")
+        self.line_des_zmp_x,  = self.ax[0].plot([], [], label="Desired ZMP X", color="orange")
+        self.line_des_zmp_y,  = self.ax[1].plot([], [], label="Desired ZMP Y", color="orange")
+        self.line_des_zmp_z,  = self.ax[2].plot([], [], label="Desired ZMP Z", color="orange")
+
+        plt.ion()
+        plt.show()
+
+
+    def update_plot(self, state: State) -> None:
+        self.com_x_data.append(state.lip.com_pos[0])
+        self.com_y_data.append(state.lip.com_pos[1])
+        self.com_z_data.append(state.lip.com_pos[2])
+        self.zmp_x_data.append(state.lip.zmp_pos[0])
+        self.zmp_y_data.append(state.lip.zmp_pos[1])
+        self.zmp_z_data.append(state.lip.zmp_pos[2])
+        self.des_com_x_data.append(state.desired_lip.com_pos[0])
+        self.des_com_y_data.append(state.desired_lip.com_pos[1])
+        self.des_com_z_data.append(state.desired_lip.com_pos[2])
+        self.des_zmp_x_data.append(state.desired_lip.zmp_pos[0])
+        self.des_zmp_y_data.append(state.desired_lip.zmp_pos[1])
+        self.des_zmp_z_data.append(state.desired_lip.zmp_pos[2])
+        self.line_com_x.set_data(np.arange(len(self.com_x_data)), self.com_x_data)
+        self.line_com_y.set_data(np.arange(len(self.com_y_data)), self.com_y_data)
+        self.line_com_z.set_data(np.arange(len(self.com_z_data)), self.com_z_data)
+        self.line_zmp_x.set_data(np.arange(len(self.zmp_x_data)), self.zmp_x_data)
+        self.line_zmp_y.set_data(np.arange(len(self.zmp_y_data)), self.zmp_y_data)
+        self.line_zmp_z.set_data(np.arange(len(self.zmp_z_data)), self.zmp_z_data)
+        self.line_des_com_x.set_data(np.arange(len(self.des_com_x_data)), self.des_com_x_data)
+        self.line_des_com_y.set_data(np.arange(len(self.des_com_y_data)), self.des_com_y_data)
+        self.line_des_com_z.set_data(np.arange(len(self.des_com_z_data)), self.des_com_z_data)
+        self.line_des_zmp_x.set_data(np.arange(len(self.des_zmp_x_data)), self.des_zmp_x_data)
+        self.line_des_zmp_y.set_data(np.arange(len(self.des_zmp_y_data)), self.des_zmp_y_data)
+        self.line_des_zmp_z.set_data(np.arange(len(self.des_zmp_z_data)), self.des_zmp_z_data)
+
+        # set limits
+        for i in range(3):
+            self.ax[i].relim()
+            self.ax[i].autoscale_view()
+
+        # redraw the plot
+        self.fig.canvas.draw()
+        self.fig.canvas.flush_events()
+
+
 
 def extract_feet_patches(
     f: int, gait: Gait, robot_config: OmegaConf
@@ -136,11 +199,11 @@ def animate(
 
     max_x = max(gait.zmp_traj[0, :])
     min_x = min(gait.zmp_traj[0, :])
-    max_y = max(gait.zmp_traj[1, :])
-    min_y = min(gait.zmp_traj[1, :])
+    max_y = max(gait.zmp_traj[1, :]) + 0.2
+    min_y = min(gait.zmp_traj[1, :]) - 0.2
 
-    x_pad = 0.3 * (max_x - min_x)
-    y_pad = 0.5 * (max_y - min_y)
+    x_pad = 0.3 * (max_x - min_x) + 0.2
+    y_pad = 0.5 * (max_y - min_y) - 0.2
 
     if not os.path.exists(f"videos/{plot_mode.value}"):
         os.makedirs(f"videos/{plot_mode.value}")

@@ -5,47 +5,46 @@ namespace ismpc {
 State::State() {
     left_foot.pose.translation << left_foot_x, left_foot_y, 0;
     right_foot.pose.translation << right_foot_x, right_foot_y, 0;
+    desired_left_foot.pose.translation << left_foot_x, left_foot_y, 0;
+    desired_right_foot.pose.translation << right_foot_x, right_foot_y, 0;
 
-    Scalar com_x = left_foot_x + 0.5 * (right_foot_x - left_foot_x);
-    Scalar com_y = left_foot_y + 0.5 * (right_foot_y - left_foot_y);
-    com.pose.translation << com_x, com_y, h;
+    // Walk Initialization
+    footstep.start_pose = right_foot.getPose2();
+    footstep.end_pose = right_foot.getPose2();
+    footstep.walk_phase = WalkPhase::STARTING;
+    footstep.support_foot = Foot::right;
+    footstep.start = 0;
+    footstep.ds_start = 0;
+    footstep.end = Config::first_fs_duration;  // DEFAULT VALUE
 
-    zmp_pos << com_x, com_y, 0;
-    zmp_vel << 0, 0, 0;
-
-    cosh = std::cosh(eta * delta);
-    sinh = std::sinh(eta * delta);
-    A << cosh, sinh / eta, 1 - cosh, eta * sinh, cosh, -eta * sinh, 0., 0., 1.;
-    B << delta - sinh / eta, 1 - cosh, delta;
+    previous_sf_pose = left_foot.getPose2();
+    previous_support_foot = Foot::left;
+    support_phase = SupportPhase::DOUBLE;
 }
 
-const Vector3 State::getLipx() const {
-    Vector3 lip_x{};
-    lip_x << com.pose.translation(0), com.vel(0), zmp_pos(0);
-    return lip_x;
+int State::getFootstepSign(int j) const {
+    int starting_sign = footstep.support_foot == Foot::right ? 1 : -1;
+    return starting_sign * pow(-1, j);
 }
 
-const Vector3 State::getLipy() const {
-    Vector3 lip_y{};
-    lip_y << com.pose.translation(1), com.vel(1), zmp_pos(1);
-    return lip_y;
+const EndEffector& State::getSupportFoot() const {
+    return footstep.support_foot == Foot::right ? right_foot : left_foot;
 }
 
-const Vector3 State::getNextLipx(Scalar xdz) const {
-    Vector3 predicted_x = A * getLipx() + B * xdz;
-    return predicted_x;
+const EndEffector& State::getSwingFoot() const {
+    return footstep.support_foot == Foot::right ? left_foot : right_foot;
 }
 
-const Vector3 State::getNextLipy(Scalar ydz) const {
-    Vector3 predicted_y = A * getLipy() + B * ydz;
-    return predicted_y;
+void State::setDesiredSwingFoot(const EndEffector& foot) {
+    if (footstep.support_foot == Foot::left) {
+        desired_right_foot = foot;
+    } else {
+        desired_left_foot = foot;
+    }
 }
 
 std::string State::toString() const {
     std::ostringstream oss;
-    oss << "Center of Mass: \n" << com.toString() << std::endl;
-    oss << "ZMP Position: " << zmp_pos.transpose() << std::endl;
-    oss << "ZMP Velocity: " << zmp_vel.transpose() << std::endl;
     oss << "Left Foot: \n" << left_foot.toString() << std::endl;
     oss << "Right Foot: \n" << right_foot.toString() << std::endl;
     return oss.str();

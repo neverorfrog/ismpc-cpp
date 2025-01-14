@@ -25,7 +25,6 @@ struct RobotConfig {
 
     static inline Scalar g = 9.81;  // Gravity
     static inline Scalar eta{};     // sqrt(g/h)
-    static inline Eigen::Vector3d RED, PURPLE, GREEN;
 
     static inline Scalar h{};            // Height of the CoM of the robot
     static inline Scalar theta_max{};    // Maximum angle variation between consecutive footsteps

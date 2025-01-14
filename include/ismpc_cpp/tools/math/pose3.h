@@ -18,6 +18,7 @@ namespace ismpc {
  */
 struct Pose3 {
     RotationMatrix rotation{};
+    Vector3 euler{0, 0, 0};  // Euler angles in radians
     Vector3 translation{0, 0, 0};
 
     Pose3() = default;
@@ -111,6 +112,16 @@ struct Pose3 {
      */
     Pose3 operator*(const RotationMatrix& rot) const;
     Pose3& operator*=(const RotationMatrix& rot);
+
+    /**
+     * @brief Subtraction operator to subtract two Pose3 objects.
+     *
+     * This operator subtracts the current Pose3 object from another Pose3 object.
+     *
+     * @param other The Pose3 object to subtract.
+     * @return The resulting Pose3 object after subtraction.
+     */
+    Pose3 operator-(const Pose3& other) const;
 
     /**
      * @brief Concatenation operator to concatenate two Pose3 objects.

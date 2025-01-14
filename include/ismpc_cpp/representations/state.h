@@ -1,72 +1,75 @@
 #pragma once
 
-#include "ismpc_cpp/representations/walk_state.h"
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/math/pose2.h"
+#include "ismpc_cpp/types/body_parts.h"
 #include "ismpc_cpp/types/end_effector.h"
+#include "ismpc_cpp/types/footstep.h"
+#include "ismpc_cpp/types/lip_state.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/support_phase.h"
 
 namespace ismpc {
 
 struct State {
+    // Current state
+    LipState lip{};
     EndEffector left_foot{};
     EndEffector right_foot{};
-    EndEffector com{};
-    Vector3 zmp_pos{};
-    Vector3 zmp_vel{};
+    EndEffector torso{};
+    EndEffector base{};  // TODO ??????????
 
-    // LIP Stuff
-    Scalar cosh;
-    Scalar sinh;
-    Matrix A{3, 3};
-    Matrix B{3, 1};
+    // Walk Stuff
+    Footstep footstep{};
+    Pose2 previous_sf_pose{};
+    Foot previous_support_foot;
+    SupportPhase support_phase;
+
+    // Desired state
+    LipState desired_lip{};
+    EndEffector desired_left_foot{};
+    EndEffector desired_right_foot{};
+    EndEffector desired_torso{};
+    EndEffector desired_base{};
 
     // Variables from config to save permanently
-    Scalar eta = RobotConfig::eta;
-    Scalar delta = Config::delta;
     Scalar left_foot_x = RobotConfig::left_foot_x;
     Scalar left_foot_y = RobotConfig::left_foot_y;
     Scalar right_foot_x = RobotConfig::right_foot_x;
     Scalar right_foot_y = RobotConfig::right_foot_y;
-    Scalar h = RobotConfig::h;
 
+    // Time related stuff
     Scalar total_mpc_qp_duration = 0.0;
     Scalar total_mpc_preprocessing_duration = 0.0;
     Scalar total_mpc_postprocessing_duration = 0.0;
 
+    // Plotting related stuff
+    std::vector<Footstep> fs_history;
+    std::vector<LipState> lip_history;
+    std::vector<EndEffector> left_foot_history;
+    std::vector<EndEffector> right_foot_history;
+
     State();
 
     /**
-     * @brief Get the LIP state in the x-direction
-     *
-     * @return const Vector3
+     * @brief Compute the sign corresponding to the footstep index
+     * @param j
+     * @return int
      */
-    const Vector3 getLipx() const;
+    int getFootstepSign(int j) const;
 
     /**
-     * @brief Get the LIP state in the y-direction
-     *
-     * @return const Vector3
+     * @brief Get the Support Foot Pose object
      */
-    const Vector3 getLipy() const;
+    const EndEffector& getSupportFoot() const;
 
     /**
-     * @brief Get the next LIP state in the x-direction
-     *
-     * @param xdz The velocity in the x-direction
-     * @return const Vector3
+     * @brief Get the Swing Foot Pose object
      */
-    const Vector3 getNextLipx(Scalar xdz) const;
+    const EndEffector& getSwingFoot() const;
 
-    /**
-     * @brief Get the next LIP state in the y-direction
-     *
-     * @param ydz The velocity in the y-direction
-     * @return const Vector3
-     */
-    const Vector3 getNextLipy(Scalar ydz) const;
+    void setDesiredSwingFoot(const EndEffector& foot);
 
     /**
      * @brief Convert the state to a string representation

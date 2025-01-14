@@ -1,5 +1,7 @@
 #include "ismpc_cpp/tools/math/rotation_matrix.h"
 
+#include "ismpc_cpp/types/math_types.h"
+
 namespace ismpc {
 
 RotationMatrix::RotationMatrix() : Matrix3(Matrix3::Identity()) {}
@@ -108,7 +110,7 @@ RotationMatrix& RotationMatrix::rotateZ(const Scalar angle) {
 Scalar RotationMatrix::getXAngle() const {
     const Matrix3& mat = *this;
     const Scalar h = std::sqrt(mat(1, 2) * mat(1, 2) + mat(2, 2) * mat(2, 2));
-    if (Arithmetic::isZero(h))
+    if (Arithmetic::isZero(h, 1e-3))
         return 0.0;
     else
         return std::acos(mat(2, 2) / h) * -Arithmetic::sgnNeg(mat(1, 2));
@@ -117,7 +119,7 @@ Scalar RotationMatrix::getXAngle() const {
 Scalar RotationMatrix::getYAngle() const {
     const Matrix3& mat = *this;
     const float h = std::sqrt(mat(0, 0) * mat(0, 0) + mat(2, 0) * mat(2, 0));
-    if (Arithmetic::isZero(h))
+    if (Arithmetic::isZero(h, 1e-5))
         return 0.f;
     else
         return std::acos(mat(0, 0) / h) * -Arithmetic::sgnNeg(mat(2, 0));
@@ -126,7 +128,7 @@ Scalar RotationMatrix::getYAngle() const {
 Scalar RotationMatrix::getZAngle() const {
     const Matrix3& mat = *this;
     const float h = std::sqrt(mat(0, 0) * mat(0, 0) + mat(1, 0) * mat(1, 0));
-    if (Arithmetic::isZero(h))
+    if (Arithmetic::isZero(h, 1e-5))
         return 0.f;
     else
         return std::acos(mat(0, 0) / h) * Arithmetic::sgnPos(mat(1, 0));
@@ -136,9 +138,13 @@ Vector3 RotationMatrix::getRPY() const {
     const Matrix3& mat = *this;
     Vector3 result{};
     result << std::atan2(mat(2, 1), mat(2, 2)),
-        atan2(-mat(2, 0), std::sqrt(mat(2, 1) * mat(2, 1) + mat(2, 2) * mat(2, 2))),
+        std::atan2(-mat(2, 0), std::sqrt(mat(2, 1) * mat(2, 1) + mat(2, 2) * mat(2, 2))),
         std::atan2(mat(1, 0), mat(0, 0));
     return result;
+}
+
+Quaternion RotationMatrix::getQuaternion() const {
+    return Quaternion(*this);
 }
 
 RotationMatrix RotationMatrix::aroundX(const Scalar angle) {

@@ -15,11 +15,28 @@ namespace ismpc {
 class EndEffector {
    public:
     Pose3 pose{};
-    Vector3 vel{0, 0, 0};
-    Vector3 acc{0, 0, 0};
+    Vector3 lin_vel{0, 0, 0};
+    Vector3 ang_vel{0, 0, 0};
+    Vector3 lin_acc{0, 0, 0};
+    Vector3 ang_acc{0, 0, 0};
 
     EndEffector() = default;
     EndEffector(const Vector3& translation);
+
+    /**
+     * @brief Get linear and angular velocity stacked in a Vector6
+     */
+    Vector6 getVelocity() const;
+
+    /**
+     * @brief Get linear and angular acceleration stacked in a Vector6
+     */
+    Vector6 getAcceleration() const;
+
+    /**
+     * @brief Extract the two dimensional pose (ignoring the z-axis)
+     */
+    Pose2 getPose2() const;
 
     std::string toString() const;
 
