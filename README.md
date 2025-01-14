@@ -22,8 +22,9 @@ pixi run main
 
 ## Results
 
-<video controls src="videos/2d/walking.mp4" title="Title"></video>
-<video controls src="videos/3d/walking.mp4" title="Title"></video>
+https://github.com/user-attachments/assets/2072fd3b-ed9b-4183-be08-94493d5435b1
+
+https://github.com/user-attachments/assets/ecff4b16-c254-4952-b0fd-6a5f5e78714d
 
 
 ## Some Concepts
