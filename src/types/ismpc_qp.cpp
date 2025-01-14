@@ -1,12 +1,10 @@
 #include <ismpc_cpp/types/ismpc_qp.h>
 
-#include "ismpc_cpp/tools/config/config.h"
-
 namespace ismpc {
 
 IsmpcQp::IsmpcQp() {
     // Options
-    qp.settings.max_iter = 1000;
+    qp.settings.max_iter = 500;
     qp.settings.initial_guess = InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
     qp.settings.verbose = false;
     qp.settings.compute_timings = true;
@@ -33,6 +31,7 @@ IsmpcQp::IsmpcQp() {
         model_constraint.A.block(nl * i, nv * i, nl, nv + nl) = Ak;
     }
     A.block(nl, 0, nl * numC, d) = model_constraint.A;
+    b.segment(nl, nl + nl * numC) = model_constraint.b;
 
     // Stability Constraint
     stability_constraint = EqualityConstraint(1, d);
@@ -47,6 +46,12 @@ IsmpcQp::IsmpcQp() {
         zmp_constraint.C(2 * i, nv * (i + 1)) = 1;
         zmp_constraint.C(2 * i + 1, 2 * i + 1) = 1;
     }
+
+    proxsuite::proxqp::sparse::SparseMat<Scalar, int> H_sparse = cost.H.sparseView();
+    proxsuite::proxqp::sparse::SparseMat<Scalar, int> A_sparse = A.sparseView();
+    proxsuite::proxqp::sparse::SparseMat<Scalar, int> C_sparse = zmp_constraint.C.sparseView();
+
+    qp.init(H_sparse, cost.g, A_sparse, b, C_sparse, zmp_constraint.l, zmp_constraint.u);
 }
 
 void IsmpcQp::update(const Vector3 &lip, const VectorX &mc) {
@@ -81,7 +86,9 @@ void IsmpcQp::update(const Vector3 &lip, const VectorX &mc) {
 
 bool IsmpcQp::solve() {
     std::cout << "SOLVING QP" << std::endl;
-    qp.update(cost.H, cost.g, A, b, zmp_constraint.C, zmp_constraint.l, zmp_constraint.u);
+
+    qp.update(cost.H.sparseView(), cost.g, A.sparseView(), b, zmp_constraint.C.sparseView(), zmp_constraint.l,
+              zmp_constraint.u);
     qp.solve();
 
     if (qp.results.info.status != PROXQP_SOLVED) {

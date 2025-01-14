@@ -228,10 +228,13 @@ def animate(
         elif plot_mode == PlotMode.THREE_D:
             plot_3d(ax, k, f, gait, robot_config)
 
-        if save:
-            plt.savefig(f"videos/{plot_mode.value}/{k}.png")
+        # if save:
+        #     plt.savefig(f"videos/{plot_mode.value}/{k}.png")
 
     ani = FuncAnimation(
         fig, update, frames=config.N + 1, repeat=False, interval=config.delta
     )
+    
+    if save:
+        ani.save(f"videos/{plot_mode.value}/walking.mp4", writer="ffmpeg", fps=83)
     plt.show()

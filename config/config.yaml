@@ -7,14 +7,14 @@ first_fs_duration: 1.0 # [s]
 # Duration parameters
 N: 500
 P: 500
-C: 70
+C: 200
 W: 100 # iterations to wait before starting
 
 # Which robot to simulate
 robot: hrp4
 
 # Input Velocities
-des_vel_x: 0.0 # [m/s]
+des_vel_x: 0.2 # [m/s]
 des_vel_y: 0.0 #  [m/s]
 des_omega: 0.0 #  [rad/s]
 
