@@ -29,10 +29,10 @@ class IsmpcQp {
     EqualityConstraint stability_constraint;
     InequalityConstraint zmp_constraint;
 
-    const int nl = 3;                     // number of lip variables (com pos, com vel, zmp pos)
-    const int nv = nl + 1;                // number of variables per coordinate (com pos, com vel, zmp pos, zmp vel)
+    const int nl = 1;                     // number of lip variables (zmp pos)
+    const int nv = nl + 1;                // number of variables per coordinate (lipvars, zmp vel)
     const int d = nv * numC + nl;         // number of primal variables (xc, xdc, xz, xdz)
-    const int n_in = numC + 1;            // number of inequality constraints (zmp pos)
+    const int n_in = 2 * numC;            // number of inequality constraints (zmp pos, zmp vel)
     const int n_eq = nl + nl * numC + 1;  // number of equality constraints (initial, model, stability)
     QP<Scalar> qp = QP<Scalar>(d, n_eq, n_in);
     Matrix A = Matrix(n_eq, d);
@@ -58,12 +58,16 @@ class IsmpcQp {
      */
     void update(const Vector3& lip, const VectorX& mc);
 
+    VectorX getSol() const {
+        return sol;
+    }
+
     /**
      * @brief Solve the QP problem
      *
      * @return solution
      */
-    VectorX solve();
+    bool solve();
 };
 
 }  // namespace ismpc

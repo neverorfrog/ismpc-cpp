@@ -45,6 +45,8 @@ with tqdm(iterations, desc="Walking...") as pbar:
         mpc.update(state)
 
         print("TIME:", frame_info.tk)
+        print("LIP", state.lip)
+        print("DESIRED LIP", state.desired_lip)
         print("FOOTSTEP:\n", state.footstep)
 
         ft_generator.update(state)

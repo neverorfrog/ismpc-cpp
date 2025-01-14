@@ -19,13 +19,13 @@ alpha: 0.5
 # Footsteps stuff
 dax: 0.1
 day: 0.05
-beta: 10000
 
 # ZMP stuff
 dxz: 0.1
 dyz: 0.07
-zmp_vx_max: 5.0
-zmp_vy_max: 5.0
+zmp_vx_max: 1.0
+zmp_vy_max: 1.0
+beta: 100
 
 # Timing Stuff
 ds_percentage: 0.3 # percentage of the entire step time

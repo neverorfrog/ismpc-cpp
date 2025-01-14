@@ -18,21 +18,23 @@ void ModelPredictiveController::update(State& state) {
 
     // ================== SOLVE QP =======================
     start = std::chrono::high_resolution_clock::now();
-    x_sol = qpx.solve();
-    y_sol = qpy.solve();
-
-    std::cout << "X_SOL: " << x_sol.transpose().format(Config::CleanFmt) << std::endl;
-    std::cout << "Y_SOL: " << y_sol.transpose().format(Config::CleanFmt) << std::endl;
+    bool x_ok = qpx.solve();
+    bool y_ok = qpy.solve();
+    if (!x_ok || !y_ok) {
+        throw std::runtime_error("QP Solver failed");
+    }
+    x_sol = qpx.getSol();
+    y_sol = qpy.getSol();
     end = std::chrono::high_resolution_clock::now();
     total_mpc_qp_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     // ====================================================
 
     // ================== POSTPROCESSING ==================
     // Integrate the lip velocities
-    Vector3 predicted_x = x_sol.segment(4, 3);
-    Vector3 predicted_y = y_sol.segment(4, 3);
-    Scalar xdz = x_sol(3);
-    Scalar ydz = y_sol(3);
+    Scalar xdz = x_sol(1);
+    Scalar ydz = y_sol(1);
+    Vector3 predicted_x = state.lip.integrateX(xdz);
+    Vector3 predicted_y = state.lip.integrateY(ydz);
 
     // Set desired state
     state.desired_lip.com_pos << predicted_x(0), predicted_y(0), RobotConfig::h;

@@ -50,11 +50,16 @@ int main() {
         start = std::chrono::high_resolution_clock::now();
         mpc.update(state);
         std::cout << "CURRENT STATE: \n LIP: \n" << state.lip << std::endl;
-        std::cout << "LEFT FOOT: " << state.left_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt) << std::endl;
-        std::cout << "RIGHT FOOT: " << state.right_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt) << "\n" << std::endl;
+        std::cout << "LEFT FOOT: "
+                  << state.left_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt)
+                  << std::endl;
+        std::cout << "RIGHT FOOT: "
+                  << state.right_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt) << "\n"
+                  << std::endl;
         std::cout << "DESIRED LIP: \n" << state.desired_lip << std::endl;
         std::cout << "FOOTSTEP: \n" << state.footstep << std::endl;
-        std::cout << "MOVING CONSTRAINTS: \n" << plan.zmp_midpoints_y.transpose().format(ismpc::Config::CleanFmt) << std::endl;
+        std::cout << "MOVING CONSTRAINTS: \n"
+                  << plan.zmp_midpoints_y.transpose().format(ismpc::Config::CleanFmt) << std::endl;
         end = std::chrono::high_resolution_clock::now();
         total_mpc_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 

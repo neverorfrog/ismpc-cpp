@@ -2,11 +2,12 @@ save_log: false
 
 # Time step for simulation [s]
 delta: 0.01205 # 83 Hz
+first_fs_duration: 1.0 # [s]
 
 # Duration parameters
-N: 5
+N: 500
 P: 500
-C: 20
+C: 70
 W: 100 # iterations to wait before starting
 
 # Which robot to simulate
