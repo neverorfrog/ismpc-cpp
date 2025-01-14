@@ -43,7 +43,7 @@ void FootstepPlanProvider::update(FootstepPlan& plan) {
 void FootstepPlanProvider::computeTiming() {
     // Scalar V = reference.getVelocityModule();
     Scalar current_footstep_timestamp = state.footstep.start;
-    Scalar expected_duration = Config::first_fs_duration; //T_bar * (alpha + v_bar) / (alpha + V);
+    Scalar expected_duration = Config::first_fs_duration;  // T_bar * (alpha + v_bar) / (alpha + V);
     Scalar time_of_next_step = current_footstep_timestamp + expected_duration;
 
     while (time_of_next_step <= frame_info.tk + T_p) {

@@ -37,7 +37,8 @@ struct InequalityConstraint {
 
     InequalityConstraint() = default;
     InequalityConstraint(Matrix C, VectorX l, VectorX u) : C(C), l(l), u(u){};
-    InequalityConstraint(int n_in, int d) : C(Matrix::Zero(n_in, d)), l(VectorX::Zero(n_in)), u(VectorX::Zero(n_in)){};
+    InequalityConstraint(int n_in, int d)
+        : C(Matrix::Zero(n_in, d)), l(VectorX::Zero(n_in)), u(VectorX::Zero(n_in)){};
 
     friend std::ostream& operator<<(std::ostream& os, const InequalityConstraint& inequality) {
         Eigen::IOFormat HeavyFmt(Eigen::FullPrecision, 0, ", ", ";\n", "[", "]", "[", "]");

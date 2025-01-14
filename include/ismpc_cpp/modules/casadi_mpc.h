@@ -40,7 +40,7 @@ class CasadiMPC {
     const TailType tail_type = Config::tail_type;
 
     // Lip Model
-    casadi::DM A = casadi::DM({{0, 1, 0}, {eta * eta, 0, -eta * eta}, {0, 0, 0}});
+    casadi::DM A = casadi::DM({{0, 1, 0}, {eta * eta, 0, -eta* eta}, {0, 0, 0}});
     casadi::DM B = casadi::DM({0, 0, 1});
 
     // Optimization related stuff

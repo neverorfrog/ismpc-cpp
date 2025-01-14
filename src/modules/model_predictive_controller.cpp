@@ -1,6 +1,5 @@
 #include "ismpc_cpp/modules/model_predictive_controller.h"
 
-
 namespace ismpc {
 
 ModelPredictiveController::ModelPredictiveController(const FrameInfo& frame_info, const State& state,
