@@ -72,7 +72,9 @@ void Controller::customPreStep() {
     std::cout << "--------------------------------" << std::endl;
 
     // Setting Desired Torso based on the feet
-    RotationMatrix desired_torso_orientation = RotationMatrix(state.desired_left_foot.pose.rotation.getQuaternion().slerp(0.5, state.desired_right_foot.pose.rotation.getQuaternion()));
+    RotationMatrix desired_torso_orientation =
+        RotationMatrix(state.desired_left_foot.pose.rotation.getQuaternion().slerp(
+            0.5, state.desired_right_foot.pose.rotation.getQuaternion()));
     Vector3 desired_torso_ang_vel = (state.desired_left_foot.ang_vel + state.desired_right_foot.ang_vel) / 2;
     Vector3 desired_torso_ang_acc = (state.desired_left_foot.ang_acc + state.desired_right_foot.ang_acc) / 2;
     state.desired_torso.pose.rotation = desired_torso_orientation;
