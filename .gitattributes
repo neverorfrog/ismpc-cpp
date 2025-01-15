@@ -2,3 +2,4 @@
 pixi.lock linguist-language=YAML linguist-generated=true
 
 *.h linguist-detectable=false
+simulation/** linguist-detectable=false
