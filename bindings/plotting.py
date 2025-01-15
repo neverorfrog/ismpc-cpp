@@ -234,7 +234,7 @@ def animate(
     ani = FuncAnimation(
         fig, update, frames=config.N + 1, repeat=False, interval=config.delta
     )
-    
+
     if save:
         ani.save(f"videos/{plot_mode.value}/walking.mp4", writer="ffmpeg", fps=83)
     plt.show()
