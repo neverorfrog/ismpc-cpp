@@ -17,8 +17,8 @@ int main() {
     dart::utils::DartLoader urdfLoader(options);
     options.mDefaultInertia =
         dart::dynamics::Inertia(1e-8, Eigen::Vector3d::Zero(), 1e-10 * Eigen::Matrix3d::Identity());
-    auto robot = urdfLoader.parseSkeleton(realpath("simulation/urdf/hrp4/urdf/hrp4.urdf", NULL));
-    auto ground = urdfLoader.parseSkeleton(realpath("simulation/urdf/ground.urdf", NULL));
+    auto robot = urdfLoader.parseSkeleton(realpath("simulation/dart/hrp4/urdf/hrp4.urdf", NULL));
+    auto ground = urdfLoader.parseSkeleton(realpath("simulation/dart/hrp4/urdf/ground.urdf", NULL));
     world->addSkeleton(ground);
     world->addSkeleton(robot);
     world->setGravity(Eigen::Vector3d(0.0, 0.0, -9.81));

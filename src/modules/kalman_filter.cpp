@@ -1,10 +1,10 @@
-#include "ismpc_cpp/dart/kalman_filter.h"
+#include "ismpc_cpp/modules/kalman_filter.h"
 
 #include <iostream>
 
 namespace ismpc {
 
-KalmanFilter::KalmanFilter(const SimulatedRobot& robot) : robot(robot) {
+KalmanFilter::KalmanFilter() {
     eta2 = RobotConfig::eta * RobotConfig::eta;
     Matrix3 lip_A = Matrix3({{0, 1, 0}, {eta2, 0, -eta2}, {0, 0, 0}});
     Vector3 lip_B = Vector3({0, 0, 1});
@@ -42,8 +42,6 @@ void KalmanFilter::update(State& state) {
     state.lip.com_vel(1) = x(4);
     state.lip.zmp_pos(0) = x(2);
     state.lip.zmp_pos(1) = x(5);
-    state.lip.com_acc(0) = eta2 * (x(0) - x(2));
-    state.lip.com_acc(1) = eta2 * (x(3) - x(5));
 }
 
 }  // namespace ismpc

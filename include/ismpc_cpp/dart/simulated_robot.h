@@ -34,11 +34,10 @@ struct SimulatedRobot {
     VectorX getJointRequest(const State& desired);
     void setInitialConfiguration();
 
-    SimulatedRobot() = default;
     ~SimulatedRobot() = default;
     SimulatedRobot(dart::dynamics::SkeletonPtr skeleton);
 
-    QPSolver qp;
+    QP<Scalar> qp;
 
     Scalar total_ik_duration = 0.0;
 };

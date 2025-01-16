@@ -1,4 +1,3 @@
-#include "ismpc_cpp/dart/simulated_robot.h"
 #include "ismpc_cpp/representations/state.h"
 #include "ismpc_cpp/types/math_types.h"
 
@@ -10,13 +9,11 @@ namespace ismpc {
  */
 class KalmanFilter {
    public:
-    KalmanFilter(const SimulatedRobot& robot);
+    KalmanFilter();
 
     void update(State& state);
 
    private:
-    const SimulatedRobot& robot;
-
     Scalar eta2;
 
     Eigen::Matrix<Scalar, 6, 6> A;  // State transition matrix (6x6)

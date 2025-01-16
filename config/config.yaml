@@ -1,22 +1,22 @@
 save_log: false
 
 # Time step for simulation [s]
-delta: 0.01205 # 83 Hz
-first_fs_duration: 1.0 # [s]
+delta: 0.01 # 83 Hz
+first_fs_duration: 0.6 # [s]
 
 # Duration parameters
-N: 500
-P: 500
-C: 200
+N: 1
+P: 1000
+C: 100
 W: 100 # iterations to wait before starting
 
 # Which robot to simulate
 robot: hrp4
 
 # Input Velocities
-des_vel_x: 0.2 # [m/s]
+des_vel_x: 0.05 # [m/s]
 des_vel_y: 0.0 #  [m/s]
 des_omega: 0.0 #  [rad/s]
 
 # Tail: PERIODIC, TRUNCATED, or ANTICIPATIVE
-tail_type: TRUNCATED
+tail_type: PERIODIC

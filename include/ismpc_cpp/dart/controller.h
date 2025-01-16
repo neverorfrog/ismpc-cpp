@@ -7,7 +7,7 @@
 #include <dart/utils/urdf/urdf.hpp>
 #include <dart/utils/utils.hpp>
 
-#include "ismpc_cpp/dart/kalman_filter.h"
+#include "ismpc_cpp/modules/kalman_filter.h"
 #include "ismpc_cpp/dart/simulated_robot.h"
 #include "ismpc_cpp/dart/state_provider.h"
 #include "ismpc_cpp/modules/casadi_mpc.h"

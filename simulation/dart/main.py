@@ -2,27 +2,25 @@ import dartpy as dart
 import os
 import numpy as np
 from controller import Hrp4Controller
+from robot import Robot
 
 if __name__ == "__main__":
     world = dart.simulation.World()
     urdfParser = dart.utils.DartLoader()
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    hrp4 = urdfParser.parseSkeleton(
+    skeleton = urdfParser.parseSkeleton(
         os.path.join(current_dir, "hrp4", "urdf", "hrp4.urdf")
     )
     ground = urdfParser.parseSkeleton(
         os.path.join(current_dir, "hrp4", "urdf", "ground.urdf")
     )
-    world.addSkeleton(hrp4)
+    world.addSkeleton(skeleton)
     world.addSkeleton(ground)
     world.setGravity([0, 0, -9.81])
-    default_inertia = dart.dynamics.Inertia(1e-8, np.zeros(3), 1e-10 * np.identity(3))
-
-    for body in hrp4.getBodyNodes():
-        if body.getMass() == 0.0:
-            body.setMass(1e-8)
-            body.setInertia(default_inertia)
-    node = Hrp4Controller(world, hrp4)
+    world.setTimeStep(1.0/60)
+    
+    robot = Robot(skeleton)
+    node = Hrp4Controller(world, robot)
     node.setTargetRealTimeFactor(10)
 
     viewer = dart.gui.osg.Viewer()

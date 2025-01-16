@@ -8,6 +8,7 @@ Controller::Controller(const dart::simulation::WorldPtr world, const dart::dynam
       plan(),
       frame_info(),
       reference(),
+      robot(skeleton),
       world(world),
       planner(frame_info, reference, state, plan),
       mpc(frame_info, state, plan),
@@ -15,8 +16,7 @@ Controller::Controller(const dart::simulation::WorldPtr world, const dart::dynam
       ft_generator(frame_info, state, plan),
       casadi_mpc(frame_info, state, plan),
       state_provider(robot),
-      kalman_filter(robot) {
-    robot = SimulatedRobot(skeleton);
+      kalman_filter() {
     world->setTimeStep(Config::delta);
     com = registerBall("com", ismpc::Config::RED);
     zmp = registerBall("zmp", ismpc::Config::GREEN);
@@ -31,7 +31,8 @@ void Controller::customPreStep() {
     state_provider.update(state);  // Reading sensors
     kalman_filter.update(state);   // Filtering the state
 
-    state.lip.zmp_pos = state.desired_lip.zmp_pos;
+    // state.lip.zmp_pos = state.desired_lip.zmp_pos;
+    // state.lip.zmp_vel = state.desired_lip.zmp_vel;
 
     if (frame_info.k == 0) {
         state.footstep.start_pose.translation(0) = state.right_foot.pose.translation(0);
@@ -53,10 +54,12 @@ void Controller::customPreStep() {
 
     std::cout << "CURRENT TIME: " << frame_info.tk << std::endl;
     std::cout << "CURRENT PLANNED FOOTSTEP: \n" << state.footstep.toString() << std::endl;
+    std::cout << "MVOING CONSTRAINT X: \n" << plan.zmp_midpoints_x.transpose().format(Config::CleanFmt) << std::endl;
+    std::cout << "MVOING CONSTRAINT Y: \n" << plan.zmp_midpoints_y.transpose().format(Config::CleanFmt) << std::endl;
 
     // Step of MPC
     mc_provider.update(plan);
-    casadi_mpc.update(state);
+    mpc.update(state);
     ft_generator.update(state);
 
     std::cout << "DESIRED STATE" << std::endl;
@@ -72,14 +75,14 @@ void Controller::customPreStep() {
     std::cout << "--------------------------------" << std::endl;
 
     // Setting Desired Torso based on the feet
-    RotationMatrix desired_torso_orientation =
-        RotationMatrix(state.desired_left_foot.pose.rotation.getQuaternion().slerp(
-            0.5, state.desired_right_foot.pose.rotation.getQuaternion()));
-    Vector3 desired_torso_ang_vel = (state.desired_left_foot.ang_vel + state.desired_right_foot.ang_vel) / 2;
-    Vector3 desired_torso_ang_acc = (state.desired_left_foot.ang_acc + state.desired_right_foot.ang_acc) / 2;
-    state.desired_torso.pose.rotation = desired_torso_orientation;
-    state.desired_torso.ang_vel = desired_torso_ang_vel;
-    state.desired_torso.ang_acc = desired_torso_ang_acc;
+    // Vector3 desired_torso_orientation =
+    //     (state.desired_left_foot.pose.rotation.getRPY() + state.desired_right_foot.pose.rotation.getRPY()) / 2;
+    // Vector3 desired_torso_ang_vel = (state.desired_left_foot.ang_vel + state.desired_right_foot.ang_vel) / 2;
+    // Vector3 desired_torso_ang_acc = (state.desired_left_foot.ang_acc + state.desired_right_foot.ang_acc) / 2;
+    // state.desired_torso.pose.rotation = RotationMatrix(desired_torso_orientation(0), desired_torso_orientation(1),
+    //                                                    desired_torso_orientation(2));
+    // state.desired_torso.ang_vel = desired_torso_ang_vel;
+    // state.desired_torso.ang_acc = desired_torso_ang_acc;
 
     // Get and send the joint request
     VectorX joint_request = robot.getJointRequest(state);

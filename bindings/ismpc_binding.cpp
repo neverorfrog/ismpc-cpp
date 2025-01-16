@@ -5,13 +5,18 @@
 
 #include <iostream>
 
+#include "ismpc_cpp/dart/simulated_robot.h"
+#include "ismpc_cpp/dart/state_provider.h"
 #include "ismpc_cpp/ismpc.h"
 #include "ismpc_cpp/modules/casadi_mpc.h"
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
+#include "ismpc_cpp/modules/kalman_filter.h"
+#include "ismpc_cpp/tools/math/rotation_matrix.h"
 #include "ismpc_cpp/types/lip_state.h"
 
 namespace nb = nanobind;
 using EigenMatrix = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
+NB_MAKE_OPAQUE(ismpc::RotationMatrix);
 
 namespace ismpc {
 namespace python {
@@ -26,6 +31,10 @@ NB_MODULE(ismpc_py, m) {
         .def_rw("right_foot", &State::right_foot)
         .def_ro("desired_left_foot", &State::desired_left_foot)
         .def_ro("desired_right_foot", &State::desired_right_foot)
+        .def_ro("torso", &State::torso)
+        .def_ro("base", &State::base)
+        .def_ro("desired_torso", &State::desired_torso)
+        .def_ro("desired_base", &State::desired_base)
         .def_ro("fs_history", &State::fs_history)
         .def_ro("lip_history", &State::lip_history)
         .def_ro("left_foot_history", &State::left_foot_history)
@@ -54,11 +63,12 @@ NB_MODULE(ismpc_py, m) {
 
     nb::class_<EndEffector>(m, "EndEffector")
         .def(nb::init<>())
-        .def_ro("pose", &EndEffector::pose)
-        .def_ro("lin_vel", &EndEffector::lin_vel)
-        .def_ro("ang_vel", &EndEffector::ang_vel)
-        .def_ro("lin_acc", &EndEffector::lin_acc)
-        .def_ro("ang_acc", &EndEffector::ang_acc)
+        .def_rw("pose", &EndEffector::pose)
+        .def_rw("lin_vel", &EndEffector::lin_vel)
+        .def_rw("ang_vel", &EndEffector::ang_vel)
+        .def_rw("lin_acc", &EndEffector::lin_acc)
+        .def_rw("ang_acc", &EndEffector::ang_acc)
+        .def("getVelocity", &EndEffector::getVelocity)
         .def("__str__", &EndEffector::toString);
 
     nb::class_<Pose2>(m, "Pose2")
@@ -67,10 +77,29 @@ NB_MODULE(ismpc_py, m) {
         .def_ro("translation", &Pose2::translation)
         .def("__str__", &Pose2::toString);
 
+    nb::class_<RotationMatrix>(m, "RotationMatrix")
+        .def(nb::init<>())
+        .def(nb::init<const EigenMatrix &>())
+        .def("matrix", [](const RotationMatrix &r) { return static_cast<EigenMatrix>(r); })
+        .def("__mul__", [](const RotationMatrix &r1, const RotationMatrix &r2) { return r1 * r2; })
+        .def("getXAngle", &RotationMatrix::getXAngle)
+        .def("getYAngle", &RotationMatrix::getYAngle)
+        .def("getZAngle", &RotationMatrix::getZAngle)
+        .def("getRPY", &RotationMatrix::getRPY)
+        .def("__str__", [](const RotationMatrix &r) {
+            std::ostringstream oss;
+            oss << r;
+            return oss.str();
+        });
+
     nb::class_<Pose3>(m, "Pose3")
         .def(nb::init<>())
-        .def_ro("rotation", &Pose3::rotation)
-        .def_ro("translation", &Pose3::translation);
+        .def(nb::init<const RotationMatrix &, const Vector3 &>())
+        .def("getVector", &Pose3::getVector)
+        .def("__add__", [](const Pose3 &p1, const Pose3 &p2) { return p1 + p2; })
+        .def("__str__", &Pose3::toString)
+        .def_rw("rotation", &Pose3::rotation)
+        .def_rw("translation", &Pose3::translation);
 
     nb::class_<FootstepPlan>(m, "FootstepPlan")
         .def(nb::init<>())
@@ -94,12 +123,22 @@ NB_MODULE(ismpc_py, m) {
 
     nb::class_<LipState>(m, "LipState")
         .def(nb::init<>())
-        .def_ro("com_pos", &LipState::com_pos)
-        .def_ro("com_vel", &LipState::com_vel)
-        .def_ro("com_acc", &LipState::com_acc)
-        .def_ro("zmp_pos", &LipState::zmp_pos)
-        .def_ro("zmp_vel", &LipState::zmp_vel)
+        .def_rw("com_pos", &LipState::com_pos)
+        .def_rw("com_vel", &LipState::com_vel)
+        .def_rw("com_acc", &LipState::com_acc)
+        .def_rw("zmp_pos", &LipState::zmp_pos)
+        .def_rw("zmp_vel", &LipState::zmp_vel)
         .def("__str__", &LipState::toString);
+
+    nb::class_<SimulatedRobot>(m, "SimulatedRobot")
+        .def("get_joint_request", &SimulatedRobot::getJointRequest)
+        .def("set_initial_configuration", &SimulatedRobot::setInitialConfiguration);
+
+    nb::class_<StateProvider>(m, "StateProvider")
+        .def(nb::init<const SimulatedRobot &>())
+        .def("update", &StateProvider::update);
+
+    nb::class_<KalmanFilter>(m, "KalmanFilter").def(nb::init<>()).def("update", &KalmanFilter::update);
 };
 
 }  // namespace python

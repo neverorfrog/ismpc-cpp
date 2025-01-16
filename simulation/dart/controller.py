@@ -1,104 +1,154 @@
 import numpy as np
 import dartpy as dart
 import time
-from ismpc_py import FrameInfo, Reference, State, FootstepPlan
+from robot import Robot
+from kinematics import Kinematics
+from ismpc_py import FrameInfo, Reference, State, FootstepPlan, SimulatedRobot, RotationMatrix
 from ismpc_py import (
     FootstepPlanProvider,
     ModelPredictiveController,
     FootTrajectoryGenerator,
     MovingConstraintProvider,
+    StateProvider,
+    KalmanFilter,
+    CasadiMPC,
 )
-
+from utils import get_rotvec, pose_difference
+from scipy.spatial.transform import Rotation as R
 
 class Hrp4Controller(dart.gui.osg.RealTimeWorldNode):
 
-    def __init__(self, world: dart.simulation.World, hrp4: dart.dynamics.Skeleton):
+    def __init__(self, world: dart.simulation.World, robot: Robot):
         super(Hrp4Controller, self).__init__(world)
         self.world = world
-        self.hrp4 = hrp4
-        self.dofs = self.hrp4.getNumDofs()
+        self.robot = robot
         world.setTimeStep(0.01)
-        self.world_time_step = world.getTimeStep()
-        self.time = 0
-        self.elapsed = 0
+        self.dt = world.getTimeStep()
+        self.dart_elapsed = 0
+        self.ismpc_elapsed = 0
+        self.kin_elapsed = 0
 
         # Representations
-        frame_info = FrameInfo()
-        reference = Reference()
-        state = State()
-        plan = FootstepPlan()
+        self.frame_info = FrameInfo()
+        self.reference = Reference()
+        self.state = State()
+        self.plan = FootstepPlan()
 
         # Modules
-        planner = FootstepPlanProvider(frame_info, reference, state, plan)
-        mpc = ModelPredictiveController(frame_info, state, plan)
-        ft_generator = FootTrajectoryGenerator(frame_info, state, plan)
-        mc_provider = MovingConstraintProvider(frame_info, state, plan)
+        self.planner = FootstepPlanProvider(
+            self.frame_info, self.reference, self.state, self.plan
+        )
+        self.mpc = ModelPredictiveController(self.frame_info, self.state, self.plan)
+        self.ft_generator = FootTrajectoryGenerator(
+            self.frame_info, self.state, self.plan
+        )
+        self.mc_provider = MovingConstraintProvider(
+            self.frame_info, self.state, self.plan
+        )
+        self.filter = KalmanFilter()
+        self.casadi_mpc = CasadiMPC(self.frame_info, self.state, self.plan)
 
-        # robot links
-        self.lsole = hrp4.getBodyNode("l_sole")
-        self.rsole = hrp4.getBodyNode("r_sole")
-        self.torso = hrp4.getBodyNode("torso")
-        self.base = hrp4.getBodyNode("body")
+        # Kinematics
+        redundant_dofs = [
+            "NECK_Y",
+            "NECK_P",
+            "R_SHOULDER_P",
+            "R_SHOULDER_R",
+            "R_SHOULDER_Y",
+            "R_ELBOW_P",
+            "L_SHOULDER_P",
+            "L_SHOULDER_R",
+            "L_SHOULDER_Y",
+            "L_ELBOW_P",
+        ]
+        self.kinematics = Kinematics(self.robot, redundant_dofs)
 
-        for i in range(hrp4.getNumJoints()):
-            joint = hrp4.getJoint(i)
-            dim = joint.getNumDofs()
-
-            # this sets the root joint to passive
-            if dim == 6:
-                joint.setActuatorType(dart.dynamics.ActuatorType.PASSIVE)
-
-            # this sets the remaining joints as acceleration-controlled
-            elif dim == 1:
-                joint.setActuatorType(dart.dynamics.ActuatorType.ACCELERATION)
-
-        # set initial configuration
-        initial_configuration = {
-            "CHEST_P": 0.0,
-            "CHEST_Y": 0.0,
-            "NECK_P": 0.0,
-            "NECK_Y": 0.0,
-            "R_HIP_Y": 0.0,
-            "R_HIP_R": -3.0,
-            "R_HIP_P": -25.0,
-            "R_KNEE_P": 50.0,
-            "R_ANKLE_P": -25.0,
-            "R_ANKLE_R": 3.0,
-            "L_HIP_Y": 0.0,
-            "L_HIP_R": 3.0,
-            "L_HIP_P": -25.0,
-            "L_KNEE_P": 50.0,
-            "L_ANKLE_P": -25.0,
-            "L_ANKLE_R": -3.0,
-            "R_SHOULDER_P": 4.0,
-            "R_SHOULDER_R": -8.0,
-            "R_SHOULDER_Y": 0.0,
-            "R_ELBOW_P": -25.0,
-            "L_SHOULDER_P": 4.0,
-            "L_SHOULDER_R": 8.0,
-            "L_SHOULDER_Y": 0.0,
-            "L_ELBOW_P": -25.0,
-        }
-
-        for joint_name, value in initial_configuration.items():
-            self.hrp4.setPosition(
-                self.hrp4.getDof(joint_name).getIndexInSkeleton(), value * np.pi / 180.0
-            )
-
-        # position the robot on the ground
-        lsole_pos = self.lsole.getTransform(
-            withRespectTo=dart.dynamics.Frame.World(),
-            inCoordinatesOf=dart.dynamics.Frame.World(),
-        ).translation()
-        rsole_pos = self.rsole.getTransform(
-            withRespectTo=dart.dynamics.Frame.World(),
-            inCoordinatesOf=dart.dynamics.Frame.World(),
-        ).translation()
-        self.hrp4.setPosition(5, -(lsole_pos[2] + rsole_pos[2]) / 2.0)
+        # Filling plan
+        self.planner.update(self.plan)
 
     def customPreStep(self):
+
         start = time.time()
-        self.time += 1
+        self.robot.update(self.state, self.world)
         end = time.time()
-        self.elapsed += end - start
-        print("AVERAGE TIME IN MILLISECONDS: ", (self.elapsed / self.time) * 1000)
+        self.dart_elapsed += end - start
+
+        start = time.time()
+        if self.frame_info.k == 0:
+            self.state.footstep.start_pose.translation[0] = (
+                self.state.right_foot.pose.translation[0]
+            )
+            self.state.footstep.end_pose.translation[0] = (
+                self.state.right_foot.pose.translation[0]
+            )
+            self.state.desired_right_foot.pose.translation[0] = (
+                self.state.right_foot.pose.translation[0]
+            )
+        self.filter.update(self.state)
+        self.mc_provider.update(self.plan)
+        self.mpc.update(self.state)
+        self.state.lip = self.state.desired_lip
+        self.ft_generator.update(self.state)
+        end = time.time()
+        self.ismpc_elapsed += end - start
+
+        print("---------------------------------------------------")
+        print(f"LIP: \n {self.state.lip}")
+        print(f"LEFT FOOT: \n {self.state.left_foot.pose.translation}")
+        print(f"RIGHT FOOT: \n {self.state.right_foot.pose.translation}")
+        print("")
+        print(f"DESIRED LIP: \n {self.state.desired_lip}")
+        print(
+            f"DESIRED LEFT FOOT: \n POS: {self.state.desired_left_foot.pose.translation} \n ROT: {self.state.desired_left_foot.pose.rotation}"
+        )
+        print(
+            f"DESIRED RIGHT FOOT: \n {self.state.desired_right_foot.pose.translation}"
+        )
+        print("")
+        print(f"FOOTSTEP: \n {self.state.footstep}")
+        print("---------------------------------------------------")
+        print("ITERATION NUMBER: ", self.frame_info.k)
+        print(f"TIME: {self.frame_info.tk:.2f}")
+
+        start = time.time()
+        
+        lf_rotvec = R.from_matrix(self.state.desired_left_foot.pose.rotation.matrix()).as_rotvec()
+        rf_rotvec = R.from_matrix(self.state.desired_right_foot.pose.rotation.matrix()).as_rotvec()
+        self.state.desired_torso.pose.rotation = RotationMatrix(R.from_rotvec((lf_rotvec + rf_rotvec) / 2.0).as_matrix())
+        self.state.desired_base.pose.rotation = self.state.desired_torso.pose.rotation
+        
+        lf_rotvec_dot = self.state.desired_left_foot.ang_vel
+        rf_rotvec_dot = self.state.desired_right_foot.ang_vel
+        self.state.desired_torso.ang_vel = (lf_rotvec_dot + rf_rotvec_dot) / 2.0
+        self.state.desired_base.ang_vel = self.state.desired_torso.ang_vel
+        
+        lf_rotvec_ddot = self.state.desired_left_foot.ang_acc
+        rf_rotvec_ddot = self.state.desired_right_foot.ang_acc
+        self.state.desired_torso.ang_acc = (lf_rotvec_ddot + rf_rotvec_ddot) / 2.0
+        self.state.desired_base.ang_acc = self.state.desired_torso.ang_acc
+        
+        commands: np.ndarray = self.kinematics.get_joint_accelerations(self.state)
+        print("COMMANDS: \n", commands)
+        print("\n\n")
+        for i in range(self.kinematics.dofs - 6):
+            self.robot.skeleton.setCommand(i + 6, commands[i])
+        end = time.time()
+        self.kin_elapsed += end - start
+
+        self.frame_info.k += 1
+        self.frame_info.tk += self.dt
+        print(
+            "AVERAGE DART TIME IN MILLISECONDS: ",
+            (self.dart_elapsed / self.frame_info.k) * 1000,
+        )
+        print(
+            "AVERAGE ISMPC TIME IN MILLISECONDS: ",
+            (self.ismpc_elapsed / self.frame_info.k) * 1000,
+        )
+        print(
+            "AVERAGE KINEMATICS TIME IN MILLISECONDS: ",
+            (self.kin_elapsed / self.frame_info.k) * 1000,
+        )
+
+        if self.frame_info.k > 1000:
+            exit()
