@@ -5,8 +5,6 @@
 
 #include <iostream>
 
-#include "ismpc_cpp/dart/simulated_robot.h"
-#include "ismpc_cpp/dart/state_provider.h"
 #include "ismpc_cpp/ismpc.h"
 #include "ismpc_cpp/modules/casadi_mpc.h"
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
@@ -129,14 +127,6 @@ NB_MODULE(ismpc_py, m) {
         .def_rw("zmp_pos", &LipState::zmp_pos)
         .def_rw("zmp_vel", &LipState::zmp_vel)
         .def("__str__", &LipState::toString);
-
-    nb::class_<SimulatedRobot>(m, "SimulatedRobot")
-        .def("get_joint_request", &SimulatedRobot::getJointRequest)
-        .def("set_initial_configuration", &SimulatedRobot::setInitialConfiguration);
-
-    nb::class_<StateProvider>(m, "StateProvider")
-        .def(nb::init<const SimulatedRobot &>())
-        .def("update", &StateProvider::update);
 
     nb::class_<KalmanFilter>(m, "KalmanFilter").def(nb::init<>()).def("update", &KalmanFilter::update);
 };

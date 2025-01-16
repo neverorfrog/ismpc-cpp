@@ -5,7 +5,7 @@ delta: 0.01 # 83 Hz
 first_fs_duration: 0.6 # [s]
 
 # Duration parameters
-N: 1
+N: 1000
 P: 1000
 C: 100
 W: 100 # iterations to wait before starting

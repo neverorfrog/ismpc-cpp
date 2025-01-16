@@ -3,13 +3,12 @@ import dartpy as dart
 import time
 from robot import Robot
 from kinematics import Kinematics
-from ismpc_py import FrameInfo, Reference, State, FootstepPlan, SimulatedRobot, RotationMatrix
+from ismpc_py import FrameInfo, Reference, State, FootstepPlan, RotationMatrix
 from ismpc_py import (
     FootstepPlanProvider,
     ModelPredictiveController,
     FootTrajectoryGenerator,
     MovingConstraintProvider,
-    StateProvider,
     KalmanFilter,
     CasadiMPC,
 )
