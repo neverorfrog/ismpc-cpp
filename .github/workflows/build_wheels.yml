@@ -30,9 +30,8 @@ jobs:
             cd /io &&
             /opt/python/cp311-cp311/bin/pip install setuptools wheel --root-user-action=ignore &&
             /opt/python/cp311-cp311/bin/python setup.py bdist_wheel &&
-            auditwheel repair dist/ismpc-0.1-cp311-cp311-linux_x86_64.whl --plat manylinux2014_x86_64 &&
-            cp wheelhouse/*.whl /io/wheelhouse/"
-            
+            auditwheel repair dist/ismpc-0.1-cp311-cp311-linux_x86_64.whl --plat manylinux2014_x86_64"
+
       - name: Upload wheels to PyPI
         env:
           TWINE_USERNAME: "__token__"
