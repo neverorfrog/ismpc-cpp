@@ -28,18 +28,3 @@ jobs:
             /opt/python/cp311-cp311/bin/pip install setuptools wheel --root-user-action=ignore &&
             /opt/python/cp311-cp311/bin/python setup.py bdist_wheel &&
             auditwheel repair dist/ismpc-0.1-cp311-cp311-linux_x86_64.whl --plat manylinux2014_x86_64"
-
-      - name: Upload wheels to PyPI
-        env:
-          TWINE_USERNAME: "__token__"
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_KEY }}
-        run: |
-          sudo docker run --rm -v $(pwd):/io -e TWINE_USERNAME -e TWINE_PASSWORD quay.io/pypa/manylinux2014_x86_64 /bin/bash -c "
-            /opt/python/cp311-cp311/bin/pip install twine --root-user-action=ignore &&
-            /opt/python/cp311-cp311/bin/twine upload /io/wheelhouse/*.whl"
-
-      - name: Upload wheels as artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: cibw-wheels
-          path: ./wheelhouse/*.whl
