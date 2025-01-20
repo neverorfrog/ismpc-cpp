@@ -31,10 +31,11 @@ void FootTrajectoryGenerator::update(State& state) {
         Scalar desired_theta = start_theta + (end_theta - start_theta) * cubic(time_in_step);
         swing_foot.pose = Pose3(RotationMatrix::aroundZ(desired_theta), Vector3(desired_pos(0), desired_pos(1), 0));
         swing_foot.pose.euler = Vector3(0, 0, desired_theta);
-        
+
         // Linear Velocity with cubic polynomial interpolation
         swing_foot.lin_vel.segment(0, 2) = (end_pos - start_pos) * cubic_dot(time_in_step) / ss_duration;
-        swing_foot.lin_acc.segment(0, 2) = (end_pos - start_pos) * cubic_ddot(time_in_step) / (std::pow(ss_duration, 2));
+        swing_foot.lin_acc.segment(0, 2) =
+            (end_pos - start_pos) * cubic_ddot(time_in_step) / (std::pow(ss_duration, 2));
         // Height with quartic polynomial interpolation
         swing_foot.pose.translation(2) = step_height * quartic(time_in_step);
         swing_foot.lin_vel(2) = step_height * quartic_dot(time_in_step) / ss_duration;
@@ -42,7 +43,8 @@ void FootTrajectoryGenerator::update(State& state) {
 
         // Angular Velocity with cubic polynomial interpolation
         swing_foot.ang_vel = Vector3(0, 0, (end_theta - start_theta) * cubic_dot(time_in_step) / ss_duration);
-        swing_foot.ang_acc = Vector3(0, 0, (end_theta - start_theta) * cubic_ddot(time_in_step) / (std::pow(ss_duration, 2)));
+        swing_foot.ang_acc =
+            Vector3(0, 0, (end_theta - start_theta) * cubic_ddot(time_in_step) / (std::pow(ss_duration, 2)));
     }
 
     state.setDesiredSwingFoot(swing_foot);

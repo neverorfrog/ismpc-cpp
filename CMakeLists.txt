@@ -199,7 +199,7 @@ find_package(Python 3.11 COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
 execute_process(
   COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
   OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT
-) 
+)
 
 execute_process(
     COMMAND ${Python_EXECUTABLE} -c "import sysconfig; print(sysconfig.get_path('purelib'))"
@@ -216,7 +216,7 @@ nanobind_add_module(${ISMPC_PY_LIBRARY} ${PROJECT_SOURCE_DIR}/src/bindings.cpp)
 target_include_directories(${ISMPC_PY_LIBRARY} PUBLIC ${eigen_SOURCE_DIR} ${ISMPC_INCLUDE_DIR})
 target_link_libraries(${ISMPC_PY_LIBRARY} PUBLIC ${ISMPC_CPP_LIBRARY})
 
-install( 
+install(
     TARGETS ${ISMPC_PY_LIBRARY}
     EXPORT ${ISMPC_PY_LIBRARY}Targets
     LIBRARY DESTINATION ${PYTHON_SITE_PACKAGES}
