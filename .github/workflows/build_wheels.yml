@@ -19,7 +19,7 @@ jobs:
     - name: Set up Docker
       uses: docker/setup-buildx-action@v1
 
-    - name: Run wheel script
+    - name: Build wheel
       run: |
         sudo docker run --rm -v $(pwd):/io quay.io/pypa/manylinux2014_x86_64 /bin/bash -c "
           yum install -y epel-release &&
@@ -34,3 +34,18 @@ jobs:
           /opt/python/cp311-cp311/bin/pip install setuptools wheel &&
           /opt/python/cp311-cp311/bin/python setup.py bdist_wheel &&
           auditwheel repair dist/ismpc-0.1-cp311-cp311-linux_x86_64.whl --plat manylinux2014_x86_64"
+
+    - name: Upload wheels to PyPI
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        sudo docker run --rm -v $(pwd):/io quay.io/pypa/manylinux2014_x86_64 /bin/bash -c "
+          /opt/python/cp311-cp311/bin/pip install twine &&
+          twine upload /io/wheelhouse/*.whl"
+
+    - name: Upload wheels as artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: cibw-wheels
+        path: ./wheelhouse/*.whl
