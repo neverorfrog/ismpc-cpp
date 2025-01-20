@@ -30,6 +30,9 @@ dartpy = ">=6.15.0,<7"
 numpy = ">=1.26.4,<2"
 proxsuite = ">=0.6.7,<0.7"
 qpsolvers = ">=4.4.0,<5"
+cibuildwheel = ">=2.21.3,<3"
+twine = ">=6.0.1,<7"
+auditwheel = ">=6.2.0,<7"
 
 [pypi-dependencies]
 catkin-pkg = ">=1.0.0, <2"
@@ -40,6 +43,7 @@ mediapy = ">=1.2.2, <2"
 ipykernel = ">=6.29.5, <7"
 mujoco = ">=3.2.7, <4"
 scipy = "*"
+auditwheel-symbols = ">=0.1.13, <0.2"
 
 [activation]
 env = { LD_LIBRARY_PATH = "$CONDA_PREFIX/lib:$LD_LIBRARY_PATH" } # needed to find libraries from cmake

@@ -2,6 +2,7 @@
 
 #include "ismpc_cpp/modules/foot_trajectory_generator.h"
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
+#include "ismpc_cpp/modules/kalman_filter.h"
 #include "ismpc_cpp/modules/model_predictive_controller.h"
 #include "ismpc_cpp/modules/moving_constraint_provider.h"
 #include "ismpc_cpp/modules/reference_provider.h"

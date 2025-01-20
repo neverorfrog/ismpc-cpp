@@ -52,21 +52,21 @@ class CMakeBuild(build_ext):
         subprocess.check_call(["cmake", "--build", ".", "--target", ext.name] + build_args, cwd=build_temp)
 
 setup(
-    name="ismpc_py",
+    name="ismpc",
     version="0.1",
     author="Flavio Maiorana",
     author_email="97flavio.maiorana@gmail.com",
     description="Cose",
     long_description="Altre cose",
-    ext_modules=[CMakeExtension("ismpc_py", sourcedir=".")],
+    ext_modules=[CMakeExtension("ismpc", sourcedir=".")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.8",
-    packages=find_packages(where="bindings"),
-    package_dir={"": "bindings"},
+    packages=find_packages(),
+    package_dir={"": "src"},
     package_data={
-        "ismpc_py": ["*.pyi"],
+        "ismpc": ["*.pyi"],
     },
     include_package_data=True,
 )
