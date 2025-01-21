@@ -28,8 +28,8 @@ class CMakeBuild(build_ext):
         extdir = ext_fullpath.parent.resolve()
 
         # Copy .pyi file to the build directory
-        pyi_source = Path('bindings/ismpc_py.pyi')
-        pyi_dest = extdir / 'ismpc_py.pyi'
+        pyi_source = Path('bindings/ismpc.pyi')
+        pyi_dest = extdir / 'ismpc.pyi'
         if pyi_source.exists():
             shutil.copy2(pyi_source, pyi_dest)
 

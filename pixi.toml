@@ -11,7 +11,7 @@ cpp-build = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. &
 cpp-build-debug = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j12'
 cpp-main = './build/executables/ismpc_main'
 py-build = 'python setup.py build_ext --cmake-args="-DBUILD_ROS=OFF"'
-py-install = 'python setup.py install && python -m nanobind.stubgen -m ismpc_py'
+py-install = 'python setup.py install && python -m nanobind.stubgen -m ismpc'
 py-main = "python simulation/matplotlib/main.py"
 ros-build = 'mkdir -p build && cd build && cmake .. -DBUILD_ROS=ON && cmake --build . -j12'
 dart-build = 'mkdir -p build && cd build && cmake .. -DBUILD_DART=ON && cmake --build . -j12'
@@ -22,14 +22,14 @@ pydart = "python simulation/dart/main.py"
 python = "==3.11"
 matplotlib = ">=3.9.3,<4"
 tqdm = ">=4.67.1,<5"
-setuptools = ">=75.6.0,<76"
 nanobind = ">=2.4.0,<3"
 pybind11 = ">=2.13.6,<3"
 pybind11-stubgen = ">=2.4.2,<3"
-dartpy = ">=6.15.0,<7"
 numpy = ">=1.26.4,<2"
 proxsuite = ">=0.6.7,<0.7"
 qpsolvers = ">=4.4.0,<5"
+
+setuptools = ">=75.8.0,<76"
 cibuildwheel = ">=2.21.3,<3"
 twine = ">=6.0.1,<7"
 auditwheel = ">=6.2.0,<7"
