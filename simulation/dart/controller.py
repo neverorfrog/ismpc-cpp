@@ -12,7 +12,6 @@ from ismpc_py import (
     KalmanFilter,
     CasadiMPC,
 )
-from utils import get_rotvec, pose_difference
 from scipy.spatial.transform import Rotation as R
 
 class Hrp4Controller(dart.gui.osg.RealTimeWorldNode):
@@ -149,5 +148,5 @@ class Hrp4Controller(dart.gui.osg.RealTimeWorldNode):
             (self.kin_elapsed / self.frame_info.k) * 1000,
         )
 
-        if self.frame_info.k > 1000:
+        if self.frame_info.k > 500:
             exit()
