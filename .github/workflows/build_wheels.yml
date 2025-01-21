@@ -5,7 +5,8 @@ on: [push, pull_request]
 jobs:
   build_wheels:
     runs-on: ubuntu-latest
-
+    if: github.event_name != 'pull_request'
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -13,12 +14,10 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
 
-      - name: Create wheelhouse directory
-        run: mkdir -p wheelhouse
-
-      - name: Build wheel
+      - name: Build and copy wheel
         run: |
-          sudo docker run --rm -v $(pwd):/io quay.io/pypa/manylinux2014_x86_64 /bin/bash -c "
+          CONTAINER_ID=$(sudo docker run -d -v $(pwd):/io quay.io/pypa/manylinux2014_x86_64 sleep infinity)
+          sudo docker exec $CONTAINER_ID /bin/bash -c "
             yum install -y epel-release &&
             yum-config-manager --add-repo=https://download.opensuse.org/repositories/science:/dlr/CentOS_7/ &&
             yum install -y --nogpgcheck eigen3-devel &&
@@ -30,14 +29,14 @@ jobs:
             cd /io &&
             /opt/python/cp311-cp311/bin/pip install setuptools wheel --root-user-action=ignore &&
             /opt/python/cp311-cp311/bin/python setup.py bdist_wheel &&
-            auditwheel repair dist/ismpc-0.1-cp311-cp311-linux_x86_64.whl --plat manylinux2014_x86_64 && 
-            chown -R $(id -u):$(id -g) /io/wheelhouse"
+            auditwheel repair dist/ismpc-0.1-cp311-cp311-linux_x86_64.whl --plat manylinux2014_x86_64"
+          sudo docker cp $CONTAINER_ID:/io/wheelhouse/. ./wheelhouse/
+          sudo docker stop $CONTAINER_ID
 
       - name: Upload wheels to PyPI
         env:
           TWINE_USERNAME: "__token__"
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-          TWINE_REPOSITORY_URL: "https://upload.pypi.org/legacy/"
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         run: |
           python -m pip install --upgrade twine &&
           twine upload --verbose wheelhouse/*.whl
