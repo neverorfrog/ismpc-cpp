@@ -27,12 +27,6 @@ class CMakeBuild(build_ext):
         ext_fullpath = Path.cwd() / self.get_ext_fullpath(ext.name)
         extdir = ext_fullpath.parent.resolve()
 
-        # Copy .pyi file to the build directory
-        pyi_source = Path('bindings/ismpc.pyi')
-        pyi_dest = extdir / 'ismpc.pyi'
-        if pyi_source.exists():
-            shutil.copy2(pyi_source, pyi_dest)
-
         cfg = "Release" if not self.debug else "Debug"
         build_temp = Path.cwd() / "build"
         build_temp.mkdir(parents=True, exist_ok=True)
@@ -50,10 +44,16 @@ class CMakeBuild(build_ext):
 
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=build_temp)
         subprocess.check_call(["cmake", "--build", ".", "--target", ext.name] + build_args, cwd=build_temp)
+        
+        # Copy .pyi file to the build directory
+        pyi_source = Path('bindings/ismpc.pyi')
+        pyi_dest = extdir / 'ismpc.pyi'
+        if pyi_source.exists():
+            shutil.copy2(pyi_source, pyi_dest)
 
 setup(
     name="ismpc",
-    version="0.1",
+    version="0.1.3",
     author="Flavio Maiorana",
     author_email="97flavio.maiorana@gmail.com",
     description="Cose",
@@ -64,7 +64,7 @@ setup(
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.8",
     packages=find_packages(),
-    package_dir={"": "src"},
+    package_dir={"": "."},
     package_data={
         "ismpc": ["*.pyi"],
     },

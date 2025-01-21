@@ -1,0 +1,25 @@
+#!/bin/zsh
+
+VERSION=${1:-0.1.1}
+
+sudo rm -rf wheelhouse dist
+
+CONTAINER_ID=$(sudo docker run -d -v $(pwd):/io quay.io/pypa/manylinux2014_x86_64 sleep infinity)
+
+sudo docker exec $CONTAINER_ID /bin/bash -c "
+            yum install -y epel-release &&
+            yum-config-manager --add-repo=https://download.opensuse.org/repositories/science:/dlr/CentOS_7/ &&
+            yum install -y --nogpgcheck eigen3-devel &&
+            cd /usr/local/include &&
+            curl -L https://github.com/simd-everywhere/simde/archive/refs/heads/master.zip -o simde.zip &&
+            unzip simde.zip &&
+            mv simde-master/simde . &&
+            rm -rf simde.zip simde-master &&
+            cd /io &&
+            /opt/python/cp311-cp311/bin/pip install setuptools wheel --root-user-action=ignore &&
+            /opt/python/cp311-cp311/bin/python setup.py sdist bdist_wheel &&
+            auditwheel repair dist/ismpc-$VERSION-cp311-cp311-linux_x86_64.whl --plat manylinux2014_x86_64"
+
+sudo cp dist/ismpc-$VERSION.tar.gz wheelhouse/
+
+twine upload wheelhouse/* --verbose 

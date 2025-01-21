@@ -5,7 +5,7 @@ namespace ismpc {
 IsmpcQp::IsmpcQp() {
     // Options
     qp.settings.max_iter = 500;
-    qp.settings.initial_guess = InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+    qp.settings.initial_guess = proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
     qp.settings.verbose = false;
     qp.settings.compute_timings = true;
 
