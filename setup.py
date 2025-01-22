@@ -3,7 +3,6 @@ import subprocess
 from pathlib import Path
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
-import shutil
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):

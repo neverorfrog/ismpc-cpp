@@ -1,0 +1,20 @@
+[project]
+authors = ["neverorfrog <97flavio.maiorana@gmail.com>"]
+channels = ["conda-forge"]
+description = "Add a short description here"
+name = "ismpc_cpp"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+build = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . -j12'
+build-debug = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j12'
+main = './build/executables/ismpc_main'
+py-build = 'python setup.py build_ext --cmake-args="-DBUILD_ROS=OFF"'
+py-install = 'python setup.py install && python -m nanobind.stubgen -m ismpc_py'
+py-main = "python simulation/matplotlib/main.py"
+
+[dependencies]
+python = "==3.11"
+setuptools = ">=75.6.0,<76"
+nanobind = ">=2.4.0,<3"
