@@ -1,0 +1,3 @@
+[submodule "external/ismpc-cpp"]
+	path = external/ismpc-cpp
+	url = https://github.com/neverorfrog/ismpc-cpp
