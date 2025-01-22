@@ -12,7 +12,7 @@ __pycache__/
 *.pyc
 *.so
 dist
-dist
+wheelhouse
 
 # ros2 stuff
 install/

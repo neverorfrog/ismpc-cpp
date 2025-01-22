@@ -91,7 +91,7 @@ bool IsmpcQp::solve() {
               zmp_constraint.u);
     qp.solve();
 
-    if (qp.results.info.status != PROXQP_SOLVED) {
+    if (qp.results.info.status != proxsuite::proxqp::QPSolverOutput::PROXQP_SOLVED) {
         std::cout << "QP solver failed to find a solution." << std::endl;
         return false;
     }

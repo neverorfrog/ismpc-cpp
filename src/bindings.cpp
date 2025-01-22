@@ -6,9 +6,6 @@
 #include <iostream>
 
 #include "ismpc_cpp/ismpc.h"
-#include "ismpc_cpp/modules/casadi_mpc.h"
-#include "ismpc_cpp/modules/footstep_plan_provider.h"
-#include "ismpc_cpp/modules/kalman_filter.h"
 #include "ismpc_cpp/tools/math/rotation_matrix.h"
 #include "ismpc_cpp/types/lip_state.h"
 
@@ -19,7 +16,7 @@ NB_MAKE_OPAQUE(ismpc::RotationMatrix);
 namespace ismpc {
 namespace python {
 
-NB_MODULE(ismpc_py, m) {
+NB_MODULE(ismpc, m) {
     nb::class_<State>(m, "State")
         .def(nb::init<>())
         .def_rw("lip", &State::lip)
@@ -54,10 +51,6 @@ NB_MODULE(ismpc_py, m) {
     nb::class_<FootTrajectoryGenerator>(m, "FootTrajectoryGenerator")
         .def(nb::init<const FrameInfo &, const State &, FootstepPlan &>())
         .def("update", &FootTrajectoryGenerator::update);
-
-    nb::class_<CasadiMPC>(m, "CasadiMPC")
-        .def(nb::init<const FrameInfo &, const State &, FootstepPlan &>())
-        .def("update", &CasadiMPC::update);
 
     nb::class_<EndEffector>(m, "EndEffector")
         .def(nb::init<>())

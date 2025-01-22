@@ -1,7 +1,6 @@
 #include <chrono>
 
 #include "ismpc_cpp/ismpc.h"
-#include "ismpc_cpp/modules/casadi_mpc.h"
 #include "ismpc_cpp/modules/foot_trajectory_generator.h"
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
 #include "ismpc_cpp/modules/model_predictive_controller.h"
@@ -24,7 +23,6 @@ int main() {
     ismpc::ModelPredictiveController mpc = ismpc::ModelPredictiveController(frame_info, state, plan);
     ismpc::FootTrajectoryGenerator ft_generator = ismpc::FootTrajectoryGenerator(frame_info, state, plan);
     ismpc::MovingConstraintProvider mc_provider = ismpc::MovingConstraintProvider(frame_info, state, plan);
-    ismpc::CasadiMPC casadi_mpc = ismpc::CasadiMPC(frame_info, state, plan);
 
     // Timing stuff
     std::chrono::system_clock::time_point start, end;

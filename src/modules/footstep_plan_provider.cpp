@@ -74,7 +74,7 @@ void FootstepPlanProvider::computeThetaSequence() {
     theta_qp.work.timer.stop();
     total_planner_qp_duration += theta_qp.work.timer.elapsed().user;
 
-    if (theta_qp.results.info.status != PROXQP_SOLVED) {
+    if (theta_qp.results.info.status != proxsuite::proxqp::QPSolverOutput::PROXQP_SOLVED) {
         throw std::runtime_error("Theta QP solver failed to find a solution.");
     }
 
@@ -103,7 +103,7 @@ void FootstepPlanProvider::computePositionSequence() {
     position_qp.work.timer.stop();
     total_planner_qp_duration += position_qp.work.timer.elapsed().user;
 
-    if (position_qp.results.info.status != PROXQP_SOLVED) {
+    if (position_qp.results.info.status != proxsuite::proxqp::QPSolverOutput::PROXQP_SOLVED) {
         throw std::runtime_error("Theta QP solver failed to find a solution.");
     }
 

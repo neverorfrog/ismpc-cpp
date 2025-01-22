@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.22)
 
 # ============================= PROJECT SETUP ===============================================
-project(ismpc_cpp VERSION 0.1 LANGUAGES CXX)
-set(ISMPC_CPP_LIBRARY ${PROJECT_NAME})
+project(ismpc VERSION 0.1 LANGUAGES CXX)
+set(ISMPC_CPP_LIBRARY ismpc_cpp)
+set(ISMPC_PY_LIBRARY ismpc)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(PROJECT ismpc_cpp)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -21,12 +21,10 @@ endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/executables")
 
-
 # =============================================================================================
 
 # ============================ BUILD OPTIONS ==================================================
 option(BUILD_TESTS "Build tests" OFF)
-option(BUILD_PYTHON_BINDINGS "Build python bindings" OFF)
 option(BUILD_ROS "Build ros package" OFF)
 option(BUILD_DART "Build with DART" OFF)
 
@@ -40,7 +38,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
-
 
 # =============================================================================================
 
@@ -63,14 +60,18 @@ configure_file(
   @ONLY
 )
 
-
 # =============================================================================================
 
 # ============================ EXTERNAL LIBRARIES =============================================
 include(FetchContent)
 
 # EIGEN3
-set(EIGEN_INCLUDE_DIR /usr/include/eigen3)
+FetchContent_Declare(
+  eigen
+  GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+  GIT_TAG master
+)
+FetchContent_MakeAvailable(eigen)
 
 # YAML-CPP
 FetchContent_Declare(
@@ -88,18 +89,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(proxsuite)
 
-# CASADI
-set(CASADI_INCLUDE_DIR /usr/local/include/casadi)
-include_directories(
-    SYSTEM ${CASADI_INCLUDE_DIR}
+# NANOBIND
+FetchContent_Declare(
+  nanobind
+  GIT_REPOSITORY https://github.com/wjakob/nanobind.git
+  GIT_TAG v2.4.0
 )
-set(LIBRARY_DIRS /usr/local/lib)
-link_directories(${LIBRARY_DIRS})
-find_library(CASADI_LIBRARY NAMES casadi HINTS ${LIBRARY_DIRS})
-if(CASADI_LIBRARY)
-    set(LIBCASADI ${CASADI_LIBRARY})
-    message(STATUS "Found CasADi libs: ${LIBCASADI}")
-endif()
+FetchContent_MakeAvailable(nanobind)
 
 # DART
 if(BUILD_DART)
@@ -111,6 +107,7 @@ endif()
 # ============================ ISMPC LIBRARY ==================================================
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+list(REMOVE_ITEM ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/bindings.cpp)
 add_library(${ISMPC_CPP_LIBRARY} STATIC ${ISMPC_SRCS})
 
 target_include_directories(${ISMPC_CPP_LIBRARY}
@@ -119,16 +116,16 @@ target_include_directories(${ISMPC_CPP_LIBRARY}
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${eigen_SOURCE_DIR}>
   ${DART_INCLUDE_DIRS}
-  ${EIGEN_INCLUDE_DIR}
 )
 
 set(ISMPC_CPP_EXTRA_LIBRARIES
   $<BUILD_INTERFACE:cxx_setup>
   $<BUILD_INTERFACE:yaml-cpp::yaml-cpp>
   $<BUILD_INTERFACE:proxsuite>
+  $<BUILD_INTERFACE:Eigen3::Eigen>
   ${DART_LIBRARIES}
-  ${LIBCASADI}
 )
 target_link_libraries(${ISMPC_CPP_LIBRARY} PUBLIC ${ISMPC_CPP_EXTRA_LIBRARIES})
 
@@ -192,9 +189,40 @@ endif()
 # =============================================================================================
 
 # ============================ PYTHON BINDINGS =================================================
-if(BUILD_PYTHON_BINDINGS)
-  add_subdirectory(bindings)
+if(CMAKE_VERSION VERSION_LESS 3.18)
+  set(DEV_MODULE Development)
+else()
+  set(DEV_MODULE Development.Module)
 endif()
+
+find_package(Python 3.11 COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+  OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT
+)
+
+execute_process(
+    COMMAND ${Python_EXECUTABLE} -c "import sysconfig; print(sysconfig.get_path('purelib'))"
+    OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+include_directories(${Python_INCLUDE_DIRS})
+message(STATUS "Python_EXECUTABLE: ${Python_EXECUTABLE}")
+message(STATUS "Python_VERSION: ${Python_VERSION}")
+message(STATUS "PYTHON INCLUDE DIRECTORIES" ${Python_INCLUDE_DIRS})
+
+nanobind_add_module(${ISMPC_PY_LIBRARY} ${PROJECT_SOURCE_DIR}/src/bindings.cpp)
+target_include_directories(${ISMPC_PY_LIBRARY} PUBLIC ${eigen_SOURCE_DIR} ${ISMPC_INCLUDE_DIR})
+target_link_libraries(${ISMPC_PY_LIBRARY} PUBLIC ${ISMPC_CPP_LIBRARY})
+
+install(
+    TARGETS ${ISMPC_PY_LIBRARY}
+    EXPORT ${ISMPC_PY_LIBRARY}Targets
+    LIBRARY DESTINATION ${PYTHON_SITE_PACKAGES}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${BINDIR}
+)
 
 # =============================================================================================
 

@@ -1,11 +1,11 @@
 save_log: false
 
 # Time step for simulation [s]
-delta: 0.01 # 83 Hz
-first_fs_duration: 0.6 # [s]
+delta: 0.02 # 83 Hz
+first_fs_duration: 1.0 # [s]
 
 # Duration parameters
-N: 1000
+N: 500
 P: 1000
 C: 100
 W: 100 # iterations to wait before starting
@@ -14,7 +14,7 @@ W: 100 # iterations to wait before starting
 robot: hrp4
 
 # Input Velocities
-des_vel_x: 0.05 # [m/s]
+des_vel_x: 0.1 # [m/s]
 des_vel_y: 0.0 #  [m/s]
 des_omega: 0.0 #  [rad/s]
 
