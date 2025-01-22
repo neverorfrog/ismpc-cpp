@@ -3,3 +3,4 @@ pixi.lock linguist-language=YAML linguist-generated=true
 
 *.h linguist-detectable=false
 simulation/webots/controllers/nao_lola_python/*.py linguist-detectable=false
+*.ipynb linguist-detectable=false
