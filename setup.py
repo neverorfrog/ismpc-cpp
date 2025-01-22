@@ -27,20 +27,13 @@ class CMakeBuild(build_ext):
         ext_fullpath = Path.cwd() / self.get_ext_fullpath(ext.name)
         extdir = ext_fullpath.parent.resolve()
 
-        # Copy .pyi file to the build directory
-        pyi_source = Path('bindings/ismpc_py.pyi')
-        pyi_dest = extdir / 'ismpc_py.pyi'
-        if pyi_source.exists():
-            shutil.copy2(pyi_source, pyi_dest)
-
         cfg = "Release" if not self.debug else "Debug"
         build_temp = Path.cwd() / "build"
         build_temp.mkdir(parents=True, exist_ok=True)
 
         cmake_args = [
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
-            f"-DCMAKE_BUILD_TYPE={cfg}",
-            f"-DBUILD_PYTHON_BINDINGS=ON",
+            f"-DCMAKE_BUILD_TYPE={cfg}"
         ] + self.cmake_args
 
         build_args = ["--config", cfg]
@@ -64,7 +57,7 @@ setup(
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.8",
     packages=find_packages(),
-    package_dir={"": "src"},
+    package_dir={"": "."},
     package_data={
         "ismpc": ["*.pyi"],
     },
