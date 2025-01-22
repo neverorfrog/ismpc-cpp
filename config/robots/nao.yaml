@@ -22,10 +22,10 @@ day: 0.05
 
 # ZMP stuff
 dxz: 0.1
-dyz: 0.07
-zmp_vx_max: 1.0
-zmp_vy_max: 1.0
-beta: 100
+dyz: 0.1
+zmp_vx_max: 5.0
+zmp_vy_max: 5.0
+beta: 1000
 
 # Timing Stuff
 ds_percentage: 0.3 # percentage of the entire step time

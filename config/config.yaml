@@ -1,7 +1,7 @@
 save_log: false
 
 # Time step for simulation [s]
-delta: 0.01 # 83 Hz
+delta: 0.02 # 83 Hz
 first_fs_duration: 1.0 # [s]
 
 # Duration parameters

@@ -5,7 +5,7 @@ name = "ismpc"
 requires-python = "== 3.11"
 version = "0.1.4"
 dynamic = ["readme", "optional-dependencies"]
-dependencies = ["build>=1.2.2.post1,<2"]
+dependencies = []
 
 [build-system]
 build-backend = "hatchling.build"
