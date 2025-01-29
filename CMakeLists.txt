@@ -85,7 +85,7 @@ FetchContent_MakeAvailable(yaml-cpp)
 FetchContent_Declare(
   proxsuite
   GIT_REPOSITORY https://github.com/Simple-Robotics/proxsuite.git
-  GIT_TAG main
+  GIT_TAG v0.6.6
 )
 FetchContent_MakeAvailable(proxsuite)
 
