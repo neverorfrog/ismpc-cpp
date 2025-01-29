@@ -29,7 +29,7 @@ class IsmpcQp {
     EqualityConstraint stability_constraint;
     InequalityConstraint zmp_constraint;
 
-    const int nl = 1;                     // number of lip variables (zmp pos)
+    const int nl = Config::nl;            // number of lip variables (com pos, com vel, zmp pos)
     const int nv = nl + 1;                // number of variables per coordinate (lipvars, zmp vel)
     const int d = nv * numC + nl;         // number of primal variables (xc, xdc, xz, xdz)
     const int n_in = 2 * numC;            // number of inequality constraints (zmp pos, zmp vel)

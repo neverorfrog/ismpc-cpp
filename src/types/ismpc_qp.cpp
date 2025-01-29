@@ -12,8 +12,8 @@ IsmpcQp::IsmpcQp() {
     // Cost Function
     cost = Cost(d);
     for (int i = 0; i < numC; ++i) {
-        cost.H(nv * i + nl, nv * i + nl) = 2;           // dzmp
-        cost.H(nv * (i + 1), nv * (i + 1)) = 2 * beta;  // zmp
+        cost.H(nv * i + nl, nv * i + nl) = 2;                                 // dzmp
+        cost.H(nv * (i + 1) + (nl - 1), nv * (i + 1) + (nl - 1)) = 2 * beta;  // zmp
     }
 
     // Initial Constraint
@@ -26,7 +26,12 @@ IsmpcQp::IsmpcQp() {
     Matrix Ak = Matrix::Zero(nl, nv + nl);
     Ak.block(0, 0, nl, nl) = Matrix::Identity(nl, nl);        // current lip state
     Ak.block(0, nv, nl, nl) = -1 * Matrix::Identity(nl, nl);  // next lip state
-    Ak(0, 1) = delta;                                         // current zmp vel
+    Ak(0, 1) = delta;  // current com (or zmp) vel to next com pos (or zmp pos)
+    if (nl == 3) {
+        Ak(1, 0) = std::pow(eta, 2) * delta;   // current com pos to next com vel
+        Ak(1, 2) = -std::pow(eta, 2) * delta;  // current zmp pos to next com vel
+        Ak(2, 3) = delta;                      // current zmp vel to next zmp pos
+    }
     for (int i = 0; i < numC; ++i) {
         model_constraint.A.block(nl * i, nv * i, nl, nv + nl) = Ak;
     }
@@ -35,45 +40,58 @@ IsmpcQp::IsmpcQp() {
 
     // Stability Constraint
     stability_constraint = EqualityConstraint(1, d);
-    for (int i = 0; i < numC - 1; ++i) {  // Summation of zmp velocities
-        stability_constraint.A(0, 2 * i + 1) = std::exp(-i * delta * eta);
+    if (nl == 1) {
+        for (int i = 0; i < numC - 1; ++i) {  // Summation of zmp velocities
+            stability_constraint.A(0, 2 * i + 1) = std::exp(-i * delta * eta);
+        }
+    } else if (nl == 3) {
+        stability_constraint.A(0, 0) = std::pow(eta, 3);
+        stability_constraint.A(0, 1) = 1;
+        stability_constraint.A(0, 2) = -std::pow(eta, 3);
+        stability_constraint.A(0, d - 3) = -std::pow(eta, 3);
+        stability_constraint.A(0, d - 2) = -1;
+        stability_constraint.A(0, d - 1) = std::pow(eta, 3);
     }
     A.block(nl + nl * numC, 0, 1, d) = stability_constraint.A;
 
     // Zmp Constraint
     zmp_constraint = InequalityConstraint(n_in, d);
     for (int i = 0; i < numC; ++i) {
-        zmp_constraint.C(2 * i, nv * (i + 1)) = 1;
-        zmp_constraint.C(2 * i + 1, 2 * i + 1) = 1;
+        zmp_constraint.C(2 * i, nv * (i + 1) + (nl - 1)) = 1;  // zmp pos
+        zmp_constraint.C(2 * i + 1, nv * i + nl) = 1;          // zmp vel
     }
 
-    proxsuite::proxqp::sparse::SparseMat<Scalar, int> H_sparse = cost.H.sparseView();
-    proxsuite::proxqp::sparse::SparseMat<Scalar, int> A_sparse = A.sparseView();
-    proxsuite::proxqp::sparse::SparseMat<Scalar, int> C_sparse = zmp_constraint.C.sparseView();
-
-    qp.init(H_sparse, cost.g, A_sparse, b, C_sparse, zmp_constraint.l, zmp_constraint.u);
+    qp.init(cost.H.sparseView(), cost.g, A.sparseView(), b, zmp_constraint.C.sparseView(), zmp_constraint.l,
+            zmp_constraint.u);
 }
 
 void IsmpcQp::update(const Vector3 &lip, const VectorX &mc) {
     // Cost Function
     for (int i = 0; i < numC + 1; ++i) {
-        cost.g(nv * (i + 1)) = -2 * beta * mc(i);
+        cost.g(nv * (i + 1) + (nl - 1)) = -2 * beta * mc(i);
     }
 
     // Initial Constraint
-    Scalar zmp = lip(2);
-    initial_constraint.b(0) = zmp;
+    initial_constraint.b(nl - 1) = lip(2);
+    if (nl == 3) {
+        initial_constraint.b(0) = lip(0);
+        initial_constraint.b(1) = lip(1);
+    }
     b.segment(0, nl) = initial_constraint.b;
 
     // Stability Constraint
-    Scalar unstable = lip(0) + lip(1) / eta;
-    Scalar temp = eta / (1 - std::exp(-delta * eta));
-    if (tail_type == TailType::PERIODIC) {
-        stability_constraint.b << temp * (unstable - zmp) * (1 - std::exp(-delta * eta * numC));
-    } else if (tail_type == TailType::TRUNCATED) {
-        stability_constraint.b << temp * (unstable - zmp);
+    if (nl == 1) {
+        Scalar unstable = lip(0) + lip(1) / eta;
+        Scalar temp = eta / (1 - std::exp(-delta * eta));
+        if (tail_type == TailType::PERIODIC) {
+            stability_constraint.b << temp * (unstable - lip(2)) * (1 - std::exp(-delta * eta * numC));
+        } else if (tail_type == TailType::TRUNCATED) {
+            stability_constraint.b << temp * (unstable - lip(2));
+        }
+        b.segment(nl + nl * numC, 1) = stability_constraint.b;
+    } else if (nl == 3) {
+        b.segment(nl + nl * numC, 1) << 0;
     }
-    b.segment(nl + nl * numC, 1) = stability_constraint.b;
 
     // ZMP Constraint
     for (int i = 0; i < numC; ++i) {
@@ -86,7 +104,6 @@ void IsmpcQp::update(const Vector3 &lip, const VectorX &mc) {
 
 bool IsmpcQp::solve() {
     std::cout << "SOLVING QP" << std::endl;
-
     qp.update(cost.H.sparseView(), cost.g, A.sparseView(), b, zmp_constraint.C.sparseView(), zmp_constraint.l,
               zmp_constraint.u);
     qp.solve();

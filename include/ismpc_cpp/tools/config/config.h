@@ -27,7 +27,8 @@ struct Config {
     static inline bool save_log;  // Save log file
 
     static inline Scalar delta{};  // Sampling interval
-    static inline Scalar first_fs_duration{};
+    static inline Scalar first_fs_duration{};\
+    static inline int nl{};
 
     static inline int N{};       // Simulation steps
     static inline int P{};       // Preview horizon steps

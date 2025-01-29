@@ -22,7 +22,7 @@ day: 0.05
 
 # ZMP stuff
 dxz: 0.2
-dyz: 0.05
+dyz: 0.1
 zmp_vx_max: 5.0
 zmp_vy_max: 5.0
 beta: 100
