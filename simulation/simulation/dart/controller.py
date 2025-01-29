@@ -14,6 +14,9 @@ from ismpc import (
 from scipy.spatial.transform import Rotation as R
 from simulation.dart.config import REDUNDANT_DOFS, ROBOT, N
 
+from time import sleep
+import sys
+
 class Controller(dart.gui.osg.RealTimeWorldNode):
 
     def __init__(self, world: dart.simulation.World, robot: Robot):
@@ -69,14 +72,18 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
                 self.state.right_foot.pose.translation[0]
             )
         self.filter.update(self.state)
+        #print("Filter updated")
         self.mc_provider.update(self.plan)
+        #print("mc_provider updated")
         self.mpc.update(self.state)
+        #print("mpc updated")
         self.state.lip = self.state.desired_lip
         self.ft_generator.update(self.state)
+        #print("ft_generator updated")
         end = time.time()
         self.ismpc_elapsed += end - start
 
-        print("---------------------------------------------------")
+        '''print("---------------------------------------------------")
         print(f"LIP: \n {self.state.lip}")
         print(f"LEFT FOOT: \n {self.state.left_foot.pose.translation}")
         print(f"RIGHT FOOT: \n {self.state.right_foot.pose.translation}")
@@ -92,7 +99,7 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         print(f"FOOTSTEP: \n {self.state.footstep}")
         print("---------------------------------------------------")
         print("ITERATION NUMBER: ", self.frame_info.k)
-        print(f"TIME: {self.frame_info.tk:.2f}")
+        print(f"TIME: {self.frame_info.tk:.2f}")'''
 
         start = time.time()
         
@@ -112,8 +119,11 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         self.state.desired_base.ang_acc = self.state.desired_torso.ang_acc
         
         commands: np.ndarray = self.kinematics.get_joint_accelerations(self.state)
-        print("COMMANDS: \n", commands)
-        print("\n\n")
+        #print("COMMANDS: \n", commands)
+        
+        # If you print the histogram you should remove all the other prints
+        self.printCommandsHistogram(self.robot.jointList, commands)
+
         for i in range(self.kinematics.dofs - 6):
             self.robot.skeleton.setCommand(i + 6, commands[i])
         end = time.time()
@@ -121,7 +131,7 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
 
         self.frame_info.k += 1
         self.frame_info.tk += self.dt
-        print(
+        '''print(
             "AVERAGE DART TIME IN MILLISECONDS: ",
             (self.dart_elapsed / self.frame_info.k) * 1000,
         )
@@ -132,7 +142,39 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         print(
             "AVERAGE KINEMATICS TIME IN MILLISECONDS: ",
             (self.kin_elapsed / self.frame_info.k) * 1000,
-        )
+        )'''
+        #input("Press enter to apply command...")
+        sleep(0.02)
 
-        if self.frame_info.k > N:
-            exit()
+        #if self.frame_info.k > N:
+        #    exit()
+
+    def printCommandsHistogram(self, jointList, commands):
+        commands_abs = np.abs(commands)
+        max_val = np.max([30, np.max(commands_abs)])
+        bar_length = 60 # You can put also 150 if you have the prompt widescreen
+
+        # Sposta il cursore su tutte le righe sopra
+        for _ in range(len(commands) + 1):  # +1 per l'intestazione
+            sys.stdout.write("\033[F")
+            sys.stdout.flush()
+
+        print(" " * 20 + "-1" + "-" * (bar_length//2) + "0" + "-" * (bar_length//2) + "1")
+
+        # Aggiorna le righe con le barre centrate
+        for joint, command in zip(jointList, commands):
+            norm_value = command / max_val  # Normalizzazione rispetto al massimo valore
+            half_space = bar_length // 2  # Punto centrale (zero)
+            if norm_value < 0:
+                left_part = "█" * int(abs(norm_value) * half_space)  # Barra a sinistra
+                left_offset = " " * (half_space - len(left_part))
+                right_part = " " * (half_space - len(left_part))  # Spazio a destra del centro
+            else:
+                right_part = "█" * int(norm_value * half_space)  # Barra a destra
+                left_part = " " * half_space  # Spazio a sinistra del centro
+                left_offset = ""
+ 
+            tab = "\t" if len(joint) < 16 else ""  
+            output = f"{joint}{tab}\t{left_offset}{left_part}{right_part}".ljust(bar_length)  # Costruisce la riga
+            sys.stdout.write("\r" + output + "\n")  # Stampa la riga aggiornata
+            sys.stdout.flush()

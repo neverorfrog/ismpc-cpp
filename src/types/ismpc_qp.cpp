@@ -1,4 +1,6 @@
 #include <ismpc_cpp/types/ismpc_qp.h>
+#include <iostream>
+#include <string>
 
 namespace ismpc {
 
@@ -85,7 +87,9 @@ void IsmpcQp::update(const Vector3 &lip, const VectorX &mc) {
 }
 
 bool IsmpcQp::solve() {
-    std::cout << "SOLVING QP" << std::endl;
+    //std::string user;
+    //std::cout << "Type something and press Enter to solve QP"; std::cin >> user;
+    //std::cout << "SOLVING QP" << std::endl;
 
     qp.update(cost.H.sparseView(), cost.g, A.sparseView(), b, zmp_constraint.C.sparseView(), zmp_constraint.l,
               zmp_constraint.u);

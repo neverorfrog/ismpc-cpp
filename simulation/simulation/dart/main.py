@@ -15,6 +15,7 @@ if __name__ == "__main__":
     skeleton = urdfParser.parseSkeleton(
         os.path.join(models_root, ROBOT, "urdf", f"{ROBOT}.urdf")
     )
+    print("Loading urdf file: " + os.path.join(models_root, ROBOT, "urdf", f"{ROBOT}.urdf"))
     ground = urdfParser.parseSkeleton(
         os.path.join(models_root, ROBOT, "urdf", "ground.urdf")
     )

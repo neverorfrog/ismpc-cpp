@@ -16,8 +16,15 @@ class Robot:
         self.base = skeleton.getBodyNode(LINK_NAMES[ROBOT][3])
 
         # set joint types
+        jointCounter = 0
+        self.jointList = []
         for i in range(skeleton.getNumJoints()):
             joint = skeleton.getJoint(i)
+            if not joint.getType() == "FreeJoint" and not joint.getType() == "WeldJoint":
+                self.jointList.append(str(jointCounter) + " -> " + joint.getName())
+                print(self.jointList[-1])
+                jointCounter += 1
+
             dim = joint.getNumDofs()
 
             # this sets the root joint to passive
@@ -27,6 +34,8 @@ class Robot:
             # this sets the remaining joints as position-controlled
             elif dim == 1:
                 joint.setActuatorType(dart.dynamics.ActuatorType.ACCELERATION)
+
+        #print("Num joints:", jointCounter)
 
         # set initial configuration
         for joint_name, value in INITIAL_CONFIG[ROBOT].items():
@@ -118,7 +127,7 @@ class Robot:
             zmp[0] += contact.point[0] * contact.force[2]
             zmp[1] += contact.point[1] * contact.force[2]
         if total_vertical_force > 0.1:  # threshold for when we lose contact
-            print("FEET ARE ON THE GROUND")
+            #print("FEET ARE ON THE GROUND")
             zmp /= total_vertical_force
             # sometimes we get contact points that dont make sense, so we clip the ZMP close to the robot
             midpoint = (
