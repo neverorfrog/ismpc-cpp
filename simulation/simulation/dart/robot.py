@@ -1,7 +1,8 @@
 import numpy as np
 import dartpy as dart
 from ismpc import State, RotationMatrix
-from simulation.dart.config import INITIAL_CONFIG, ROBOT, LINK_NAMES
+from simulation.dart.misc import INITIAL_CONFIG, LINK_NAMES
+from simulation.utils import config
 
 worldFrame: dart.dynamics.Frame = dart.dynamics.Frame.World()
 
@@ -10,10 +11,10 @@ class Robot:
     def __init__(self, skeleton: dart.dynamics.Skeleton):
 
         # robot links
-        self.lsole = skeleton.getBodyNode(LINK_NAMES[ROBOT][0])
-        self.rsole = skeleton.getBodyNode(LINK_NAMES[ROBOT][1])
-        self.torso = skeleton.getBodyNode(LINK_NAMES[ROBOT][2])
-        self.base = skeleton.getBodyNode(LINK_NAMES[ROBOT][3])
+        self.lsole = skeleton.getBodyNode(LINK_NAMES[config.robot][0])
+        self.rsole = skeleton.getBodyNode(LINK_NAMES[config.robot][1])
+        self.torso = skeleton.getBodyNode(LINK_NAMES[config.robot][2])
+        self.base = skeleton.getBodyNode(LINK_NAMES[config.robot][3])
 
         # set joint types
         for i in range(skeleton.getNumJoints()):
@@ -29,7 +30,7 @@ class Robot:
                 joint.setActuatorType(dart.dynamics.ActuatorType.ACCELERATION)
 
         # set initial configuration
-        for joint_name, value in INITIAL_CONFIG[ROBOT].items():
+        for joint_name, value in INITIAL_CONFIG[config.robot].items():
             skeleton.setPosition(
                 skeleton.getDof(joint_name).getIndexInSkeleton(), value * np.pi / 180.0
             )
@@ -113,12 +114,16 @@ class Robot:
         # ZMP
         total_vertical_force = 0.0
         zmp = np.zeros(3)
+        print(world.getLastCollisionResult().getContacts())
         for contact in world.getLastCollisionResult().getContacts():
             total_vertical_force += contact.force[2]
             zmp[0] += contact.point[0] * contact.force[2]
             zmp[1] += contact.point[1] * contact.force[2]
+            
+        print("TOTAL VERTRICAL FORCE: ", total_vertical_force) 
+            
         if total_vertical_force > 0.1:  # threshold for when we lose contact
-            print("FEET ARE ON THE GROUND")
+            print("FEET ARE ON THE GROUUUUUUUUUUUUUUUUUUND")
             zmp /= total_vertical_force
             # sometimes we get contact points that dont make sense, so we clip the ZMP close to the robot
             midpoint = (

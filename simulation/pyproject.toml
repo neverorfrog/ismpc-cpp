@@ -26,6 +26,8 @@ pybind11-stubgen = ">=2.4.2,<3"
 pybind11 = ">=2.13.6,<3"
 scipy = ">=1.15.1,<2"
 qpsolvers = ">=4.4.0,<5"
+matplotlib = ">=3.10.0,<4"
+tqdm = ">=4.67.1,<5"
 
 [tool.pixi.pypi-dependencies]
 simulation = { path = ".", editable = true }
@@ -34,4 +36,4 @@ simulation = { path = ".", editable = true }
 main = "python simulation/dart/main.py"
 postinstall = "pip install ismpc==0.1.3 --no-binary :all:"
 install-ismpc-cpp = 'cd .. && python setup.py install'
-bindings = 'python -m nanobind.stubgen -m ismpc && pybind11-stubgen dartpy -o ../.typings && python -m nanobind.stubgen -'
+typings = 'python -m nanobind.stubgen -m ismpc && pybind11-stubgen dartpy -o ../.typings'

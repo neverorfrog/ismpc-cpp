@@ -7,10 +7,10 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.axes import Axes
 from matplotlib.patches import Rectangle
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-from omegaconf import OmegaConf
 
 from ismpc import State
-from gait import Gait
+from simulation.matplotlib.gait import Gait
+from simulation.utils import config, robot_config
 
 class StatePlotter:
     def __init__(self):
@@ -75,7 +75,7 @@ class StatePlotter:
 
 
 def extract_feet_patches(
-    f: int, gait: Gait, robot_config: OmegaConf
+    f: int, gait: Gait
 ) -> list[Rectangle]:
     sidex = robot_config.dxz
     sidey = robot_config.dyz
@@ -135,15 +135,15 @@ def extract_feet_patches(
     return right_feet + left_feet
 
 
-def plot_2d(ax: Axes, k: int, f: int, gait: Gait, robot_config: OmegaConf) -> None:
+def plot_2d(ax: Axes, k: int, f: int, gait: Gait) -> None:
     ax.plot(gait.com_traj[0, :k], gait.com_traj[1, :k], color="k")
     ax.plot(gait.zmp_traj[0, :k], gait.zmp_traj[1, :k], color="g")
     ax.legend(["CoM", "ZMP"])
-    for foot in extract_feet_patches(f, gait, robot_config):
+    for foot in extract_feet_patches(f, gait):
         ax.add_patch(foot)
 
 
-def plot_3d(ax: Axes, k: int, f: int, gait: Gait, robot_config: OmegaConf) -> None:
+def plot_3d(ax: Axes, k: int, f: int, gait: Gait) -> None:
     ax.plot(gait.com_traj[0, :k], gait.com_traj[1, :k], gait.com_traj[2, :k], color="k")
     ax.plot(gait.zmp_traj[0, :k], gait.zmp_traj[1, :k], gait.zmp_traj[2, :k], color="g")
     ax.plot(
@@ -159,7 +159,7 @@ def plot_3d(ax: Axes, k: int, f: int, gait: Gait, robot_config: OmegaConf) -> No
         color="b",
     )
     ax.legend(["CoM", "ZMP", "Left Foot", "Right Foot"])
-    for foot in extract_feet_patches(f, gait, robot_config):
+    for foot in extract_feet_patches(f, gait):
         x, y = foot.get_xy()
         width = foot.get_width()
         height = foot.get_height()
@@ -190,8 +190,6 @@ class PlotMode(Enum):
 
 def animate(
     gait: Gait,
-    config: OmegaConf,
-    robot_config: OmegaConf,
     save: bool = True,
     plot_mode: PlotMode = PlotMode.TWO_D,
 ) -> None:
@@ -224,12 +222,9 @@ def animate(
                 f += 1
 
         if plot_mode == PlotMode.TWO_D:
-            plot_2d(ax, k, f, gait, robot_config)
+            plot_2d(ax, k, f, gait)
         elif plot_mode == PlotMode.THREE_D:
-            plot_3d(ax, k, f, gait, robot_config)
-
-        # if save:
-        #     plt.savefig(f"videos/{plot_mode.value}/{k}.png")
+            plot_3d(ax, k, f, gait)
 
     ani = FuncAnimation(
         fig, update, frames=config.N + 1, repeat=False, interval=config.delta

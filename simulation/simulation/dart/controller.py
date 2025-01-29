@@ -12,7 +12,8 @@ from ismpc import (
     KalmanFilter
 )
 from scipy.spatial.transform import Rotation as R
-from simulation.dart.config import REDUNDANT_DOFS, ROBOT, N
+from simulation.dart.misc import REDUNDANT_DOFS
+from simulation.utils import config
 
 class Controller(dart.gui.osg.RealTimeWorldNode):
 
@@ -20,7 +21,7 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         super(Controller, self).__init__(world)
         self.world = world
         self.robot = robot
-        world.setTimeStep(0.01)
+        world.setTimeStep(config.delta)
         self.dt = world.getTimeStep()
         self.dart_elapsed = 0
         self.ismpc_elapsed = 0
@@ -45,7 +46,7 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         )
         self.filter = KalmanFilter()
 
-        self.kinematics = Kinematics(self.robot, REDUNDANT_DOFS[ROBOT])
+        self.kinematics = Kinematics(self.robot, REDUNDANT_DOFS[config.robot])
 
         # Filling plan
         self.planner.update(self.plan)
@@ -68,6 +69,10 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
             self.state.desired_right_foot.pose.translation[0] = (
                 self.state.right_foot.pose.translation[0]
             )
+            
+        # TODO: THIS IS A TEST
+        self.state.lip = self.state.desired_lip
+        
         self.filter.update(self.state)
         self.mc_provider.update(self.plan)
         self.mpc.update(self.state)
@@ -76,21 +81,21 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         end = time.time()
         self.ismpc_elapsed += end - start
 
-        print("---------------------------------------------------")
-        print(f"LIP: \n {self.state.lip}")
-        print(f"LEFT FOOT: \n {self.state.left_foot.pose.translation}")
-        print(f"RIGHT FOOT: \n {self.state.right_foot.pose.translation}")
-        print("")
-        print(f"DESIRED LIP: \n {self.state.desired_lip}")
-        print(
-            f"DESIRED LEFT FOOT: \n POS: {self.state.desired_left_foot.pose.translation} \n ROT: {self.state.desired_left_foot.pose.rotation}"
-        )
-        print(
-            f"DESIRED RIGHT FOOT: \n {self.state.desired_right_foot.pose.translation}"
-        )
-        print("")
-        print(f"FOOTSTEP: \n {self.state.footstep}")
-        print("---------------------------------------------------")
+        # print("---------------------------------------------------")
+        # print(f"LIP: \n {self.state.lip}")
+        # print(f"LEFT FOOT: \n {self.state.left_foot.pose.translation}")
+        # print(f"RIGHT FOOT: \n {self.state.right_foot.pose.translation}")
+        # print("")
+        # print(f"DESIRED LIP: \n {self.state.desired_lip}")
+        # print(
+        #     f"DESIRED LEFT FOOT: \n {self.state.desired_left_foot.pose.translation}"
+        # )
+        # print(
+        #     f"DESIRED RIGHT FOOT: \n {self.state.desired_right_foot.pose.translation}"
+        # )
+        # print("")
+        # print(f"FOOTSTEP: \n {self.state.footstep}")
+        # print("---------------------------------------------------")
         print("ITERATION NUMBER: ", self.frame_info.k)
         print(f"TIME: {self.frame_info.tk:.2f}")
 
@@ -112,8 +117,8 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         self.state.desired_base.ang_acc = self.state.desired_torso.ang_acc
         
         commands: np.ndarray = self.kinematics.get_joint_accelerations(self.state)
-        print("COMMANDS: \n", commands)
-        print("\n\n")
+        # print("COMMANDS: \n", commands)
+        # print("\n\n")
         for i in range(self.kinematics.dofs - 6):
             self.robot.skeleton.setCommand(i + 6, commands[i])
         end = time.time()
@@ -133,6 +138,8 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
             "AVERAGE KINEMATICS TIME IN MILLISECONDS: ",
             (self.kin_elapsed / self.frame_info.k) * 1000,
         )
+        print("---------------------------------------------------\n\n\n")
+        print("---------------------------------------------------")
 
-        if self.frame_info.k > N:
+        if self.frame_info.k > config.N:
             exit()
