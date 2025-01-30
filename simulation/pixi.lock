@@ -3120,8 +3120,8 @@ packages:
 - pypi: .
   name: simulation
   version: 0.1.0
-  sha256: 7ecf3384967804a4a581177d3f6e8dfc89a8531c20f763bd76eb7299e93fd932
-  requires_python: ==3.11
+  sha256: aff42126405aed9afba449b4d1222c7c6dac1d783fcb0ce00d7c283f05453f03
+  requires_python: '>=3.11'
   editable: true
 - conda: https://conda.anaconda.org/conda-forge/noarch/six-1.17.0-pyhd8ed1ab_0.conda
   sha256: 41db0180680cc67c3fa76544ffd48d6a5679d96f4b71d7498a759e94edc9a2db

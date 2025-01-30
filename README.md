@@ -5,8 +5,19 @@
 
 ## Simulations
 
-To see the code in action, check out this repo [TODO]
+To run the simulattions you can use the python bindings.
 
+From the root folder run 
+```
+pixi run preinstall
+pixi run build
+```
+
+After that, from the folder simulation run
+```
+pixi run install-ismpc-cpp
+pixi run typings
+```
 
 ## Some Concepts
 
