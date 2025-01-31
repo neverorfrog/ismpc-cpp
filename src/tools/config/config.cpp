@@ -13,6 +13,7 @@ void Config::init_params() {
     save_log = config["save_log"].as<bool>();
     delta = config["delta"].as<Scalar>();
     first_fs_duration = config["first_fs_duration"].as<Scalar>();
+    nl = config["nl"].as<int>();
 
     N = config["N"].as<int>();
     P = config["P"].as<int>();

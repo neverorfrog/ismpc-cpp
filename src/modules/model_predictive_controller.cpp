@@ -29,21 +29,37 @@ void ModelPredictiveController::update(State& state) {
     // ====================================================
 
     // ================== POSTPROCESSING ==================
-    // Integrate the lip velocities
-    Scalar xdz = x_sol(1);
-    Scalar ydz = y_sol(1);
-    Scalar xz = x_sol(2);
-    Scalar yz = y_sol(2);
-    Vector3 predicted_x = state.lip.integrateX(xdz);
-    Vector3 predicted_y = state.lip.integrateY(ydz);
+    if (Config::nl == 1) {
+        // Integrate the lip velocities
+        xdz = x_sol(1);
+        ydz = y_sol(1);
+        xz = x_sol(2);
+        yz = y_sol(2);
+        Vector3 predicted_x = state.lip.integrateX(xdz);
+        Vector3 predicted_y = state.lip.integrateY(ydz);
+        xc = predicted_x(0);
+        yc = predicted_y(0);
+        xdc = predicted_x(1);
+        ydc = predicted_y(1);
+    } else if (Config::nl == 3) {
+        xdz = x_sol(3);
+        ydz = y_sol(3);
+        xc = x_sol(4);
+        yc = y_sol(4);
+        xdc = x_sol(5);
+        ydc = y_sol(5);
+        xz = x_sol(6);
+        yz = y_sol(6);
+    }
 
     // Set desired state
-    state.desired_lip.com_pos << predicted_x(0), predicted_y(0), RobotConfig::h;
-    state.desired_lip.com_vel << predicted_x(1), predicted_y(1), 0.0;
+    state.desired_lip.com_pos << xc, yc, RobotConfig::h;
+    state.desired_lip.com_vel << xdc, ydc, 0.0;
     state.desired_lip.zmp_pos << xz, yz, 0.0;
     state.desired_lip.zmp_vel << xdz, ydz, 0.0;
-    Vector3 com_acc = (eta * eta) * (state.desired_lip.com_pos - state.desired_lip.zmp_pos);
-    state.desired_lip.com_acc << com_acc(0), com_acc(1), 0.0;
+    state.desired_lip.com_acc(0) = std::pow(eta, 2) * (xc - xz);
+    state.desired_lip.com_acc(1) = std::pow(eta, 2) * (yc - yz);
+    state.desired_lip.com_acc(2) = 0.00;
 
     state.lip_history.push_back(state.lip);
     state.left_foot_history.push_back(state.left_foot);

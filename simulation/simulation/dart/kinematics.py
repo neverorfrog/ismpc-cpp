@@ -38,7 +38,7 @@ class Kinematics:
             "com": 1.0,
             "torso": 1.0,
             "base": 1.0,
-            "joints": 1.0e-2,
+            "joints": 2.0e-2,
         }
         pos_gains = {
             "lsole": 5.0,
@@ -46,14 +46,14 @@ class Kinematics:
             "com": 5.0,
             "torso": 1,
             "base": 1,
-            "joints": 10.0,
+            "joints": 1.0,
         }
         vel_gains = {
-            "lsole": 10.0,
-            "rsole": 10.0,
-            "com": 10.0,
-            "torso": 2,
-            "base": 2,
+            "lsole": 8.0,
+            "rsole": 8.0,
+            "com": 8.0,
+            "torso": 5,
+            "base": 5,
             "joints": 1.0e-1,
         }
 
@@ -175,9 +175,11 @@ class Kinematics:
                 )
             )
 
-        self.q_ddot_des = solve_qp(cost_matrix, cost_vector, solver="proxqp", initvals=self.q_ddot_des)
-        
-        if (self.q_ddot_des is None):
+        self.q_ddot_des = solve_qp(
+            cost_matrix, cost_vector, solver="proxqp", initvals=self.q_ddot_des, eps_abs = 1e-4, eps_rel = 1e-4
+        )
+
+        if self.q_ddot_des is None:
             exit("Kinematics QP solver failed to find a solution")
-        
+
         return self.q_ddot_des[-(self.dofs - 6) :]

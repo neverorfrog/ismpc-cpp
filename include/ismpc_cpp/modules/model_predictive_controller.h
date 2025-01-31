@@ -41,6 +41,9 @@ class ModelPredictiveController {
     VectorX x_sol;
     VectorX y_sol;
 
+    // Var buffer
+    Scalar xc, yc, xdc, ydc, xz, yz, xdz, ydz;
+
     // Testing
     int fs_index = 0;
 

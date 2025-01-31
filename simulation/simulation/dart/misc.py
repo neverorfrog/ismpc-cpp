@@ -1,28 +1,4 @@
 from typing import Dict, List
-from simulation.utils.misc import repo_root, load_config
-import os
-from dataclasses import dataclass
-from typing import Literal
-
-@dataclass
-class Config:
-    save_log: bool = False
-    delta: float = 0.02
-    first_fs_duration: float = 1.0
-    N: int = 500
-    P: int = 1000
-    C: int = 100
-    W: int = 100
-    robot: str = "hrp4"
-    des_vel_x: float = 0.1
-    des_vel_y: float = 0.0
-    des_omega: float = 0.0
-    tail_type: str = "PERIODIC"
-
-config = load_config(os.path.join(repo_root(), "config", "config.yaml"), Config)
-
-N: int = config.N
-ROBOT: str = config.robot
 
 LINK_NAMES: Dict[str, List[str]] = {
     "hrp4": ["l_sole", "r_sole", "torso", "body"],
@@ -83,10 +59,10 @@ INITIAL_CONFIG: Dict[str, Dict[str, float]] = {
         "HeadYaw": 0.0,
         "HeadPitch": 0.0,
         "LHipYawPitch": 0.0,
-        "LHipRoll": -3,
-        "LHipPitch": -15,
-        "LKneePitch": 30,
-        "LAnklePitch": -15,
+        "LHipRoll": 0,
+        "LHipPitch": 0,
+        "LKneePitch": 0,
+        "LAnklePitch": 0,
         "LAnkleRoll": 0.0,
         "LShoulderPitch": 90,
         "LShoulderRoll": 0.0,
@@ -95,10 +71,10 @@ INITIAL_CONFIG: Dict[str, Dict[str, float]] = {
         "LWristYaw": 0.0,
         "LHand": 0.0,
         "RHipYawPitch": 0.0,
-        "RHipRoll": -3,
-        "RHipPitch": -15,
-        "RKneePitch": 30,
-        "RAnklePitch": -15,
+        "RHipRoll": 0,
+        "RHipPitch": 0,
+        "RKneePitch": 0,
+        "RAnklePitch": 0,
         "RAnkleRoll": 0.0,
         "RShoulderPitch": 90.0,
         "RShoulderRoll": 0.0,

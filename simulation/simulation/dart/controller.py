@@ -12,7 +12,8 @@ from ismpc import (
     KalmanFilter
 )
 from scipy.spatial.transform import Rotation as R
-from simulation.dart.config import REDUNDANT_DOFS, ROBOT, N
+from simulation.dart.misc import REDUNDANT_DOFS
+from simulation.utils import config
 
 from time import sleep
 import sys
@@ -23,7 +24,7 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         super(Controller, self).__init__(world)
         self.world = world
         self.robot = robot
-        world.setTimeStep(0.01)
+        world.setTimeStep(config.delta)
         self.dt = world.getTimeStep()
         self.dart_elapsed = 0
         self.ismpc_elapsed = 0
@@ -48,10 +49,12 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         )
         self.filter = KalmanFilter()
 
-        self.kinematics = Kinematics(self.robot, REDUNDANT_DOFS[ROBOT])
-
+        self.kinematics = Kinematics(self.robot, REDUNDANT_DOFS[config.robot])
+        
         # Filling plan
         self.planner.update(self.plan)
+        
+        
 
     def customPreStep(self):
 
@@ -59,6 +62,7 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         self.robot.update(self.state, self.world)
         end = time.time()
         self.dart_elapsed += end - start
+        
 
         start = time.time()
         if self.frame_info.k == 0:
@@ -71,6 +75,10 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
             self.state.desired_right_foot.pose.translation[0] = (
                 self.state.right_foot.pose.translation[0]
             )
+            
+        # TODO: THIS IS A TEST
+        self.state.lip = self.state.desired_lip
+        
         self.filter.update(self.state)
         #print("Filter updated")
         self.mc_provider.update(self.plan)
@@ -83,23 +91,23 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         end = time.time()
         self.ismpc_elapsed += end - start
 
-        '''print("---------------------------------------------------")
-        print(f"LIP: \n {self.state.lip}")
-        print(f"LEFT FOOT: \n {self.state.left_foot.pose.translation}")
-        print(f"RIGHT FOOT: \n {self.state.right_foot.pose.translation}")
-        print("")
-        print(f"DESIRED LIP: \n {self.state.desired_lip}")
-        print(
-            f"DESIRED LEFT FOOT: \n POS: {self.state.desired_left_foot.pose.translation} \n ROT: {self.state.desired_left_foot.pose.rotation}"
-        )
-        print(
-            f"DESIRED RIGHT FOOT: \n {self.state.desired_right_foot.pose.translation}"
-        )
-        print("")
-        print(f"FOOTSTEP: \n {self.state.footstep}")
-        print("---------------------------------------------------")
-        print("ITERATION NUMBER: ", self.frame_info.k)
-        print(f"TIME: {self.frame_info.tk:.2f}")'''
+        # print("---------------------------------------------------")
+        # print(f"LIP: \n {self.state.lip}")
+        # print(f"LEFT FOOT: \n {self.state.left_foot.pose.translation}")
+        # print(f"RIGHT FOOT: \n {self.state.right_foot.pose.translation}")
+        # print("")
+        # print(f"DESIRED LIP: \n {self.state.desired_lip}")
+        # print(
+        #     f"DESIRED LEFT FOOT: \n {self.state.desired_left_foot.pose.translation}"
+        # )
+        # print(
+        #     f"DESIRED RIGHT FOOT: \n {self.state.desired_right_foot.pose.translation}"
+        # )
+        # print("")
+        # print(f"FOOTSTEP: \n {self.state.footstep}")
+        # print("---------------------------------------------------")
+        # print("ITERATION NUMBER: ", self.frame_info.k)
+        # print(f"TIME: {self.frame_info.tk:.2f}")
 
         start = time.time()
         
@@ -131,23 +139,26 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
 
         self.frame_info.k += 1
         self.frame_info.tk += self.dt
-        '''print(
-            "AVERAGE DART TIME IN MILLISECONDS: ",
-            (self.dart_elapsed / self.frame_info.k) * 1000,
-        )
-        print(
-            "AVERAGE ISMPC TIME IN MILLISECONDS: ",
-            (self.ismpc_elapsed / self.frame_info.k) * 1000,
-        )
-        print(
-            "AVERAGE KINEMATICS TIME IN MILLISECONDS: ",
-            (self.kin_elapsed / self.frame_info.k) * 1000,
-        )'''
-        #input("Press enter to apply command...")
-        sleep(0.02)
+        # print(
+        #     "AVERAGE DART TIME IN MILLISECONDS: ",
+        #     (self.dart_elapsed / self.frame_info.k) * 1000,
+        # )
+        # print(
+        #     "AVERAGE ISMPC TIME IN MILLISECONDS: ",
+        #     (self.ismpc_elapsed / self.frame_info.k) * 1000,
+        # )
+        # print(
+        #     "AVERAGE KINEMATICS TIME IN MILLISECONDS: ",
+        #     (self.kin_elapsed / self.frame_info.k) * 1000,
+        # )
+        # print("---------------------------------------------------\n\n\n")
+        # print("---------------------------------------------------")
 
-        #if self.frame_info.k > N:
-        #    exit()
+        # if self.frame_info.k > config.N:
+        #     exit()
+        
+        #input("Press enter to apply command...")
+        sleep(0.05)
 
     def printCommandsHistogram(self, jointList, commands):
         commands_abs = np.abs(commands)

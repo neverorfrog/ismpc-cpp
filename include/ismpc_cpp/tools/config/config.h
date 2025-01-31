@@ -28,6 +28,7 @@ struct Config {
 
     static inline Scalar delta{};  // Sampling interval
     static inline Scalar first_fs_duration{};
+    static inline int nl{};
 
     static inline int N{};       // Simulation steps
     static inline int P{};       // Preview horizon steps
