@@ -34,7 +34,7 @@ with tqdm(iterations, desc="Walking...") as pbar:
         mpc.update(state)
         ft_generator.update(state)
         elapsed.append((time.time() - start) * 1000)
-
+        
         # Update the time
         frame_info.tk += config.delta
         frame_info.k += 1

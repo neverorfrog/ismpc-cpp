@@ -7,6 +7,8 @@ from simulation.dart.misc import REDUNDANT_DOFS
 from simulation.utils import project_root
 from simulation.utils import config
 
+
+
 if __name__ == "__main__":
     world = dart.simulation.World()
     urdfParser = dart.utils.DartLoader()
@@ -15,7 +17,6 @@ if __name__ == "__main__":
     skeleton = urdfParser.parseSkeleton(
         os.path.join(models_root, config.robot, "urdf", f"{config.robot}.urdf")
     )
-    print("Loading urdf file: " + os.path.join(models_root, config.robot, "urdf", f"{config.robot}.urdf"))
     ground = urdfParser.parseSkeleton(
         os.path.join(models_root, config.robot, "urdf", "ground.urdf")
     )
