@@ -7,15 +7,15 @@ nl: 1
 
 # Duration parameters
 N: 1000
-P: 1000
-C: 100
+P: 2000
+C: 200
 W: 100 # iterations to wait before starting
 
 # Which robot to simulate
 robot: hrp4
 
 # Input Velocities
-des_vel_x: 0.2 # [m/s]
+des_vel_x: 0.05 # [m/s]
 des_vel_y: 0.0 #  [m/s]
 des_omega: 0.0 #  [rad/s]
 

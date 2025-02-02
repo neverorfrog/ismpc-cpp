@@ -17,14 +17,14 @@ L_bar: 0.3
 alpha: 0.5
 
 # Footsteps stuff
-dax: 0.3
+dax: 0.2
 day: 0.05
 
 # ZMP stuff
 dxz: 0.2
-dyz: 0.05
-zmp_vx_max: 5.0
-zmp_vy_max: 5.0
+dyz: 0.2
+zmp_vx_max: 10.0
+zmp_vy_max: 10.0
 beta: 100
 
 # Timing stuff

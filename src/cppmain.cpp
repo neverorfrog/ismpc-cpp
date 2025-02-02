@@ -47,17 +47,17 @@ int main() {
         // Update the MPC module
         start = std::chrono::high_resolution_clock::now();
         mpc.update(state);
-        std::cout << "CURRENT STATE: \n LIP: \n" << state.lip << std::endl;
-        std::cout << "LEFT FOOT: "
-                  << state.left_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt)
-                  << std::endl;
-        std::cout << "RIGHT FOOT: "
-                  << state.right_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt) << "\n"
-                  << std::endl;
-        std::cout << "DESIRED LIP: \n" << state.desired_lip << std::endl;
+        // std::cout << "CURRENT STATE: \n LIP: \n" << state.lip << std::endl;
+        // std::cout << "LEFT FOOT: "
+        //           << state.left_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt)
+        //           << std::endl;
+        // std::cout << "RIGHT FOOT: "
+        //           << state.right_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt) << "\n"
+        //           << std::endl;
+        // std::cout << "DESIRED LIP: \n" << state.desired_lip << std::endl;
         std::cout << "FOOTSTEP: \n" << state.footstep << std::endl;
-        std::cout << "MOVING CONSTRAINTS: \n"
-                  << plan.zmp_midpoints_y.transpose().format(ismpc::Config::CleanFmt) << std::endl;
+        // std::cout << "MOVING CONSTRAINTS: \n"
+        //           << plan.zmp_midpoints_y.transpose().format(ismpc::Config::CleanFmt) << std::endl;
         end = std::chrono::high_resolution_clock::now();
         total_mpc_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
@@ -75,7 +75,7 @@ int main() {
         // Update time
         frame_info.k += 1;
         frame_info.tk += ismpc::Config::delta;
-        std::cout << "---------------------------------" << std::endl;
+        std::cout << "---------------------------------\n\n\n" << std::endl;
     }
 
     auto duration = total_feet_duration + total_mpc_duration + total_planner_duration;

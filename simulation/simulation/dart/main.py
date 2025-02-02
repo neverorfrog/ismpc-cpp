@@ -29,7 +29,7 @@ if __name__ == "__main__":
         
     robot = Robot(skeleton)
     node = Controller(world, robot)
-    node.setTargetRealTimeFactor(2)
+    node.setTargetRealTimeFactor(0.8)
 
     viewer = dart.gui.osg.Viewer()
     viewer.setUpViewInWindow(0, 0, 1920, 1080)

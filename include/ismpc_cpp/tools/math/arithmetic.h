@@ -84,5 +84,35 @@ T quartic_ddot(T t) {
     return 192 * std::pow(t, 2) - 192 * t + 32;
 }
 
+template <Number T>
+T quintic(T t) {
+    return 6 * std::pow(t, 5) - 15 * std::pow(t, 4) + 10 * std::pow(t, 3);
+}
+
+template <Number T>
+T quintic_dot(T t) {
+    return 30 * std::pow(t, 4) - 60 * std::pow(t, 3) + 30 * std::pow(t, 2);
+}
+
+template <Number T>
+T quintic_ddot(T t) {
+    return 120 * std::pow(t, 3) - 180 * std::pow(t, 2) + 60 * t;
+}
+
+template <Number T>
+T sextic(T t) {
+    return - 64 * std::pow(t, 6) + 192 * std::pow(t, 5) - 192 * std::pow(t, 4) + 64 * std::pow(t, 3);
+}
+
+template <Number T>
+T sextic_dot(T t) {
+    return - 384 * std::pow(t, 5) + 960 * std::pow(t, 4) - 768 * std::pow(t, 3) + 192 * std::pow(t, 2);
+}
+
+template <Number T>
+T sextic_ddot(T t) {
+    return - 1920 * std::pow(t, 4) + 3840 * std::pow(t, 3) - 2304 * std::pow(t, 2) + 384 * t;
+}
+
 }  // namespace Arithmetic
 }  // namespace ismpc

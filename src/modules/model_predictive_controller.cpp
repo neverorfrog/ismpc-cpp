@@ -72,11 +72,12 @@ void ModelPredictiveController::update(State& state) {
     if (frame_info.tk >= state.footstep.end && state.support_phase == SupportPhase::DOUBLE) {
         state.fs_history.push_back(state.footstep);
         state.footstep = plan.footsteps[fs_index];
+        state.footstep.start_pose = state.getSwingFoot().getPose2();
         fs_index++;
     }
 
     // Update the support phase info
-    if (frame_info.tk >= state.footstep.ds_start)
+    if (frame_info.tk >= state.footstep.ds_start && frame_info.tk <= state.footstep.end)
         state.support_phase = SupportPhase::DOUBLE;
     else
         state.support_phase = SupportPhase::SINGLE;

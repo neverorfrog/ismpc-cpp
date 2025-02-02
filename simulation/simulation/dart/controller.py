@@ -26,7 +26,7 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         self.world = world
         self.robot = robot
         world.setTimeStep(config.delta)
-        self.dt = world.getTimeStep()
+        self.dt = config.delta
         self.dart_elapsed = 0
         self.ismpc_elapsed = 0
         self.kin_elapsed = 0
@@ -89,7 +89,9 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         self.dart_elapsed += end - start
 
         start = time.time()
+        print("TK: ", self.frame_info.tk)
         if self.frame_info.k == 0:
+            print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOK")
             self.state.footstep.start_pose.translation[0] = (
                 self.state.right_foot.pose.translation[0]
             )
@@ -101,7 +103,9 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
             )
 
         # TODO: THIS IS A TEST
-        self.state.lip.zmp_pos = self.state.desired_lip.zmp_pos
+        self.state.lip.zmp_vel[0] = self.state.desired_lip.zmp_vel[0]
+        self.state.lip.zmp_vel[1] = self.state.desired_lip.zmp_vel[1]
+        
         self.com_ball.setTranslation(self.state.lip.com_pos)
         self.des_com_ball.setTranslation(self.state.desired_lip.com_pos)
         self.zmp_ball.setTranslation(self.state.lip.zmp_pos)
@@ -116,12 +120,14 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         )
 
         self.filter.update(self.state)
+        
+        print("COM POSITION: ", self.state.lip.com_pos)
+        
         # print("Filter updated")
         self.mc_provider.update(self.plan)
         # print("mc_provider updated")
         self.mpc.update(self.state)
         # print("mpc updated")
-        self.state.lip = self.state.desired_lip
         self.ft_generator.update(self.state)
         # print("ft_generator updated")
         end = time.time()
@@ -169,13 +175,19 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         self.state.desired_base.ang_acc = self.state.desired_torso.ang_acc
 
         commands: np.ndarray = self.kinematics.get_joint_accelerations(self.state)
-        # print("COMMANDS: \n", commands)
 
         # If you print the histogram you should remove all the other prints
-        self.printCommandsHistogram(self.robot.jointList, commands)
+        # self.printCommandsHistogram(self.robot.jointList, commands)
+        print(f"DESIRED LIP: {self.state.desired_lip}")
+        print(f"CURRENT LIP: {self.state.lip}")
+        print(f"CURRENT LEFT FOOT: {self.state.left_foot.pose.translation}")
+        print(f" DESIRED LEFT FOOT: {self.state.desired_left_foot.pose.translation}")
+        print(f"CURRENT RIGHT FOOT: {self.state.right_foot.pose.translation}")
+        print(f" DESIRED RIGHT FOOT: {self.state.desired_right_foot.pose.translation}")
+        print("\n\n\n")
 
         for i in range(self.kinematics.dofs - 6):
-            self.robot.skeleton.setCommand(i + 6, commands[i])
+            self.robot.skeleton.setCommand(i+6, commands[i])
         end = time.time()
         self.kin_elapsed += end - start
 
@@ -196,11 +208,8 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         # print("---------------------------------------------------\n\n\n")
         # print("---------------------------------------------------")
 
-        # if self.frame_info.k > config.N:
-        #     exit()
-
-        # input("Press enter to apply command...")
-        sleep(0.05)
+        if self.frame_info.k > config.N:
+            exit()
 
     def create_ball(self, name: str, color: np.ndarray, radius: float = 0.1) -> dart.dynamics.SimpleFrame:
         ball_frame: dart.dynamics.SimpleFrame = dart.dynamics.SimpleFrame(

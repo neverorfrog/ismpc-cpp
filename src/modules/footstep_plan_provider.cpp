@@ -1,4 +1,5 @@
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
+#include "ismpc_cpp/types/body_parts.h"
 
 namespace ismpc {
 
@@ -12,7 +13,6 @@ void FootstepPlanProvider::update(FootstepPlan& plan) {
     computePositionSequence();
 
     // Need to insert the current footstep pose in the plan
-    plan.footsteps.clear();
     const Pose2& sf_pose = state.getSupportFoot().getPose2();
     theta_sequence.insert(theta_sequence.begin(), sf_pose.rotation);
     x_sequence.insert(x_sequence.begin(), sf_pose.translation(0));
@@ -21,21 +21,16 @@ void FootstepPlanProvider::update(FootstepPlan& plan) {
 
     for (int j = 1; j < num_predicted_footsteps + 1; ++j) {
         Footstep footstep{};
-
-        if (j == 1) {
-            footstep.start_pose = state.previous_sf_pose;
-            footstep.support_foot = state.previous_support_foot == Foot::right ? Foot::left : Foot::right;
+        if(j == 1) {
+            footstep.support_foot = state.footstep.support_foot == Foot::left ? Foot::left : Foot::right;
         } else {
-            footstep.start_pose = Pose2(theta_sequence[j - 2], x_sequence[j - 2], y_sequence[j - 2]);
             footstep.support_foot = plan.footsteps[j - 2].support_foot == Foot::right ? Foot::left : Foot::right;
         }
-
         footstep.end_pose = Pose2(theta_sequence[j], x_sequence[j], y_sequence[j]);
         footstep.start = timestamps[j];
         footstep.end = timestamps[j + 1];
         footstep.ds_start = footstep.start + (1 - ds_percentage) * (footstep.end - footstep.start);
         footstep.walk_phase = WalkPhase::WALKING;
-
         plan.footsteps.push_back(footstep);
     }
 }

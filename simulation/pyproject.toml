@@ -35,5 +35,5 @@ simulation = { path = ".", editable = true }
 [tool.pixi.tasks]
 dart = "python simulation/dart/main.py"
 matplotlib = "python simulation/matplotlib/main.py"
-install-ismpc-cpp = 'cd .. && python setup.py install'
-typings = 'python -m nanobind.stubgen -m ismpc && pybind11-stubgen dartpy -o ../.typings  && python -m nanobind.stubgen -m scipy.spatial.transform'
+install-ismpc-cpp = 'cd .. && python setup.py install && python -m nanobind.stubgen -m ismpc'
+typings = 'pybind11-stubgen dartpy -o ../.typings  && python -m nanobind.stubgen -m scipy.spatial.transform'

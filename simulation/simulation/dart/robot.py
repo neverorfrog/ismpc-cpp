@@ -71,7 +71,7 @@ class Robot:
         state.lip.com_vel = self.skeleton.getCOMLinearVelocity(
             relativeTo=worldFrame, inCoordinatesOf=worldFrame
         )
-
+        
         # Torso
         torso_transform: dart.math.Isometry3 = self.torso.getTransform(
             withRespectTo=worldFrame, inCoordinatesOf=worldFrame
@@ -119,21 +119,17 @@ class Robot:
         state.right_foot.lin_acc = np.zeros((3,))
 
         # ZMP
-        total_vertical_force = 0.0
-        zmp = np.zeros(3)
-        for contact in world.getLastCollisionResult().getContacts():
-            total_vertical_force += contact.force[2]
-            zmp[0] += contact.point[0] * contact.force[2]
-            zmp[1] += contact.point[1] * contact.force[2]
+        # total_vertical_force = 0.0
+        # zmp = np.zeros(3)
+        # for contact in world.getLastCollisionResult().getContacts():
+        #     total_vertical_force += contact.force[2]
+        #     zmp[0] += contact.point[0] * contact.force[2]
+        #     zmp[1] += contact.point[1] * contact.force[2]
             
-        if total_vertical_force > 0.1:  # threshold for when we lose contact
-            zmp /= total_vertical_force
-            # sometimes we get contact points that dont make sense, so we clip the ZMP close to the robot
-            midpoint = (
-                state.left_foot.pose.translation + state.right_foot.pose.translation
-            ) / 2.0
-            zmp[0] = np.clip(zmp[0], midpoint[0] - 0.3, midpoint[0] + 0.3)
-            zmp[1] = np.clip(zmp[1], midpoint[1] - 0.3, midpoint[1] + 0.3)
-            state.lip.zmp_pos = zmp
+        # if total_vertical_force > 0.1:  # threshold for when we lose contact
+        #     zmp /= total_vertical_force
+        #     zmp[0] = np.clip(zmp[0], state.desired_lip.zmp_pos[0] - 0.1, state.desired_lip.zmp_pos[0] + 0.1)
+        #     zmp[1] = np.clip(zmp[1], state.desired_lip.zmp_pos[1] - 0.1, state.desired_lip.zmp_pos[1] + 0.1)
+        #     state.lip.zmp_pos = zmp
 
         return state

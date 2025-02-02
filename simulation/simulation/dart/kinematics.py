@@ -44,16 +44,16 @@ class Kinematics:
             "lsole": 5.0,
             "rsole": 5.0,
             "com": 5.0,
-            "torso": 1,
-            "base": 1,
+            "torso": 1.0,
+            "base": 1.0,
             "joints": 1.0,
         }
         vel_gains = {
-            "lsole": 8.0,
-            "rsole": 8.0,
-            "com": 8.0,
-            "torso": 5,
-            "base": 5,
+            "lsole": 10.0,
+            "rsole": 10.0,
+            "com": 10.0,
+            "torso": 2.0,
+            "base": 2.0,
             "joints": 1.0e-1,
         }
 

@@ -109,7 +109,7 @@ NB_MODULE(ismpc, m) {
         .def(nb::init<>())
         .def_ro("start_pose", &Footstep::start_pose)
         .def_ro("end_pose", &Footstep::end_pose)
-        .def_ro("timestamp", &Footstep::ds_start)
+        .def_ro("timestamp", &Footstep::start)
         .def("__str__", &Footstep::toString);
 
     nb::class_<LipState>(m, "LipState")
