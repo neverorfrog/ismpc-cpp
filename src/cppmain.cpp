@@ -52,7 +52,8 @@ int main() {
         //           << state.left_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt)
         //           << std::endl;
         // std::cout << "RIGHT FOOT: "
-        //           << state.right_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt) << "\n"
+        //           << state.right_foot.pose.getPose2().getVector().transpose().format(ismpc::Config::CleanFmt) <<
+        //           "\n"
         //           << std::endl;
         // std::cout << "DESIRED LIP: \n" << state.desired_lip << std::endl;
         std::cout << "FOOTSTEP: \n" << state.footstep << std::endl;

@@ -54,7 +54,7 @@ class Gait:
             xf[i] = pose.translation[0]
             yf[i] = pose.translation[1]
             thetaf[i] = pose.rotation()
-            timestamps[i] = footstep.timestamp
+            timestamps[i] = footstep.start
 
         self.xf = xf
         self.yf = yf

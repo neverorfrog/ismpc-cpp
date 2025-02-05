@@ -7,7 +7,7 @@
 
 To run the simulattions you can use the python bindings.
 
-From the root folder run 
+From the root folder run
 ```
 pixi run preinstall
 pixi run build

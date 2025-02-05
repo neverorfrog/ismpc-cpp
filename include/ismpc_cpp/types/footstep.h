@@ -16,10 +16,10 @@ struct Footstep {
 
     std::string toString() const {
         std::ostringstream oss;
-        oss << "Start Pose: " << start_pose << std::endl;
-        oss << "End Pose: " << end_pose << std::endl;
-        oss << "Walk Phase: " << walk_phase << std::endl;
-        oss << "Support Foot: " << support_foot << std::endl;
+        // oss << "Start Pose: " << start_pose << std::endl;
+        oss << "End Pose: " << end_pose.translation.transpose() << std::endl;
+        // oss << "Walk Phase: " << walk_phase << std::endl;
+        // oss << "Support Foot: " << support_foot << std::endl;
         oss << "FS Start: " << start << std::endl;
         oss << "DS Start: " << ds_start << std::endl;
         oss << "FS End: " << end << std::endl;

@@ -1,5 +1,4 @@
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
-#include "ismpc_cpp/types/body_parts.h"
 
 namespace ismpc {
 
@@ -8,37 +7,54 @@ FootstepPlanProvider::FootstepPlanProvider(const FrameInfo& frame_info, const Re
     : frame_info(frame_info), reference(reference), state(state), plan(plan) {}
 
 void FootstepPlanProvider::update(FootstepPlan& plan) {
-    computeTiming();
-    computeThetaSequence();
-    computePositionSequence();
+    Scalar time_since_last_plan = frame_info.tk - last_plan_timestamp;
+    Scalar ss_duration = state.footstep.ds_start - state.footstep.start;
 
-    // Need to insert the current footstep pose in the plan
-    const Pose2& sf_pose = state.getSupportFoot().getPose2();
-    theta_sequence.insert(theta_sequence.begin(), sf_pose.rotation);
-    x_sequence.insert(x_sequence.begin(), sf_pose.translation(0));
-    y_sequence.insert(y_sequence.begin(), sf_pose.translation(1));
-    timestamps.insert(timestamps.begin(), state.footstep.start);
+    // TODO: planning frequency is hardcoded to the ss_duration. Maybe not the best choice? Should actually check
+    // double support etc...
+    if ((time_since_last_plan >= ss_duration && frame_info.tk >= Config::fs_duration) || frame_info.tk == 0) {
+        last_plan_timestamp = frame_info.tk;
+        theta_sequence.clear();
+        x_sequence.clear();
+        y_sequence.clear();
+        timestamps.clear();
+        plan.footsteps.clear();
 
-    for (int j = 1; j < num_predicted_footsteps + 1; ++j) {
-        Footstep footstep{};
-        if(j == 1) {
-            footstep.support_foot = state.footstep.support_foot == Foot::left ? Foot::left : Foot::right;
-        } else {
-            footstep.support_foot = plan.footsteps[j - 2].support_foot == Foot::right ? Foot::left : Foot::right;
+        computeTiming();
+        computeThetaSequence();
+        computePositionSequence();
+
+        // Need to insert the current footstep pose in the plan
+        const Pose2& sf_pose = state.getSwingFoot().getPose2();
+        theta_sequence.insert(theta_sequence.begin(), sf_pose.rotation);
+        x_sequence.insert(x_sequence.begin(), sf_pose.translation(0));
+        y_sequence.insert(y_sequence.begin(), sf_pose.translation(1));
+        timestamps.insert(timestamps.begin(), state.footstep.start);
+
+        plan.footsteps.push_back(state.footstep);
+        for (int j = 1; j < num_predicted_footsteps + 1; ++j) {
+            Footstep footstep{};
+            footstep.support_foot = plan.footsteps[j - 1].support_foot == Foot::right ? Foot::left : Foot::right;
+            footstep.end_pose = Pose2(theta_sequence[j], x_sequence[j], y_sequence[j]);
+            footstep.start = timestamps[j];
+            footstep.end = timestamps[j + 1];
+            footstep.ds_start = footstep.start + (1 - ds_percentage) * (footstep.end - footstep.start);
+            footstep.walk_phase = WalkPhase::WALKING;
+            plan.footsteps.push_back(footstep);
         }
-        footstep.end_pose = Pose2(theta_sequence[j], x_sequence[j], y_sequence[j]);
-        footstep.start = timestamps[j];
-        footstep.end = timestamps[j + 1];
-        footstep.ds_start = footstep.start + (1 - ds_percentage) * (footstep.end - footstep.start);
-        footstep.walk_phase = WalkPhase::WALKING;
-        plan.footsteps.push_back(footstep);
+
+        std::cout << "PLANNING NEW FOOTSTEPS" << std::endl;
+        for (const auto& footstep : plan.footsteps) {
+            std::cout << footstep << std::endl;
+        }
+        std::cout << "\n\n" << std::endl;
     }
 }
 
 void FootstepPlanProvider::computeTiming() {
     // Scalar V = reference.getVelocityModule();
     Scalar current_footstep_timestamp = state.footstep.start;
-    Scalar expected_duration = Config::first_fs_duration;  // T_bar * (alpha + v_bar) / (alpha + V);
+    Scalar expected_duration = Config::fs_duration;  // TODO formula: T_bar * (alpha + v_bar) / (alpha + V);
     Scalar time_of_next_step = current_footstep_timestamp + expected_duration;
 
     while (time_of_next_step <= frame_info.tk + T_p) {
@@ -120,7 +136,8 @@ InequalityConstraint FootstepPlanProvider::getKinematicConstraint(int F) const {
     VectorX lbj = VectorX::Zero(2);
     VectorX ubj = VectorX::Zero(2);
 
-    Pose2 sf_pose = state.getSupportFoot().getPose2();
+    Pose2 sf_pose = state.getSwingFoot().getPose2();
+
     Scalar current_x = sf_pose.translation(0);
     Scalar current_y = sf_pose.translation(1);
 
@@ -178,7 +195,7 @@ Cost FootstepPlanProvider::getThetaCost() const {
         delta_theta(j) = reference.integrateOmega(t_start, t_end);
         t_start = t_end;
     }
-    Scalar current_theta = state.getSupportFoot().pose.rotation(2);
+    Scalar current_theta = state.getSwingFoot().getPose2().rotation;
 
     // Cost Matrix
     Matrix H = Matrix::Identity(F, F);
@@ -208,7 +225,7 @@ Cost FootstepPlanProvider::getPositionCost() const {
     // Oriented Displacements and Integrated Theta
     VectorX delta_x = VectorX::Zero(F);
     VectorX delta_y = VectorX::Zero(F);
-    Scalar integrated_theta = state.getSupportFoot().pose.rotation(2);
+    Scalar integrated_theta = state.getSwingFoot().getPose2().rotation;
     Scalar t_start = state.footstep.start;
     Scalar t_end;
     Pose2 displacement;
@@ -233,7 +250,7 @@ Cost FootstepPlanProvider::getPositionCost() const {
     H.block(0, 0, F, F) = Hx;
     H.block(F, F, F, F) = Hx;
 
-    Pose2 sf_pose = state.getSupportFoot().getPose2();
+    Pose2 sf_pose = state.getSwingFoot().getPose2();
     Scalar current_x = sf_pose.translation(0);
     Scalar current_y = sf_pose.translation(1);
 

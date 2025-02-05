@@ -29,6 +29,12 @@ class MovingConstraintProvider {
 
     VectorX sigmaFunction(VectorX time, Scalar t0, Scalar t1) const;
 
+    Scalar ds_start_time;
+    Scalar fs_end_time;
+    Scalar start_x, start_y, start_theta;
+    Scalar end_x, end_y, end_theta;
+    VectorX sigma;
+
    public:
     MovingConstraintProvider(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan);
 

@@ -69,6 +69,8 @@ struct State {
      */
     const EndEffector& getSwingFoot() const;
 
+    void setSwingFootPose(const Pose2& pose);
+
     void setDesiredSwingFoot(const EndEffector& foot);
 
     /**

@@ -9,8 +9,9 @@ namespace ismpc {
 struct LipState {
     Vector3 com_pos{};
     Vector3 com_vel{};
-    Vector3 com_acc{};
     Vector3 zmp_pos{};
+
+    Vector3 com_acc{};
     Vector3 zmp_vel{};
 
     LipState();

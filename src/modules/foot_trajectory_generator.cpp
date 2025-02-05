@@ -33,9 +33,6 @@ void FootTrajectoryGenerator::update(State& state) {
         swing_foot.pose.euler = Vector3(0, 0, desired_theta);
 
         // Linear Velocity with cubic polynomial interpolation
-        // std::cout << "QUINTIC: " << quintic(time_in_step) << std::endl;
-        // std::cout << "QUINTIC_DOT: " << quintic_dot(time_in_step) << std::endl;
-        // std::cout << "QUINTIC_DDOT: " << quintic_ddot(time_in_step) << std::endl;
         swing_foot.lin_vel.segment(0, 2) = (end_pos - start_pos) * quintic_dot(time_in_step);
         swing_foot.lin_acc.segment(0, 2) = (end_pos - start_pos) * quintic_ddot(time_in_step);
 
@@ -44,9 +41,6 @@ void FootTrajectoryGenerator::update(State& state) {
         swing_foot.ang_acc = Vector3(0, 0, (end_theta - start_theta) * quintic_ddot(time_in_step));
 
         // Height with quartic polynomial interpolation
-        // std::cout << "SEXTIC: " << sextic(time_in_step) << std::endl;
-        // std::cout << "SEXTIC_DOT: " << sextic_dot(time_in_step) << std::endl;
-        // std::cout << "SEXTIC_DDOT: " << sextic_ddot(time_in_step) << std::endl;
         swing_foot.pose.translation(2) = step_height * sextic(time_in_step);
         swing_foot.lin_vel(2) = step_height * sextic_dot(time_in_step);
         swing_foot.lin_acc(2) = step_height * sextic_ddot(time_in_step);

@@ -60,12 +60,11 @@ def load_config(file_path: str, config_class: Type[T]) -> T:
 class Config:
     save_log: bool = False
     delta: float = 0.02
-    first_fs_duration: float = 1.0
+    fs_duration: float = 1.0
     nl: int = 1
     N: int = 500
     P: int = 1000
     C: int = 100
-    W: int = 100
     robot: str = "hrp4"
     des_vel_x: float = 0.1
     des_vel_y: float = 0.0

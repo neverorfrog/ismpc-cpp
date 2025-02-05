@@ -1,5 +1,7 @@
 #include "ismpc_cpp/representations/state.h"
 
+#include "ismpc_cpp/tools/math/rotation_matrix.h"
+
 namespace ismpc {
 
 State::State() {
@@ -12,10 +14,10 @@ State::State() {
     footstep.start_pose = right_foot.getPose2();
     footstep.end_pose = right_foot.getPose2();
     footstep.walk_phase = WalkPhase::STARTING;
-    footstep.support_foot = Foot::right;
+    footstep.support_foot = Foot::left;
     footstep.start = 0;
     footstep.ds_start = 0;
-    footstep.end = Config::first_fs_duration;  // DEFAULT VALUE
+    footstep.end = Config::fs_duration;  // DEFAULT VALUE
 
     previous_sf_pose = left_foot.getPose2();
     previous_support_foot = Foot::left;
@@ -23,7 +25,7 @@ State::State() {
 }
 
 int State::getFootstepSign(int j) const {
-    int starting_sign = footstep.support_foot == Foot::right ? 1 : -1;
+    int starting_sign = footstep.support_foot == Foot::right ? -1 : 1;
     return starting_sign * pow(-1, j);
 }
 
@@ -33,6 +35,16 @@ const EndEffector& State::getSupportFoot() const {
 
 const EndEffector& State::getSwingFoot() const {
     return footstep.support_foot == Foot::right ? left_foot : right_foot;
+}
+
+void State::setSwingFootPose(const Pose2& pose) {
+    if (footstep.support_foot == Foot::left) {
+        right_foot.pose.translation.head(2) = pose.translation;
+        right_foot.pose.rotation = RotationMatrix::aroundZ(pose.rotation);
+    } else {
+        left_foot.pose.translation.head(2) = pose.translation;
+        left_foot.pose.rotation = RotationMatrix::aroundZ(pose.rotation);
+    }
 }
 
 void State::setDesiredSwingFoot(const EndEffector& foot) {

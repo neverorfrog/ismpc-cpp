@@ -6,8 +6,10 @@
 #include <iostream>
 
 #include "ismpc_cpp/ismpc.h"
+#include "ismpc_cpp/modules/footstep_switcher.h"
 #include "ismpc_cpp/tools/math/rotation_matrix.h"
 #include "ismpc_cpp/types/lip_state.h"
+#include "ismpc_cpp/types/support_phase.h"
 
 namespace nb = nanobind;
 using EigenMatrix = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>;
@@ -19,8 +21,11 @@ namespace python {
 NB_MODULE(ismpc, m) {
     nb::class_<State>(m, "State")
         .def(nb::init<>())
+        .def("getSwingFoot", &State::getSwingFoot)
+        .def("getSupportFoot", &State::getSupportFoot)
         .def_rw("lip", &State::lip)
-        .def_ro("footstep", &State::footstep)
+        .def_rw("support_phase", &State::support_phase)
+        .def_rw("footstep", &State::footstep)
         .def_ro("desired_lip", &State::desired_lip)
         .def_rw("left_foot", &State::left_foot)
         .def_rw("right_foot", &State::right_foot)
@@ -30,7 +35,7 @@ NB_MODULE(ismpc, m) {
         .def_ro("base", &State::base)
         .def_ro("desired_torso", &State::desired_torso)
         .def_ro("desired_base", &State::desired_base)
-        .def_ro("fs_history", &State::fs_history)
+        .def_rw("fs_history", &State::fs_history)
         .def_ro("lip_history", &State::lip_history)
         .def_ro("left_foot_history", &State::left_foot_history)
         .def_ro("right_foot_history", &State::right_foot_history)
@@ -52,6 +57,10 @@ NB_MODULE(ismpc, m) {
         .def(nb::init<const FrameInfo &, const State &, FootstepPlan &>())
         .def("update", &FootTrajectoryGenerator::update);
 
+    nb::class_<FootstepSwitcher>(m, "FootstepSwitcher")
+        .def(nb::init<const FrameInfo &, const State &, const FootstepPlan &>())
+        .def("update", &FootstepSwitcher::update);
+
     nb::class_<EndEffector>(m, "EndEffector")
         .def(nb::init<>())
         .def_rw("pose", &EndEffector::pose)
@@ -60,6 +69,7 @@ NB_MODULE(ismpc, m) {
         .def_rw("lin_acc", &EndEffector::lin_acc)
         .def_rw("ang_acc", &EndEffector::ang_acc)
         .def("getVelocity", &EndEffector::getVelocity)
+        .def("getPose2", &EndEffector::getPose2)
         .def("__str__", &EndEffector::toString);
 
     nb::class_<Pose2>(m, "Pose2")
@@ -82,6 +92,12 @@ NB_MODULE(ismpc, m) {
             oss << r;
             return oss.str();
         });
+
+    nb::enum_<SupportPhase>(m, "SupportPhase")
+        .value("SINGLE", SupportPhase::SINGLE)
+        .value("DOUBLE", SupportPhase::DOUBLE);
+
+    nb::enum_<Foot>(m, "Foot").value("LEFT", Foot::left).value("RIGHT", Foot::right);
 
     nb::class_<Pose3>(m, "Pose3")
         .def(nb::init<>())
@@ -107,9 +123,12 @@ NB_MODULE(ismpc, m) {
 
     nb::class_<Footstep>(m, "Footstep")
         .def(nb::init<>())
-        .def_ro("start_pose", &Footstep::start_pose)
-        .def_ro("end_pose", &Footstep::end_pose)
-        .def_ro("timestamp", &Footstep::start)
+        .def_rw("start_pose", &Footstep::start_pose)
+        .def_rw("end_pose", &Footstep::end_pose)
+        .def_rw("start", &Footstep::start)
+        .def_rw("ds_start", &Footstep::ds_start)
+        .def_rw("end", &Footstep::end)
+        .def_ro("support_foot", &Footstep::support_foot)
         .def("__str__", &Footstep::toString);
 
     nb::class_<LipState>(m, "LipState")

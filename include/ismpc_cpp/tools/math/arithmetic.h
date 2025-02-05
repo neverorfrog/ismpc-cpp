@@ -101,17 +101,17 @@ T quintic_ddot(T t) {
 
 template <Number T>
 T sextic(T t) {
-    return - 64 * std::pow(t, 6) + 192 * std::pow(t, 5) - 192 * std::pow(t, 4) + 64 * std::pow(t, 3);
+    return -64 * std::pow(t, 6) + 192 * std::pow(t, 5) - 192 * std::pow(t, 4) + 64 * std::pow(t, 3);
 }
 
 template <Number T>
 T sextic_dot(T t) {
-    return - 384 * std::pow(t, 5) + 960 * std::pow(t, 4) - 768 * std::pow(t, 3) + 192 * std::pow(t, 2);
+    return -384 * std::pow(t, 5) + 960 * std::pow(t, 4) - 768 * std::pow(t, 3) + 192 * std::pow(t, 2);
 }
 
 template <Number T>
 T sextic_ddot(T t) {
-    return - 1920 * std::pow(t, 4) + 3840 * std::pow(t, 3) - 2304 * std::pow(t, 2) + 384 * t;
+    return -1920 * std::pow(t, 4) + 3840 * std::pow(t, 3) - 2304 * std::pow(t, 2) + 384 * t;
 }
 
 }  // namespace Arithmetic

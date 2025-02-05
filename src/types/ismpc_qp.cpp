@@ -1,4 +1,5 @@
 #include <ismpc_cpp/types/ismpc_qp.h>
+
 #include <iostream>
 #include <string>
 

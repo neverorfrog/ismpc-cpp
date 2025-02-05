@@ -65,6 +65,9 @@ class FootstepPlanProvider {
     const Scalar day = RobotConfig::day;
     const Scalar l = RobotConfig::l;
 
+    // TODO: Test
+    Scalar last_plan_timestamp = 0.0;
+
    public:
     FootstepPlanProvider(const FrameInfo& frame_info, const Reference& reference, const State& state,
                          const FootstepPlan& plan);

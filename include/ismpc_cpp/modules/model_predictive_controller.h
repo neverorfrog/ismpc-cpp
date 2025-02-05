@@ -44,9 +44,6 @@ class ModelPredictiveController {
     // Var buffer
     Scalar xc, yc, xdc, ydc, xz, yz, xdz, ydz;
 
-    // Testing
-    int fs_index = 0;
-
     // time related stuff
     std::chrono::high_resolution_clock::time_point start, end;
 

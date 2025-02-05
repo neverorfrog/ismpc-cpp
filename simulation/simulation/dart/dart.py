@@ -1,9 +1,7 @@
 import dartpy as dart
 import os
-import numpy as np
 from simulation.dart.controller import Controller
 from simulation.dart.robot import Robot
-from simulation.dart.misc import REDUNDANT_DOFS
 from simulation.utils import project_root
 from simulation.utils import config
 
@@ -30,9 +28,10 @@ if __name__ == "__main__":
     robot = Robot(skeleton)
     node = Controller(world, robot)
     node.setTargetRealTimeFactor(0.8)
-
+    
     viewer = dart.gui.osg.Viewer()
     viewer.setUpViewInWindow(0, 0, 1920, 1080)
     viewer.setCameraHomePosition([5.0, -1.0, 1.5], [1.0, 0.0, 0.5], [0.0, 0.0, 1.0])
     viewer.addWorldNode(node)
+    
     viewer.run()

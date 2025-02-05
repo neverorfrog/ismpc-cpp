@@ -1,5 +1,5 @@
 # Geometric parameters
-h: 0.75
+h: 0.8
 l: 0.2
 theta_max: 0.3927 # np.pi/8
 step_height: 0.02 # [m]

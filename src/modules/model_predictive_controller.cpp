@@ -61,27 +61,30 @@ void ModelPredictiveController::update(State& state) {
     state.desired_lip.com_acc(1) = std::pow(eta, 2) * (yc - yz);
     state.desired_lip.com_acc(2) = 0.00;
 
+    // The desired zmp velocity is actually a command, so it must also go directly into the state
+    state.lip.zmp_vel = state.desired_lip.zmp_vel;
+
     state.lip_history.push_back(state.lip);
     state.left_foot_history.push_back(state.left_foot);
     state.right_foot_history.push_back(state.right_foot);
     // ==================================================
 
-    // =============== FOOTSTEP UPDATE ==================
+    // // =============== FOOTSTEP UPDATE ==================
 
-    // Switch support foot when the double support phase ends
-    if (frame_info.tk >= state.footstep.end && state.support_phase == SupportPhase::DOUBLE) {
-        state.fs_history.push_back(state.footstep);
-        state.footstep = plan.footsteps[fs_index];
-        state.footstep.start_pose = state.getSwingFoot().getPose2();
-        fs_index++;
-    }
+    // // Switch support foot when the double support phase ends
+    // if (frame_info.tk >= state.footstep.end && state.support_phase == SupportPhase::DOUBLE) {
+    //     state.fs_history.push_back(state.footstep);
+    //     state.footstep = plan.footsteps[fs_index];
+    //     state.footstep.start_pose = state.getSwingFoot().getPose2();
+    //     fs_index++;
+    // }
 
-    // Update the support phase info
-    if (frame_info.tk >= state.footstep.ds_start && frame_info.tk <= state.footstep.end)
-        state.support_phase = SupportPhase::DOUBLE;
-    else
-        state.support_phase = SupportPhase::SINGLE;
-    // ====================================================
+    // // Update the support phase info
+    // if (frame_info.tk >= state.footstep.ds_start && frame_info.tk <= state.footstep.end)
+    //     state.support_phase = SupportPhase::DOUBLE;
+    // else
+    //     state.support_phase = SupportPhase::SINGLE;
+    // // ====================================================
 }
 
 }  // namespace ismpc
