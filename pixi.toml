@@ -8,6 +8,6 @@ version = "0.1.0"
 
 [tasks]
 preinstall = 'sudo apt install libeigen3-dev && sudo apt install libsimde-dev'
-build = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . -j12'
-build-debug = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j12'
+build = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . -j$(nproc)'
+build-debug = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j$(nproc)'
 main = './build/executables/ismpc_main'
