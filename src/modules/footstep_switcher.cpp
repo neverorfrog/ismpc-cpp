@@ -28,10 +28,10 @@ void FootstepSwitcher::update(State& state) {
         // TODO TEST FORCED FOOTSTEP
         // state.setSwingFootPose(state.footstep.end_pose);
 
-        std::cout << "New Footstep: " << state.footstep << std::endl;
-        std::cout << "New Swingfoot Pos: " << state.getSwingFoot().pose.translation.transpose() << std::endl;
-        std::cout << "New Swingfoot Ang: " << state.getSwingFoot().pose.rotation << std::endl;
-        std::cout << "\n\n\n\n" << std::endl;
+        // std::cout << "New Footstep: " << state.footstep << std::endl;
+        // std::cout << "New Swingfoot Pos: " << state.getSwingFoot().pose.translation.transpose() << std::endl;
+        // std::cout << "New Swingfoot Ang: " << state.getSwingFoot().pose.rotation << std::endl;
+        // std::cout << "\n\n\n\n" << std::endl;
     }
 
     // TODO TEST

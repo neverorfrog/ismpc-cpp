@@ -43,11 +43,6 @@ void FootstepPlanProvider::update(FootstepPlan& plan) {
             plan.footsteps.push_back(footstep);
         }
 
-        std::cout << "PLANNING NEW FOOTSTEPS" << std::endl;
-        for (const auto& footstep : plan.footsteps) {
-            std::cout << footstep << std::endl;
-        }
-        std::cout << "\n\n" << std::endl;
     }
 }
 
