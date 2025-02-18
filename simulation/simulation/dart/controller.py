@@ -106,19 +106,17 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         self.state.desired_base.ang_acc = self.state.desired_torso.ang_acc
 
         # If you print the histogram you should remove all the other prints
-        # self.printCommandsHistogram(self.robot.jointList, commands)
         commands: np.ndarray = self.kinematics.get_joint_accelerations(self.state)
-        
         self.update_frame_balls()
-
+        self.frame_info.k += 1
+        self.frame_info.tk += self.dt
+        self.printCommandsHistogram(self.robot.jointList, commands)
         for i in range(self.kinematics.dofs - 6):
             self.robot.skeleton.setCommand(i + 6, commands[i])
         end = time.time()
         self.kin_elapsed += end - start
 
         print(f"TIME: {self.frame_info.tk:.2f}")
-        self.frame_info.k += 1
-        self.frame_info.tk += self.dt
         print(
             "AVERAGE DART TIME IN MILLISECONDS: ",
             (self.dart_elapsed / self.frame_info.k) * 1000,
@@ -169,12 +167,12 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         world.addSimpleFrame(self.des_zmp_ball)
 
         # Balls for the feet
-        self.lsole_ball = self.create_ball("lsole", RED, 0.07)
-        self.rsole_ball = self.create_ball("rsole", RED, 0.07)
+        self.lsole_ball = self.create_ball("lsole", RED, 0.01)
+        self.rsole_ball = self.create_ball("rsole", RED, 0.01)
         world.addSimpleFrame(self.lsole_ball)
         world.addSimpleFrame(self.rsole_ball)
-        self.lsole_des_ball = self.create_ball("lsole_des", GREEN, 0.07)
-        self.rsole_des_ball = self.create_ball("rsole_des", GREEN, 0.07)
+        self.lsole_des_ball = self.create_ball("lsole_des", GREEN, 0.01)
+        self.rsole_des_ball = self.create_ball("rsole_des", GREEN, 0.01)
         world.addSimpleFrame(self.lsole_des_ball)
         world.addSimpleFrame(self.rsole_des_ball)
 
@@ -197,10 +195,23 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         total_width = bar_length + joint_width
 
         # Move cursor up
-        for _ in range(len(commands) + 1):
+        for _ in range(len(commands) + 4):
             sys.stdout.write("\033[F")
             sys.stdout.flush()
-
+            
+        print(
+            "AVERAGE DART TIME IN MILLISECONDS: ",
+            (self.dart_elapsed / self.frame_info.k) * 1000,
+        )
+        print(
+            "AVERAGE ISMPC TIME IN MILLISECONDS: ",
+            (self.ismpc_elapsed / self.frame_info.k) * 1000,
+        )
+        print(
+            "AVERAGE KINEMATICS TIME IN MILLISECONDS: ",
+            (self.kin_elapsed / self.frame_info.k) * 1000,
+        )
+        
         # Print centered scale
         scale = "-1" + "-" * (bar_length // 4) + "0" + "-" * (bar_length // 4) + "1"
         padding = " " * ((total_width - len(scale)) // 2)

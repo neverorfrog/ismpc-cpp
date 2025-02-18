@@ -10,7 +10,9 @@ from simulation.planner.plan import Plan
 from simulation.utils import config, robot_config
 
 
-def extract_feet_patches(f: int, plan: Plan) -> list[Rectangle]:
+def extract_feet_patches(
+    f: int, plan: Plan
+) -> list[Rectangle]:
     sidex = robot_config.dxz
     sidey = robot_config.dyz
 
@@ -36,9 +38,10 @@ def extract_feet_patches(f: int, plan: Plan) -> list[Rectangle]:
                 fill=False,
                 color="r",
             )
-            for j in range(0, f, 2)
+            for j in range(1, f, 2)
         ]
     )
+
 
     left_feet = []
     initial_left_foot_patch = patches.Rectangle(
@@ -62,9 +65,10 @@ def extract_feet_patches(f: int, plan: Plan) -> list[Rectangle]:
                 fill=False,
                 color="b",
             )
-            for j in range(1, f, 2)
+            for j in range(0, f, 2)
         ]
     )
+
 
     return right_feet + left_feet
 

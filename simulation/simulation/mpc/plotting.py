@@ -102,9 +102,10 @@ def extract_feet_patches(
                 fill=False,
                 color="r",
             )
-            for j in range(0, f, 2)
+            for j in range(1, f, 2)
         ]
     )
+
 
     left_feet = []
     initial_left_foot_patch = patches.Rectangle(
@@ -128,9 +129,10 @@ def extract_feet_patches(
                 fill=False,
                 color="b",
             )
-            for j in range(1, f, 2)
+            for j in range(0, f, 2)
         ]
     )
+
 
     return right_feet + left_feet
 
