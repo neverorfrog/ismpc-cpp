@@ -39,6 +39,9 @@ NB_MODULE(ismpc, m) {
         .def_ro("lip_history", &State::lip_history)
         .def_ro("left_foot_history", &State::left_foot_history)
         .def_ro("right_foot_history", &State::right_foot_history)
+        .def_ro("mc_x_history", &State::mc_x_history)
+        .def_ro("mc_y_history", &State::mc_y_history)
+        .def_ro("mc_theta_history", &State::mc_theta_history)
         .def("__str__", &State::toString);
 
     nb::class_<FootstepPlanProvider>(m, "FootstepPlanProvider")

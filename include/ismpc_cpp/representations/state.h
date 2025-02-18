@@ -45,10 +45,13 @@ struct State {
     Scalar total_mpc_postprocessing_duration = 0.0;
 
     // Plotting related stuff
-    std::vector<Footstep> fs_history;
-    std::vector<LipState> lip_history;
-    std::vector<EndEffector> left_foot_history;
-    std::vector<EndEffector> right_foot_history;
+    std::vector<Footstep> fs_history{};
+    std::vector<LipState> lip_history{};
+    std::vector<EndEffector> left_foot_history{};
+    std::vector<EndEffector> right_foot_history{};
+    std::vector<VectorX> mc_x_history{};
+    std::vector<VectorX> mc_y_history{};
+    std::vector<VectorX> mc_theta_history{};
 
     State();
 

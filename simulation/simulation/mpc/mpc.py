@@ -1,9 +1,7 @@
 import time
 import numpy as np
-import yaml
 from simulation.mpc.gait import Gait
-from simulation.mpc.plotting import PlotMode, animate, StatePlotter
-import matplotlib.pyplot as plt
+from simulation.mpc.plotting import PlotMode, animate
 from tqdm import tqdm
 
 from ismpc import FrameInfo, Reference, State, FootstepPlan
@@ -25,10 +23,6 @@ switcher = FootstepSwitcher(frame_info, state, plan)
 
 elapsed = []
 iterations = range(config.N)
-planner.update(plan)
-# for footstep in plan.footsteps:
-    # print(footstep)
-# state_plotter = StatePlotter()
 
 with tqdm(iterations, desc="Walking...") as pbar:
     for k in pbar:
@@ -49,7 +43,6 @@ with tqdm(iterations, desc="Walking...") as pbar:
         frame_info.tk += config.delta
         frame_info.k += 1
         pbar.set_description(f"Step: {k}, Time: {frame_info.tk:.3f}")
-        # state_plotter.update_plot(state)
         print("\n")
 
 print(f"Average elapsed time: {np.mean(elapsed):.3f} ms")

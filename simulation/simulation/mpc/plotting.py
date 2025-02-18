@@ -141,6 +141,7 @@ def plot_2d(ax: Axes, k: int, f: int, gait: Gait) -> None:
     ax.plot(gait.com_traj[0, :k], gait.com_traj[1, :k], color="k")
     ax.plot(gait.zmp_traj[0, :k], gait.zmp_traj[1, :k], color="g")
     ax.legend(["CoM", "ZMP"])
+    ax.plot(gait.mc_x_traj[:, k], gait.mc_y_traj[:, k], color="r")
     for foot in extract_feet_patches(f, gait):
         ax.add_patch(foot)
 
