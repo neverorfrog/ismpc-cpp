@@ -5,17 +5,17 @@ Standard: Auto
 IndentWidth: 4
 TabWidth: 4
 UseTab: Never
-ColumnLimit: 117
+ColumnLimit: 110
 
 AlignEscapedNewlinesLeft: false
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: false
-AllowShortIfStatementsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Empty
 
 AlwaysBreakBeforeMultilineStrings: false
-BreakBeforeBinaryOperators: false
+BreakBeforeBinaryOperators: All
 BreakBeforeTernaryOperators: false
 
 PenaltyBreakBeforeFirstCallParameter: 19
@@ -28,18 +28,17 @@ PenaltyReturnTypeOnItsOwnLine: 90
 # Configure each individual brace in BraceWrapping
 BreakBeforeBraces: Custom
 
+
 # Control of individual brace wrapping cases
 BraceWrapping: {
-    AfterClass: 'false',
-    AfterControlStatement: 'false',
-    AfterEnum : 'false',
-    AfterFunction : 'false',
-    AfterNamespace : 'false',
-    AfterStruct : 'false',
-    AfterUnion : 'false',
-    BeforeCatch : 'false',
-    BeforeElse : 'false',
-    IndentBraces : 'false',
-    SplitEmptyFunction: 'false',
-    SplitEmptyRecord: 'false'
+    AfterClass: false,
+    AfterControlStatement: Never,
+    AfterEnum : false,
+    AfterFunction : false,
+    AfterNamespace : false,
+    AfterStruct : false,
+    AfterUnion : false,
+    BeforeElse : false,
+    IndentBraces : false,
+    SplitEmptyFunction: false,
 }
