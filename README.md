@@ -26,7 +26,7 @@ pixi run typings
 </video>
 
 <video width="100%" controls>
-  <source src="https://github.com/neverorfrog/ismpc-cpp/blob/main/simulation/videos/2d/walking_curve.mp4" type="video/mp4">
+  <source src="simulation/videos/2d/walking.mp4" type="video/mp4">
 </video>
 
 ## Some Concepts
