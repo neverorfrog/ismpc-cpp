@@ -2,19 +2,19 @@ save_log: false
 
 # Time step for simulation [s]
 delta: 0.01205 # 83 Hz
-fs_duration: 0.35 # [s]
+fs_duration: 1.0 # [s]
 nl: 1
 
 # Duration parameters
 N: 1000
-P: 60
-C: 60
+P: 200
+C: 100
 
 # Which robot to simulate
-robot: nao
+robot: hrp4
 
 # Input Velocities
-des_vel_x: 0.1 # [m/s]
+des_vel_x: 0.2 # [m/s]
 des_vel_y: 0.0 #  [m/s]
 des_omega: 0.0 #  [rad/s]
 

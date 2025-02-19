@@ -102,7 +102,7 @@ def extract_feet_patches(
                 fill=False,
                 color="r",
             )
-            for j in range(1, f, 2)
+            for j in range(0, f, 2)
         ]
     )
 
@@ -129,7 +129,7 @@ def extract_feet_patches(
                 fill=False,
                 color="b",
             )
-            for j in range(0, f, 2)
+            for j in range(1, f, 2)
         ]
     )
 
@@ -140,9 +140,9 @@ def extract_feet_patches(
 def plot_2d(ax: Axes, k: int, f: int, gait: Gait) -> None:
     ax.plot(gait.com_traj[0, :k], gait.com_traj[1, :k], color="k")
     ax.plot(gait.zmp_traj[0, :k], gait.zmp_traj[1, :k], color="g")
-    ax.legend(["CoM", "ZMP"])
-    ax.plot(gait.mc_x_traj[:, k], gait.mc_y_traj[:, k], color="r")
-    for foot in extract_feet_patches(f, gait):
+    ax.plot(gait.mc_x_traj[:, max(0, k-1)], gait.mc_y_traj[:, max(0, k-1)], color="c")
+    ax.legend(["CoM", "ZMP", "Moving Constraint"]) 
+    for foot in extract_feet_patches(max(0, f-1), gait):
         ax.add_patch(foot)
 
 
@@ -190,14 +190,12 @@ class PlotMode(Enum):
     TWO_D = "2d"
     THREE_D = "3d"
 
-
 def animate(
     gait: Gait,
     save: bool = True,
     plot_mode: PlotMode = PlotMode.TWO_D,
 ) -> None:
     fig = plt.figure()
-
     max_x = max(gait.zmp_traj[0, :])
     min_x = min(gait.zmp_traj[0, :])
     max_y = max(gait.zmp_traj[1, :]) + 0.2
@@ -228,6 +226,13 @@ def animate(
             plot_2d(ax, k, f, gait)
         elif plot_mode == PlotMode.THREE_D:
             plot_3d(ax, k, f, gait)
+            
+        print("==========================================================")
+        print(f"ITERATION {k}, Time: {time}")
+        for fs in gait.fs_plan_history[max(0, k-1)]:
+            print(fs)
+        print("==========================================================\n\n")
+        
 
     ani = FuncAnimation(
         fig, update, frames=config.N + 1, repeat=False, interval=config.delta

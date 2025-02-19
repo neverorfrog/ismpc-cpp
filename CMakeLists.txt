@@ -230,10 +230,4 @@ install(
 if(BUILD_TESTS)
   add_subdirectory(test)
 endif()
-
-# =============================================================================================
-
-# ============================ EXECUTABLES ====================================================
-add_executable(ismpc_main ${CMAKE_CURRENT_SOURCE_DIR}/src/cppmain.cpp)
-target_link_libraries(ismpc_main PRIVATE ${ISMPC_CPP_LIBRARY})
 # =============================================================================================

@@ -30,39 +30,31 @@ void MovingConstraintProvider::update(FootstepPlan& plan) {
     // Time vector over which the moving constraint spans
     VectorX time = VectorX::LinSpaced(Config::C, frame_info.tk, frame_info.tk + Config::T_c);
 
-    // Pose2 start_pose = Pose2(plan.zmp_midpoints_x(0), plan.zmp_midpoints_y(0));
-    // Pose2 end_pose = Pose2(initial_rf_pos(0), initial_rf_pos(1));
-    // VectorX sigma = sigmaFunction(time, ds_start_time, fs_end_time);
-
     // The footstep currently being executed is always included in the plan
     for (size_t j = 0; j < plan.footsteps.size(); ++j) {
         Footstep& footstep = plan.footsteps[j];
+
         ds_start_time = footstep.ds_start;
         fs_end_time = footstep.end;
-        if (j == 0) {
-            start_x = plan.zmp_midpoints_x(0);
-            start_y = plan.zmp_midpoints_y(0);
-            start_theta = plan.zmp_midpoints_theta(0);
-        } else {
-            start_x = end_x;
-            start_y = end_y;
-            start_theta = end_theta;
-        }
 
+        start_x = end_x;
+        start_y = end_y;
+        start_theta = end_theta;
         end_x = footstep.end_pose.translation(0);
         end_y = footstep.end_pose.translation(1);
         end_theta = footstep.end_pose.rotation;
 
+        if (j == 0) {
+            start_x = plan.zmp_midpoints_x(0);
+            start_y = plan.zmp_midpoints_y(0);
+            start_theta = plan.zmp_midpoints_theta(0);
+        }
+
         sigma = sigmaFunction(time, ds_start_time, fs_end_time);
 
-        // std::cout << "SIGMA: " << sigma.transpose() << std::endl;
         plan.zmp_midpoints_x = plan.zmp_midpoints_x + sigma * (end_x - start_x);
         plan.zmp_midpoints_y = plan.zmp_midpoints_y + sigma * (end_y - start_y);
         plan.zmp_midpoints_theta = plan.zmp_midpoints_theta + sigma * (end_theta - start_theta);
-
-        // std::cout << "START Y: " << start_y << std::endl;
-        // std::cout << "ZMP Y INTERM: " << plan.zmp_midpoints_y.transpose().format(Config::CleanFmt) << std::endl;
-        // plan.zmp_midpoints_theta = plan.zmp_midpoints_theta + sigma * (end_pose.rotation - start_pose.rotation);
     }
 }
 

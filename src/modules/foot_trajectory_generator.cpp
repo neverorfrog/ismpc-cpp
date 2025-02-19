@@ -1,8 +1,5 @@
 #include "ismpc_cpp/modules/foot_trajectory_generator.h"
 
-#include <Eigen/src/Core/util/Constants.h>
-#include <Eigen/src/Geometry/RotationBase.h>
-
 namespace ismpc {
 
 FootTrajectoryGenerator::FootTrajectoryGenerator(const FrameInfo& frame_info, const State& state,
@@ -10,21 +7,22 @@ FootTrajectoryGenerator::FootTrajectoryGenerator(const FrameInfo& frame_info, co
     : frame_info(frame_info), state(state), plan(plan) {}
 
 void FootTrajectoryGenerator::update(State& state) {
-    EndEffector swing_foot = state.getSwingFoot();
+    EndEffector swing_foot = plan.footsteps.front().support_foot == Foot::right ? state.left_foot : state.right_foot;
+    const Footstep& footstep = plan.footsteps.front();
 
-    if (state.support_phase == SupportPhase::DOUBLE) {
+    if (plan.support_phase == SupportPhase::DOUBLE) {
         swing_foot.lin_vel << 0, 0, 0;
         swing_foot.lin_acc << 0, 0, 0;
         swing_foot.ang_vel << 0, 0, 0;
         swing_foot.ang_acc << 0, 0, 0;
-    } else if (state.support_phase == SupportPhase::SINGLE) {
-        Vector2 start_pos = state.footstep.start_pose.translation;
-        Vector2 end_pos = state.footstep.end_pose.translation;
-        Scalar start_theta = state.footstep.start_pose.rotation;
-        Scalar end_theta = state.footstep.end_pose.rotation;
+    } else if (plan.support_phase == SupportPhase::SINGLE) {
+        Vector2 start_pos = footstep.start_pose.translation;
+        Vector2 end_pos = footstep.end_pose.translation;
+        Scalar start_theta = footstep.start_pose.rotation;
+        Scalar end_theta = footstep.end_pose.rotation;
 
-        Scalar ss_duration = (state.footstep.ds_start - state.footstep.start);
-        Scalar time_in_step = (frame_info.tk - state.footstep.start) / (ss_duration);
+        Scalar ss_duration = (footstep.ds_start - footstep.start);
+        Scalar time_in_step = (frame_info.tk - footstep.start) / (ss_duration);
 
         // 2D Pose with cubic polynomial interpolation
         Vector2 desired_pos = start_pos + (end_pos - start_pos) * quintic(time_in_step);
@@ -46,7 +44,11 @@ void FootTrajectoryGenerator::update(State& state) {
         swing_foot.lin_acc(2) = step_height * sextic_ddot(time_in_step);
     }
 
-    state.setDesiredSwingFoot(swing_foot);
+    if (plan.footsteps.front().support_foot == Foot::right) {
+        state.desired_left_foot = swing_foot;
+    } else {
+        state.desired_right_foot = swing_foot;
+    }
 }
 
 }  // namespace ismpc

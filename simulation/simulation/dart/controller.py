@@ -9,8 +9,7 @@ from ismpc import (
     ModelPredictiveController,
     FootTrajectoryGenerator,
     MovingConstraintProvider,
-    KalmanFilter,
-    FootstepSwitcher,
+    KalmanFilter
 )
 from scipy.spatial.transform import Rotation as R
 from simulation.dart.misc import REDUNDANT_DOFS
@@ -31,6 +30,7 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         self.dart_elapsed = 0
         self.ismpc_elapsed = 0
         self.kin_elapsed = 0
+        self.planner_elapsed = 0
         self.create_frame_balls(world)
 
         # Representations
@@ -50,7 +50,6 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         self.mc_provider = MovingConstraintProvider(
             self.frame_info, self.state, self.plan
         )
-        self.switcher = FootstepSwitcher(self.frame_info, self.state, self.plan)
         self.filter = KalmanFilter()
 
         self.kinematics = Kinematics(self.robot, REDUNDANT_DOFS[config.robot])
@@ -59,24 +58,27 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         start = time.time()
         self.robot.update(self.state, self.world)
         self.filter.update(self.state)
-        self.planner.update(self.plan)
         end = time.time()
         self.dart_elapsed += end - start
+        
+        start = time.time()
+        self.planner.update(self.plan)
+        self.mc_provider.update(self.plan)
+        end = time.time()
+        self.planner_elapsed += end - start
 
         start = time.time()
         if self.frame_info.k == 0:
-            self.state.footstep.start_pose.translation[0] = (
+            self.plan.footsteps[0].start_pose.translation[0] = (
                 self.state.right_foot.pose.translation[0]
             )
-            self.state.footstep.end_pose.translation[0] = (
+            self.plan.footsteps[0].end_pose.translation[0] = (
                 self.state.right_foot.pose.translation[0]
             )
             self.state.desired_right_foot.pose.translation[0] = (
                 self.state.right_foot.pose.translation[0]
             )
 
-        self.mc_provider.update(self.plan)
-        self.switcher.update(self.state)
         self.mpc.update(self.state)
         self.ft_generator.update(self.state)
         end = time.time()
@@ -120,6 +122,10 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         print(
             "AVERAGE DART TIME IN MILLISECONDS: ",
             (self.dart_elapsed / self.frame_info.k) * 1000,
+        )
+        print(
+            "AVERAGE PLANNER TIME IN MILLISECONDS: ",
+            (self.planner_elapsed / self.frame_info.k) * 1000,
         )
         print(
             "AVERAGE ISMPC TIME IN MILLISECONDS: ",
@@ -167,12 +173,12 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
         world.addSimpleFrame(self.des_zmp_ball)
 
         # Balls for the feet
-        self.lsole_ball = self.create_ball("lsole", RED, 0.01)
-        self.rsole_ball = self.create_ball("rsole", RED, 0.01)
+        self.lsole_ball = self.create_ball("lsole", RED, 0.07)
+        self.rsole_ball = self.create_ball("rsole", RED, 0.07)
         world.addSimpleFrame(self.lsole_ball)
         world.addSimpleFrame(self.rsole_ball)
-        self.lsole_des_ball = self.create_ball("lsole_des", GREEN, 0.01)
-        self.rsole_des_ball = self.create_ball("rsole_des", GREEN, 0.01)
+        self.lsole_des_ball = self.create_ball("lsole_des", GREEN, 0.07)
+        self.rsole_des_ball = self.create_ball("rsole_des", GREEN, 0.07)
         world.addSimpleFrame(self.lsole_des_ball)
         world.addSimpleFrame(self.rsole_des_ball)
 

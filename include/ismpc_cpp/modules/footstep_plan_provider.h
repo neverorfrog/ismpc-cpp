@@ -11,6 +11,7 @@
 #pragma once
 
 #include <cmath>
+#include <ctime>
 #include <iostream>
 
 #include "ismpc_cpp/representations/footstep_plan.h"
@@ -20,10 +21,12 @@
 #include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
+#include "ismpc_cpp/types/body_parts.h"
 #include "ismpc_cpp/types/end_effector.h"
 #include "ismpc_cpp/types/footstep.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/optimization.h"
+#include "ismpc_cpp/types/support_phase.h"
 
 using namespace ismpc::Arithmetic;
 namespace ismpc {
@@ -48,7 +51,9 @@ class FootstepPlanProvider {
     std::vector<Scalar> theta_sequence;
     std::vector<Scalar> x_sequence;
     std::vector<Scalar> y_sequence;
-    int num_predicted_footsteps;
+    int F;
+    Footstep current_footstep;
+    bool in_double_support;
 
     // Parameters
     const int numP = Config::P;
@@ -68,6 +73,13 @@ class FootstepPlanProvider {
     // TODO: Test
     Scalar last_plan_timestamp = 0.0;
 
+    /**
+     * @brief Compute the sign corresponding to the footstep index
+     * @param j
+     * @return int
+     */
+    int getFootstepSign(int j) const;
+
    public:
     FootstepPlanProvider(const FrameInfo& frame_info, const Reference& reference, const State& state,
                          const FootstepPlan& plan);
@@ -77,6 +89,8 @@ class FootstepPlanProvider {
      * theta and position sequence by tracking a virtual unicycle model.
      */
     void update(FootstepPlan& plan);
+
+    void computePlan(FootstepPlan& plan);
 
     /**
      * @brief Get the duration of each footstep. Sets the timestamps in

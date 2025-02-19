@@ -67,24 +67,6 @@ void ModelPredictiveController::update(State& state) {
     state.lip_history.push_back(state.lip);
     state.left_foot_history.push_back(state.left_foot);
     state.right_foot_history.push_back(state.right_foot);
-    // ==================================================
-
-    // // =============== FOOTSTEP UPDATE ==================
-
-    // // Switch support foot when the double support phase ends
-    // if (frame_info.tk >= state.footstep.end && state.support_phase == SupportPhase::DOUBLE) {
-    //     state.fs_history.push_back(state.footstep);
-    //     state.footstep = plan.footsteps[fs_index];
-    //     state.footstep.start_pose = state.getSwingFoot().getPose2();
-    //     fs_index++;
-    // }
-
-    // // Update the support phase info
-    // if (frame_info.tk >= state.footstep.ds_start && frame_info.tk <= state.footstep.end)
-    //     state.support_phase = SupportPhase::DOUBLE;
-    // else
-    //     state.support_phase = SupportPhase::SINGLE;
-    // // ====================================================
 }
 
 }  // namespace ismpc

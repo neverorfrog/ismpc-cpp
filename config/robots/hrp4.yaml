@@ -1,8 +1,8 @@
 # Geometric parameters
-h: 0.8
+h: 0.75
 l: 0.2
 theta_max: 0.3927 # np.pi/8
-step_height: 0.02 # [m]
+step_height: 0.01 # [m]
 foot_com_height: 0.0 # [m]
 
 # Initial Position
@@ -17,15 +17,15 @@ L_bar: 0.3
 alpha: 0.5
 
 # Footsteps stuff
-dax: 0.2
-day: 0.05
+dax: 0.3
+day: 0.2
 
 # ZMP stuff
 dxz: 0.2
 dyz: 0.2
 zmp_vx_max: 10.0
 zmp_vy_max: 10.0
-beta: 100
+beta: 200
 
 # Timing stuff
 ds_percentage: 0.3

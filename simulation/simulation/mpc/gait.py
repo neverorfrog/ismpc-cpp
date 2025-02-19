@@ -1,10 +1,11 @@
 import numpy as np
-from ismpc import State
+from ismpc import State, FootstepPlan
 from simulation.utils import config
 
 class Gait:
 
     state: State
+    plan: FootstepPlan
 
     history: np.ndarray
     com_traj: np.ndarray
@@ -18,16 +19,17 @@ class Gait:
     timestamps: np.ndarray
     footstep_history: np.ndarray
 
-    def __init__(self, state: State):
+    def __init__(self, state: State, plan: FootstepPlan) -> None:
+        self.plan = plan
         self.state = state
         self.extract_traj()
         self.extract_footsteps()
 
     def extract_traj(self) -> None:
         lip_history = self.state.lip_history
-        mc_x_history = self.state.mc_x_history
-        mc_y_history = self.state.mc_y_history
-        mc_theta_history = self.state.mc_theta_history
+        mc_x_history = self.plan.mc_x_history
+        mc_y_history = self.plan.mc_y_history
+        mc_theta_history = self.plan.mc_theta_history
         com_traj = np.ndarray(shape=(3, len(lip_history)), dtype=float)
         zmp_traj = np.ndarray(shape=(3, len(lip_history)), dtype=float)
         mc_x_traj = np.ndarray(shape=(config.C, len(mc_x_history)), dtype=float)
@@ -61,20 +63,26 @@ class Gait:
         self.right_foot_traj = right_foot_traj
 
     def extract_footsteps(self) -> None:
-        footstep_history = self.state.fs_history
+        footstep_history = self.plan.fs_history
+        fs_plan_history = self.plan.fs_plan_history
         xf = np.ndarray(shape=(len(footstep_history)), dtype=float)
         yf = np.ndarray(shape=(len(footstep_history)), dtype=float)
         thetaf = np.ndarray(shape=(len(footstep_history)), dtype=float)
         timestamps = np.ndarray(shape=(len(footstep_history)), dtype=float)
+        footstep_plans = []
         for i, footstep in enumerate(footstep_history):
             pose = footstep.end_pose
             xf[i] = pose.translation[0]
             yf[i] = pose.translation[1]
             thetaf[i] = pose.rotation()
             timestamps[i] = footstep.start
+            
+        for i, fs_plan in enumerate(fs_plan_history):
+            footstep_plans.append(fs_plan)
 
         self.xf = xf
         self.yf = yf
         self.thetaf = thetaf
         self.timestamps = timestamps
         self.footstep_history = footstep_history
+        self.fs_plan_history = footstep_plans

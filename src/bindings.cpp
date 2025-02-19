@@ -6,8 +6,8 @@
 #include <iostream>
 
 #include "ismpc_cpp/ismpc.h"
-#include "ismpc_cpp/modules/footstep_switcher.h"
 #include "ismpc_cpp/tools/math/rotation_matrix.h"
+#include "ismpc_cpp/types/footstep.h"
 #include "ismpc_cpp/types/lip_state.h"
 #include "ismpc_cpp/types/support_phase.h"
 
@@ -21,11 +21,7 @@ namespace python {
 NB_MODULE(ismpc, m) {
     nb::class_<State>(m, "State")
         .def(nb::init<>())
-        .def("getSwingFoot", &State::getSwingFoot)
-        .def("getSupportFoot", &State::getSupportFoot)
         .def_rw("lip", &State::lip)
-        .def_rw("support_phase", &State::support_phase)
-        .def_rw("footstep", &State::footstep)
         .def_ro("desired_lip", &State::desired_lip)
         .def_rw("left_foot", &State::left_foot)
         .def_rw("right_foot", &State::right_foot)
@@ -35,13 +31,9 @@ NB_MODULE(ismpc, m) {
         .def_ro("base", &State::base)
         .def_ro("desired_torso", &State::desired_torso)
         .def_ro("desired_base", &State::desired_base)
-        .def_rw("fs_history", &State::fs_history)
         .def_ro("lip_history", &State::lip_history)
         .def_ro("left_foot_history", &State::left_foot_history)
         .def_ro("right_foot_history", &State::right_foot_history)
-        .def_ro("mc_x_history", &State::mc_x_history)
-        .def_ro("mc_y_history", &State::mc_y_history)
-        .def_ro("mc_theta_history", &State::mc_theta_history)
         .def("__str__", &State::toString);
 
     nb::class_<FootstepPlanProvider>(m, "FootstepPlanProvider")
@@ -59,10 +51,6 @@ NB_MODULE(ismpc, m) {
     nb::class_<FootTrajectoryGenerator>(m, "FootTrajectoryGenerator")
         .def(nb::init<const FrameInfo &, const State &, FootstepPlan &>())
         .def("update", &FootTrajectoryGenerator::update);
-
-    nb::class_<FootstepSwitcher>(m, "FootstepSwitcher")
-        .def(nb::init<const FrameInfo &, const State &, const FootstepPlan &>())
-        .def("update", &FootstepSwitcher::update);
 
     nb::class_<EndEffector>(m, "EndEffector")
         .def(nb::init<>())
@@ -116,6 +104,12 @@ NB_MODULE(ismpc, m) {
         .def_ro("footsteps", &FootstepPlan::footsteps)
         .def_ro("zmp_midpoints_x", &FootstepPlan::zmp_midpoints_x)
         .def_ro("zmp_midpoints_y", &FootstepPlan::zmp_midpoints_y)
+        .def_rw("support_phase", &FootstepPlan::support_phase)
+        .def_rw("fs_history", &FootstepPlan::fs_history)
+        .def_ro("mc_x_history", &FootstepPlan::mc_x_history)
+        .def_ro("mc_y_history", &FootstepPlan::mc_y_history)
+        .def_ro("mc_theta_history", &FootstepPlan::mc_theta_history)
+        .def_ro("fs_plan_history", &FootstepPlan::fs_plan_history)
         .def("__str__", &FootstepPlan::toString);
 
     nb::class_<Reference>(m, "Reference").def(nb::init<>()).def("get_velocity", [](Reference &ref) {
