@@ -19,6 +19,12 @@ pixi run install-ismpc-cpp
 pixi run typings
 ```
 
+## Some Results
+
+![Video](simulation/videos/2d/walking.mp4)
+
+![Video](simulation/videos/2d/walking_curve.mp4)
+
 ## Some Concepts
 
 ### Footstep Planner
