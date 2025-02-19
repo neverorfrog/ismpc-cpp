@@ -21,9 +21,9 @@ pixi run typings
 
 ## Some Results
 
-![Video](simulation/videos/2d/walking.mp4)
+![](https://github.com/neverorfrog/ismpc-cpp/blob/main/simulation/videos/2d/walking.mp4)
 
-![Video](simulation/videos/2d/walking_curve.mp4)
+![](https://github.com/neverorfrog/ismpc-cpp/blob/main/simulation/videos/2d/walking_curve.mp4)
 
 ## Some Concepts
 
