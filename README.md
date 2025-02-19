@@ -21,13 +21,13 @@ pixi run typings
 
 ## Some Results
 
-<video width="100%" controls>
-  <source src="https://github.com/neverorfrog/ismpc-cpp/blob/main/simulation/videos/2d/walking.mp4" type="video/mp4">
-</video>
 
-<video width="100%" controls>
-  <source src="simulation/videos/2d/walking.mp4" type="video/mp4">
-</video>
+https://github.com/user-attachments/assets/4eb9a227-db0b-4516-bc3b-7cf8679d1c5e
+
+
+https://github.com/user-attachments/assets/99430a22-1ba1-4419-a51e-cb42797c1ed5
+
+
 
 ## Some Concepts
 
