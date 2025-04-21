@@ -33,8 +33,7 @@ tqdm = ">=4.67.1,<5"
 simulation = { path = ".", editable = true }
 
 [tool.pixi.tasks]
-dart = "python simulation/dart/dart.py"
-mpc = "python simulation/mpc/mpc.py"
-planner = "python simulation/planner/planner.py"
+dart = "python simulation/backends/dart/dart.py"
+mpc = "python simulation/backends/matplotlib/mpc.py"
 install-ismpc-cpp = 'cd .. && python setup.py install && python -m nanobind.stubgen -m ismpc'
 typings = 'pybind11-stubgen dartpy -o ../.typings  && python -m nanobind.stubgen -m scipy.spatial.transform'

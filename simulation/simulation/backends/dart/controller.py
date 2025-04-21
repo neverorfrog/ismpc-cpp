@@ -1,8 +1,8 @@
 import numpy as np
 import dartpy as dart
 import time
-from simulation.dart.robot import Robot
-from simulation.dart.kinematics import Kinematics
+from simulation.backends.dart.robot import Robot
+from simulation.backends.dart.kinematics import Kinematics
 from ismpc import FrameInfo, Reference, State, FootstepPlan, RotationMatrix
 from ismpc import (
     FootstepPlanProvider,
@@ -12,7 +12,7 @@ from ismpc import (
     KalmanFilter
 )
 from scipy.spatial.transform import Rotation as R
-from simulation.dart.misc import REDUNDANT_DOFS
+from simulation.backends.dart.misc import REDUNDANT_DOFS
 from simulation.utils import config
 
 from time import sleep
@@ -57,8 +57,8 @@ class Controller(dart.gui.osg.RealTimeWorldNode):
     def customPreStep(self):
         start = time.time()
         self.robot.update(self.state, self.world)
-        self.filter.update(self.state)
         end = time.time()
+        self.filter.update(self.state)
         self.dart_elapsed += end - start
         
         start = time.time()

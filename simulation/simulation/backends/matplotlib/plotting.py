@@ -9,7 +9,7 @@ from matplotlib.patches import Rectangle
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 from ismpc import State
-from simulation.mpc.gait import Gait
+from simulation.backends.matplotlib.gait import Gait
 from simulation.utils import config, robot_config
 
 class StatePlotter:

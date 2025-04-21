@@ -1,7 +1,7 @@
 import dartpy as dart
 import os
-from simulation.dart.controller import Controller
-from simulation.dart.robot import Robot
+from simulation.backends.dart.controller import Controller
+from simulation.backends.dart.robot import Robot
 from simulation.utils import project_root
 from simulation.utils import config
 

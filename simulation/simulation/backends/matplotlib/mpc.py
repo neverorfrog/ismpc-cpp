@@ -1,7 +1,7 @@
 import time
 import numpy as np
-from simulation.mpc.gait import Gait
-from simulation.mpc.plotting import PlotMode, animate
+from simulation.backends.matplotlib.gait import Gait
+from simulation.backends.matplotlib.plotting import PlotMode, animate
 from tqdm import tqdm
 from ismpc import FrameInfo, Reference, State, FootstepPlan
 from ismpc import FootstepPlanProvider, ModelPredictiveController, FootTrajectoryGenerator, MovingConstraintProvider

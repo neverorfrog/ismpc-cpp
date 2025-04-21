@@ -1,7 +1,7 @@
 import numpy as np
 import dartpy as dart
 from ismpc import State, RotationMatrix
-from simulation.dart.misc import INITIAL_CONFIG, LINK_NAMES
+from simulation.backends.dart.misc import INITIAL_CONFIG, LINK_NAMES
 from simulation.utils import config
 
 worldFrame: dart.dynamics.Frame = dart.dynamics.Frame.World()
@@ -119,17 +119,17 @@ class Robot:
         state.right_foot.lin_acc = np.zeros((3,))
 
         # ZMP
-        # total_vertical_force = 0.0
-        # zmp = np.zeros(3)
-        # for contact in world.getLastCollisionResult().getContacts():
-        #     total_vertical_force += contact.force[2]
-        #     zmp[0] += contact.point[0] * contact.force[2]
-        #     zmp[1] += contact.point[1] * contact.force[2]
+        total_vertical_force = 0.0
+        zmp = np.zeros(3)
+        for contact in world.getLastCollisionResult().getContacts():
+            total_vertical_force += contact.force[2]
+            zmp[0] += contact.point[0] * contact.force[2]
+            zmp[1] += contact.point[1] * contact.force[2]
             
-        # if total_vertical_force > 0.1:  # threshold for when we lose contact
-        #     zmp /= total_vertical_force
-        #     zmp[0] = np.clip(zmp[0], state.desired_lip.zmp_pos[0] - 0.1, state.desired_lip.zmp_pos[0] + 0.1)
-        #     zmp[1] = np.clip(zmp[1], state.desired_lip.zmp_pos[1] - 0.1, state.desired_lip.zmp_pos[1] + 0.1)
-        #     state.lip.zmp_pos = zmp
+        if total_vertical_force > 0.1:  # threshold for when we lose contact
+            zmp /= total_vertical_force
+            zmp[0] = np.clip(zmp[0], state.desired_lip.zmp_pos[0] - 0.1, state.desired_lip.zmp_pos[0] + 0.1)
+            zmp[1] = np.clip(zmp[1], state.desired_lip.zmp_pos[1] - 0.1, state.desired_lip.zmp_pos[1] + 0.1)
+            state.lip.zmp_pos = zmp
 
         return state

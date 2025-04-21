@@ -1,10 +1,10 @@
 from typing import Dict, List
 import dartpy as dart
 import numpy as np
-from simulation.dart.utils import rotation_difference, pose_difference
+from simulation.backends.dart.utils import rotation_difference, pose_difference
 from qpsolvers import solve_qp
 from ismpc import State
-from simulation.dart.robot import Robot
+from simulation.backends.dart.robot import Robot
 
 
 class Kinematics:
