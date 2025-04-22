@@ -98,11 +98,11 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(nanobind)
 
 # DART
-if(BUILD_DART)
-  find_package(DART 6.10.0 REQUIRED COMPONENTS gui-osg utils-urdf dart CONFIG)
-  message(STATUS "DART found: ${DART_VERSION}")
-  message(STATUS "DART include dirs: ${DART_INCLUDE_DIRS}")
-endif()
+# if(BUILD_DART)
+#   find_package(DART 6.10.0 REQUIRED COMPONENTS gui-osg utils-urdf dart CONFIG)
+#   message(STATUS "DART found: ${DART_VERSION}")
+#   message(STATUS "DART include dirs: ${DART_INCLUDE_DIRS}")
+# endif()
 
 # ============================ ISMPC LIBRARY ==================================================
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -128,74 +128,10 @@ set(ISMPC_CPP_EXTRA_LIBRARIES
   ${DART_LIBRARIES}
 )
 target_link_libraries(${ISMPC_CPP_LIBRARY} PUBLIC ${ISMPC_CPP_EXTRA_LIBRARIES})
-
-if(BUILD_ROS)
-  find_package(ament_cmake REQUIRED)
-
-  add_definitions(-DUSING_ROS2)
-  message(STATUS "------------------------------------------")
-  message(STATUS "ismpc_cpp is being built using AMENT.")
-  message(STATUS "------------------------------------------")
-  set(CMAKE_CONFIG_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
-  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CONFIG_PATH})
-
-  find_package(ament_index_cpp REQUIRED)
-  list(APPEND ISMPC_CPP_EXTRA_LIBRARIES $<BUILD_INTERFACE:ament_index_cpp::ament_index_cpp>)
-  ament_export_dependencies(ament_index_cpp)
-  ament_export_dependencies(yaml-cpp)
-
-  set(ISMPC_CPP_LIB_DESTINATION lib)
-  set(ISMPC_CPP_INCLUDE_DESTINATION include)
-  set(ISMPC_CPP_BIN_DESTINATION bin)
-
-  mark_as_advanced(
-    ISMPC_CPP_EXTRA_LIBRARIES
-    ISMPC_CPP_LIB_DESTINATION
-    ISMPC_CPP_INCLUDE_DESTINATION
-    ISMPC_CPP_BIN_DESTINATION
-  )
-
-  install(
-    TARGETS ${ISMPC_CPP_LIBRARY}
-    EXPORT ${ISMPC_CPP_LIBRARY}Targets
-    ARCHIVE DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
-    LIBRARY DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
-    RUNTIME DESTINATION ${ISMPC_CPP_BIN_DESTINATION}
-    INCLUDES DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
-  )
-
-  INSTALL(
-    DIRECTORY
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/
-    $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include/proxsuite>
-    ${EIGEN_INCLUDE_DIR}
-    $<BUILD_INTERFACE:${nanobind_SOURCE_DIR}/include/nanobind>
-    $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include/yaml-cpp>
-    DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
-    FILES_MATCHING PATTERN "*.h*"
-  )
-
-  install(
-    DIRECTORY include/
-    DESTINATION include
-  )
-
-  ament_export_include_directories(include)
-  ament_export_libraries(${ISMPC_CPP_LIBRARY})
-  ament_export_targets(${ISMPC_CPP_LIBRARY}Targets HAS_LIBRARY_TARGET)
-  ament_package()
-endif()
-
 # =============================================================================================
 
 # ============================ PYTHON BINDINGS =================================================
-if(CMAKE_VERSION VERSION_LESS 3.18)
-  set(DEV_MODULE Development)
-else()
-  set(DEV_MODULE Development.Module)
-endif()
-
-find_package(Python 3.11 COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
+find_package(Python 3.8 COMPONENTS Interpreter Development.Module REQUIRED)
 execute_process(
   COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
   OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT
