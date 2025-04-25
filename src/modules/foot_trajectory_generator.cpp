@@ -2,10 +2,6 @@
 
 namespace ismpc {
 
-FootTrajectoryGenerator::FootTrajectoryGenerator(const FrameInfo& frame_info, const State& state,
-                                                 const FootstepPlan& plan)
-    : frame_info(frame_info), state(state), plan(plan) {}
-
 void FootTrajectoryGenerator::update(State& state) {
     EndEffector swing_foot = plan.footsteps.front().support_foot == Foot::right ? state.left_foot : state.right_foot;
     const Footstep& footstep = plan.footsteps.front();

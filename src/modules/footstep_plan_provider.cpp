@@ -1,12 +1,8 @@
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
 
-#include "ismpc_cpp/representations/footstep_plan.h"
 
 namespace ismpc {
 
-FootstepPlanProvider::FootstepPlanProvider(const FrameInfo& frame_info, const Reference& reference,
-                                           const State& state, const FootstepPlan& plan)
-    : frame_info(frame_info), reference(reference), state(state), plan(plan) {}
 
 void FootstepPlanProvider::update(FootstepPlan& plan) {
     if (plan.need_to_replan) {
