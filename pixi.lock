@@ -173,10 +173,10 @@ packages:
   depends:
   - libstdcxx >=14
   - libgcc >=14
-  - yaml-cpp >=0.8.0,<0.9.0a0
   - python_abi 3.11.* *_cp311
+  - yaml-cpp >=0.8.0,<0.9.0a0
   input:
-    hash: 7fcc318eea2d74296d8f80ed4e32c82eae6ff8ebea393fa5bf22b28b48588984
+    hash: 9ca4aa07d293f752567f4fc9a05196e5928bffea10406893811aeb66dcd6cd0f
     globs:
     - pixi.toml
 - conda: .
@@ -186,10 +186,10 @@ packages:
   subdir: osx-64
   depends:
   - libcxx >=20
-  - yaml-cpp >=0.8.0,<0.9.0a0
   - python_abi 3.11.* *_cp311
+  - yaml-cpp >=0.8.0,<0.9.0a0
   input:
-    hash: 7fcc318eea2d74296d8f80ed4e32c82eae6ff8ebea393fa5bf22b28b48588984
+    hash: 9ca4aa07d293f752567f4fc9a05196e5928bffea10406893811aeb66dcd6cd0f
     globs:
     - pixi.toml
 - conda: .
@@ -199,10 +199,10 @@ packages:
   subdir: osx-arm64
   depends:
   - libcxx >=20
-  - yaml-cpp >=0.8.0,<0.9.0a0
   - python_abi 3.11.* *_cp311
+  - yaml-cpp >=0.8.0,<0.9.0a0
   input:
-    hash: 7fcc318eea2d74296d8f80ed4e32c82eae6ff8ebea393fa5bf22b28b48588984
+    hash: 9ca4aa07d293f752567f4fc9a05196e5928bffea10406893811aeb66dcd6cd0f
     globs:
     - pixi.toml
 - conda: .
@@ -213,10 +213,10 @@ packages:
   depends:
   - vc >=14.1,<15
   - vc14_runtime >=14.16.27033
-  - yaml-cpp >=0.8.0,<0.9.0a0
   - python_abi 3.11.* *_cp311
+  - yaml-cpp >=0.8.0,<0.9.0a0
   input:
-    hash: 7fcc318eea2d74296d8f80ed4e32c82eae6ff8ebea393fa5bf22b28b48588984
+    hash: 9ca4aa07d293f752567f4fc9a05196e5928bffea10406893811aeb66dcd6cd0f
     globs:
     - pixi.toml
 - conda: https://prefix.dev/conda-forge/linux-64/ld_impl_linux-64-2.43-h712a8e2_4.conda
