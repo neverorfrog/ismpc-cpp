@@ -28,8 +28,8 @@ eigen = ">=3.4.0,<4"
 simde = ">=0.8.0,<1"
 yaml-cpp = ">=0.8.0,<0.9"
 
-# [tasks]
-# preinstall = 'sudo apt install libeigen3-dev && sudo apt install libsimde-dev'
-# build = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . -j$(nproc)'
-# build-debug = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j$(nproc)'
-# main = './build/executables/ismpc_main'
+[tasks]
+preinstall = 'sudo apt install libeigen3-dev && sudo apt install libsimde-dev'
+build = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build . -j$(nproc)'
+build-debug = 'mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j$(nproc)'
+main = './build/executables/ismpc_main'

@@ -22,6 +22,7 @@
 #include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
 #include "ismpc_cpp/types/body_parts.h"
+#include "ismpc_cpp/types/configs.h"
 #include "ismpc_cpp/types/end_effector.h"
 #include "ismpc_cpp/types/footstep.h"
 #include "ismpc_cpp/types/math_types.h"
@@ -56,19 +57,8 @@ class FootstepPlanProvider {
     bool in_double_support;
 
     // Parameters
-    const int numP = Config::P;
-    const Scalar T_p = Config::T_p;
-    const Scalar T_c = Config::T_c;
-    const Scalar delta = Config::delta;
-    const Scalar T_bar = RobotConfig::T_bar;
-    const Scalar v_bar = RobotConfig::v_bar;
-    const Scalar alpha = RobotConfig::alpha;
-    const Scalar ds_percentage = RobotConfig::ds_percentage;
-    const Scalar theta_max = RobotConfig::theta_max;
-    const Scalar eta = RobotConfig::eta;
-    const Scalar dax = RobotConfig::dax;
-    const Scalar day = RobotConfig::day;
-    const Scalar l = RobotConfig::l;
+    int numP;
+    Scalar T_p, T_c, delta, T_bar, v_bar, alpha, ds_percentage, theta_max, dax, day, l;
 
     // TODO: Test
     Scalar last_plan_timestamp = 0.0;
@@ -82,7 +72,25 @@ class FootstepPlanProvider {
 
    public:
     FootstepPlanProvider(const FrameInfo& frame_info, const Reference& reference, const State& state,
-                         const FootstepPlan& plan);
+                         const FootstepPlan& plan, const TimeParams& time_params,
+                         const GaitParams& gait_params)
+        : frame_info(frame_info),
+          reference(reference),
+          state(state),
+          plan(plan),
+          numP(time_params.P),
+          T_p(time_params.T_p),
+          T_c(time_params.T_c),
+          delta(time_params.delta),
+          T_bar(gait_params.T_bar),
+          v_bar(gait_params.v_bar),
+          alpha(gait_params.alpha),
+          ds_percentage(gait_params.ds_percentage),
+          theta_max(gait_params.theta_max),
+          dax(gait_params.dax),
+          day(gait_params.day),
+          l(gait_params.l) {
+    };
 
     /**
      * @brief Update the footstep plan. This function computes the timing,
