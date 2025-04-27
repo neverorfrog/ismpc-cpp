@@ -46,7 +46,8 @@ NB_MODULE(ismpc, m) {
         .def_rw("T_p", &MpcParams::T_p)
         .def_rw("T_c", &MpcParams::T_c)
         .def_rw("beta", &MpcParams::beta)
-        .def_rw("tail_type", &MpcParams::tail_type);
+        .def_rw("tail_type", &MpcParams::tail_type)
+        .def_rw("nl", &MpcParams::nl);
 
     nb::class_<LipParams>(m, "LipParams")
         .def(nb::init<>())
