@@ -2,16 +2,18 @@
 
 #include <iostream>
 
+#include "ismpc_cpp/types/configs.h"
+
 namespace ismpc {
 
-KalmanFilter::KalmanFilter() {
-    eta2 = RobotConfig::eta * RobotConfig::eta;
+KalmanFilter::KalmanFilter(const Params& params)
+    : eta2(params.lip.eta * params.lip.eta), delta(params.mpc.delta) {
     Matrix3 lip_A = Matrix3({{0, 1, 0}, {eta2, 0, -eta2}, {0, 0, 0}});
     Vector3 lip_B = Vector3({0, 0, 1});
-    Matrix3 A_half = Matrix3::Identity() + lip_A * Config::delta;  // Linear Inverted Pendulum (LIP) model
-    Vector3 B_half = lip_B * Config::delta;                        // Maps ZMP velocity inputs to state changes
-    Matrix3 H_half = Matrix3::Identity();                    // Measurement matrix (all variables are measurable)
-    Matrix3 Q_half = Matrix3::Identity();                    // Process noise covariance (independent noise)
+    Matrix3 A_half = Matrix3::Identity() + lip_A * delta;  // Linear Inverted Pendulum (LIP) model
+    Vector3 B_half = lip_B * delta;                        // Maps ZMP velocity inputs to state changes
+    Matrix3 H_half = Matrix3::Identity();  // Measurement matrix (all variables are measurable)
+    Matrix3 Q_half = Matrix3::Identity();  // Process noise covariance (independent noise)
     Matrix3 R_half = Vector3({1e1, 1e2, 1e4}).asDiagonal();  // Measurement noise covariance
     Matrix3 P_half = Matrix3::Identity();                    // Covariance matrix (initially unknown)
 

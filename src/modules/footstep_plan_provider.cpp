@@ -47,7 +47,7 @@ void FootstepPlanProvider::computePlan(FootstepPlan& plan) {
     if (plan.footsteps.empty()) {
         plan.footsteps.push_back(Footstep{state.right_foot.getPose2(), state.right_foot.getPose2(),
                                           WalkPhase::STARTING, Foot::left, frame_info.tk, frame_info.tk,
-                                          frame_info.tk + Config::fs_duration});
+                                          frame_info.tk + fs_duration});
     }
 
     // Compute the number of footsteps with the associated timings
@@ -98,7 +98,7 @@ void FootstepPlanProvider::computePlan(FootstepPlan& plan) {
 
 void FootstepPlanProvider::computeTiming() {
     Scalar current_fs_ts = plan.footsteps.front().end;  // time at which i lay the swing foot on the ground
-    for (Scalar ts = current_fs_ts + Config::fs_duration; ts <= current_fs_ts + T_p; ts += Config::fs_duration) {
+    for (Scalar ts = current_fs_ts + fs_duration; ts <= current_fs_ts + T_p; ts += fs_duration) {
         timestamps.push_back(truncateToDecimalPlaces(ts, 2));
     }
 }

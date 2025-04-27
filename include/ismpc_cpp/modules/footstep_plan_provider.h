@@ -18,8 +18,6 @@
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/reference.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/tools/config/config.h"
-#include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
 #include "ismpc_cpp/types/body_parts.h"
 #include "ismpc_cpp/types/configs.h"
@@ -58,7 +56,7 @@ class FootstepPlanProvider {
 
     // Parameters
     int numP;
-    Scalar T_p, T_c, delta, T_bar, v_bar, alpha, ds_percentage, theta_max, dax, day, l;
+    Scalar T_p, T_c, delta, T_bar, v_bar, alpha, ds_percentage, theta_max, dax, day, l, fs_duration;
 
     // TODO: Test
     Scalar last_plan_timestamp = 0.0;
@@ -72,24 +70,24 @@ class FootstepPlanProvider {
 
    public:
     FootstepPlanProvider(const FrameInfo& frame_info, const Reference& reference, const State& state,
-                         const FootstepPlan& plan, const TimeParams& time_params,
-                         const GaitParams& gait_params)
+                         const FootstepPlan& plan, const Params& params)
         : frame_info(frame_info),
           reference(reference),
           state(state),
           plan(plan),
-          numP(time_params.P),
-          T_p(time_params.T_p),
-          T_c(time_params.T_c),
-          delta(time_params.delta),
-          T_bar(gait_params.T_bar),
-          v_bar(gait_params.v_bar),
-          alpha(gait_params.alpha),
-          ds_percentage(gait_params.ds_percentage),
-          theta_max(gait_params.theta_max),
-          dax(gait_params.dax),
-          day(gait_params.day),
-          l(gait_params.l) {
+          numP(params.mpc.P),
+          T_p(params.mpc.T_p),
+          T_c(params.mpc.T_c),
+          delta(params.mpc.delta),
+          T_bar(params.gait.T_bar),
+          v_bar(params.gait.v_bar),
+          alpha(params.gait.alpha),
+          ds_percentage(params.gait.ds_percentage),
+          theta_max(params.gait.theta_max),
+          dax(params.gait.dax),
+          day(params.gait.day),
+          l(params.gait.l),
+          fs_duration(params.gait.fs_duration) {
     };
 
     /**

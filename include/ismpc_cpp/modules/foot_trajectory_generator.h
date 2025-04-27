@@ -5,7 +5,6 @@
 #include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/math/arithmetic.h"
 #include "ismpc_cpp/types/configs.h"
 #include "ismpc_cpp/types/math_types.h"
@@ -19,7 +18,7 @@ class FootTrajectoryGenerator {
     const FrameInfo& frame_info;
     const State& state;
     const FootstepPlan& plan;
-    const GaitParams& params;
+    const Params& params;
 
     // Parameters
     Scalar step_height;
@@ -28,14 +27,14 @@ class FootTrajectoryGenerator {
 
    public:
     FootTrajectoryGenerator(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan,
-                            const GaitParams& params)
+                            const Params& params)
         : frame_info(frame_info),
           state(state),
           plan(plan),
           params(params),
-          step_height(params.step_height),
-          ds_percentage(params.ds_percentage),
-          ss_percentage(params.ss_percentage) {}
+          step_height(params.gait.step_height),
+          ds_percentage(params.gait.ds_percentage),
+          ss_percentage(params.gait.ss_percentage) {}
 
     /**
      * @brief

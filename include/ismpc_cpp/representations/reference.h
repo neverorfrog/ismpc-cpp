@@ -2,8 +2,8 @@
 
 #include <cmath>
 
-#include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/tools/math/pose2.h"
+#include "ismpc_cpp/types/configs.h"
 #include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {
@@ -18,7 +18,7 @@ struct Velocity {
 struct Reference {
     Velocity velocity;
 
-    Reference();
+    Reference(const Params& params);
 
     /**
      * @brief Get the reference input velocity
@@ -54,6 +54,9 @@ struct Reference {
      * @return Pose
      */
     Pose2 integrateVelocity(Scalar start, Scalar end, Scalar current_theta) const;
+
+   private:
+    Scalar delta;
 };
 
 }  // namespace ismpc

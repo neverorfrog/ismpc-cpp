@@ -1,60 +1,71 @@
+#pragma once
+
 #include "ismpc_cpp/types/math_types.h" // For Scalar type
 #include "ismpc_cpp/types/tail_type.h"
+#include <cmath> // Include for std::sqrt
 
 namespace ismpc {
 
 
-struct TimeParams {
-    Scalar delta = 0.01; // Sampling interval
-    int N = 100; // Simulation steps
-    int P = 10; // Preview horizon steps
-    int C = 5; // Control horizon steps
+struct MpcParams {
+    Scalar delta = 0.01205; // Sampling interval (83 Hz)
+    int N = 1000; // Simulation steps (Updated from YAML)
+    int P = 200; // Preview horizon steps (Updated from YAML)
+    int C = 100; // Control horizon steps (Updated from YAML)
     Scalar T_p = P * delta; // Preview horizon time length
     Scalar T_c = C * delta; // Control horizon time length
+    Scalar beta = 200.0; // Cost weight (Updated from hrp4.yaml)
+    TailType tail_type = TailType::PERIODIC; // (Matches YAML)
+    int nl = 3; // Number of lip variables
 };
 
 struct LipParams {
-    Scalar h = 0.8; // Height of the CoM of the robot
+    Scalar h = 0.75; // Height of the CoM of the robot (Updated from hrp4.yaml)
     Scalar g = 9.81; // Gravity
-    Scalar eta = std::sqrt(g / h); // Natural frequency
-    Scalar dxz = 0.05;
-    Scalar dyz = 0.05;
-    Scalar zmp_vx_max = 0.5;
-    Scalar zmp_vy_max = 0.5;
+    Scalar eta = std::sqrt(g / h); // Natural frequency (Recalculated based on updated h)
+    Scalar dxz = 0.2; // (Updated from hrp4.yaml)
+    Scalar dyz = 0.2; // (Updated from hrp4.yaml)
+    Scalar zmp_vx_max = 10.0; // (Updated from hrp4.yaml)
+    Scalar zmp_vy_max = 10.0; // (Updated from hrp4.yaml)
 };
 
-struct RobotPhysicsParams {
-    Scalar initial_lf_x = 0.0;
-    Scalar initial_lf_y = 0.0;
-    Scalar initial_rf_x = 0.0;
-    Scalar initial_rf_y = 0.0;
+struct InitialFeetParams {
+    Scalar lf_x = 0.0; // (Updated from hrp4.yaml)
+    Scalar lf_y = 0.1; // (Updated from hrp4.yaml)
+    Scalar rf_x = 0.0; // (Updated from hrp4.yaml)
+    Scalar rf_y = -0.1; // (Updated from hrp4.yaml)
 };
 
 struct GaitParams {
-    Scalar ds_percentage = 0.1;
-    Scalar ss_percentage = 1 - ds_percentage;
-    Scalar step_height = 0.05;
+    Scalar ds_percentage = 0.3; // (Updated from hrp4.yaml)
+    Scalar ss_percentage = 1.0 - ds_percentage; // (Recalculated based on updated ds_percentage)
+    Scalar step_height = 0.01; // (Updated from hrp4.yaml)
 
-    Scalar l = 0.15; // Footstep length
-    Scalar dax = 0.1; // Footstep length in x direction
-    Scalar day = 0.05; // Footstep length in y direction
+    Scalar l = 0.2; // Footstep length (Updated from hrp4.yaml)
+    Scalar dax = 0.3; // Footstep length in x direction (Updated from hrp4.yaml)
+    Scalar day = 0.2; // Footstep length in y direction (Updated from hrp4.yaml)
 
-    Scalar theta_max = 0.5; // Maximum angle variation between consecutive footsteps
-    Scalar T_bar = 0.8; // Cruise parameter
-    Scalar L_bar = 0.5; // Cruise parameter
-    Scalar v_bar = 0.5; // Cruise parameter
-    Scalar alpha = 10.0; // Cruise parameter
+    Scalar theta_max = 0.3927; // Maximum angle variation between consecutive footsteps (Updated from hrp4.yaml)
+    Scalar T_bar = 0.3; // Cruise parameter (Updated from hrp4.yaml)
+    Scalar L_bar = 0.3; // Cruise parameter (Updated from hrp4.yaml)
+    Scalar v_bar = 0.5; // Cruise parameter (Default, not in hrp4.yaml)
+    Scalar alpha = 0.5; // Cruise parameter (Updated from hrp4.yaml)
+
+    Scalar fs_duration = 0.5; // Footstep duration (Updated from hrp4.yaml)
 };
 
 struct ReferenceParams {
-    Scalar des_vel_x = 0.0; // Desired velocity in x direction
-    Scalar des_vel_y = 0.0; // Desired velocity in y direction
-    Scalar des_omega = 0.0; // Desired angular velocity
+    Scalar des_vel_x = 0.2; // Desired velocity in x direction (Updated from YAML)
+    Scalar des_vel_y = 0.0; // Desired velocity in y direction (Matches YAML)
+    Scalar des_omega = 0.0; // Desired angular velocity (Matches YAML)
 };
 
-struct MPCParams {
-    Scalar beta = 1.0; // Cost weight
-    TailType tail_type = TailType::PERIODIC;
+struct Params {
+    MpcParams mpc{};
+    LipParams lip{};
+    InitialFeetParams initial_feet{};
+    GaitParams gait{};
+    ReferenceParams reference{};
 };
 
 

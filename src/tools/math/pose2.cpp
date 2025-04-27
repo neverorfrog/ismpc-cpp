@@ -5,10 +5,13 @@
 
 namespace ismpc {
 
+Eigen::IOFormat CleanFmt{2, 0, ", ", "\n", "[", "]"};
+
 Pose2::Pose2(const Vector2& translation) : translation(translation) {}
 Pose2::Pose2(const Scalar x, const Scalar y) : translation(x, y) {}
 Pose2::Pose2(const Angle rotation) : rotation(rotation) {}
-Pose2::Pose2(const Angle rotation, const Vector2& translation) : rotation(rotation), translation(translation) {}
+Pose2::Pose2(const Angle rotation, const Vector2& translation)
+    : rotation(rotation), translation(translation) {}
 Pose2::Pose2(const Angle rotation, const Scalar x, const Scalar y) : rotation(rotation), translation(x, y) {}
 
 Pose2& Pose2::operator=(const Pose2& other) {
@@ -117,7 +120,7 @@ Vector3 Pose2::getVector() const {
 
 std::string Pose2::toString() const {
     std::ostringstream oss;
-    oss << this->getVector().transpose().format(Config::CleanFmt);
+    oss << this->getVector().transpose().format(CleanFmt);
     return oss.str();
 }
 

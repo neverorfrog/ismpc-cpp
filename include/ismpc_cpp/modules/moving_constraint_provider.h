@@ -5,8 +5,9 @@
 #include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/tools/config/config.h"
+#include "ismpc_cpp/tools/math/pose2.h"
 #include "ismpc_cpp/tools/proxsuite.h"
+#include "ismpc_cpp/types/configs.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/optimization.h"
 
@@ -21,8 +22,9 @@ class MovingConstraintProvider {
     const FootstepPlan& plan;
 
     // Parameters
-    const int numP = Config::P;  // number of planning points
-    const int numC = Config::C;  // number of control points
+    const int numP;  // number of planning points
+    const int numC;  // number of control points
+    const Scalar T_c;
 
     Vector3 initial_lf_pos = Vector3::Zero();
     Vector3 initial_rf_pos = Vector3::Zero();
@@ -36,7 +38,8 @@ class MovingConstraintProvider {
     VectorX sigma;
 
    public:
-    MovingConstraintProvider(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan);
+    MovingConstraintProvider(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan,
+                             const Params& params);
 
     /**
      * @brief Compute the ZMP midpoints for the moving constraint. The goal

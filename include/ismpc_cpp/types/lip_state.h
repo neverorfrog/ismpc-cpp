@@ -1,8 +1,7 @@
 #pragma once
 
-#include "ismpc_cpp/tools/config/config.h"
-#include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/configs.h"
 
 namespace ismpc {
 
@@ -14,7 +13,7 @@ struct LipState {
     Vector3 com_acc{};
     Vector3 zmp_vel{};
 
-    LipState();
+    LipState(const Params& params);
 
     /**
      * @brief Get the LIP state in the x-direction
@@ -58,10 +57,13 @@ struct LipState {
     friend std::ostream& operator<<(std::ostream& os, const LipState& lip_state);
 
     // Lip parameters
-    static Scalar cosh;
-    static Scalar sinh;
-    static Matrix3 A;
-    static Vector3 B;
+    private:
+        Scalar eta = 0.0;
+        Scalar delta = 0.0;
+        Scalar cosh = 0.0;
+        Scalar sinh = 0.0;
+        Matrix3 A = Matrix3::Zero();
+        Vector3 B = Vector3::Zero();
 };
 
 }  // namespace ismpc

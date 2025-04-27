@@ -1,5 +1,6 @@
 #include "ismpc_cpp/representations/state.h"
 #include "ismpc_cpp/types/math_types.h"
+#include "ismpc_cpp/types/configs.h"
 
 namespace ismpc {
 
@@ -9,12 +10,13 @@ namespace ismpc {
  */
 class KalmanFilter {
    public:
-    KalmanFilter();
+    KalmanFilter(const Params& params);
 
     void update(State& state);
 
    private:
     Scalar eta2;
+    Scalar delta;
 
     Eigen::Matrix<Scalar, 6, 6> A;  // State transition matrix (6x6)
     Eigen::Matrix<Scalar, 6, 2> B;  // Control matrix (6x2)

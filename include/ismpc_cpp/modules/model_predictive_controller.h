@@ -5,12 +5,11 @@
 #include "ismpc_cpp/representations/footstep_plan.h"
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/tools/config/config.h"
-#include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
 #include "ismpc_cpp/types/ismpc_qp.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/optimization.h"
+#include "ismpc_cpp/types/configs.h"
 
 namespace ismpc {
 
@@ -30,14 +29,16 @@ class ModelPredictiveController {
     const FootstepPlan& plan;
 
     // Parameters
-    const int numC = Config::C;  // number of control points
-    const int numP = Config::P;  // number of planning points
-    const Scalar delta = Config::delta;
-    const Scalar eta = RobotConfig::eta;
+    int numC;  // number of control points
+    int numP;  // number of planning points
+    Scalar delta;
+    Scalar eta;
+    int nl;
+    Scalar h;
 
     // QP Struct
-    IsmpcQp qpx = IsmpcQp();
-    IsmpcQp qpy = IsmpcQp();
+    IsmpcQp qpx;
+    IsmpcQp qpy;
     VectorX x_sol;
     VectorX y_sol;
 
@@ -48,7 +49,18 @@ class ModelPredictiveController {
     std::chrono::high_resolution_clock::time_point start, end;
 
    public:
-    ModelPredictiveController(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan);
+    ModelPredictiveController(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan, const Params& params) :
+        frame_info(frame_info),
+        state(state),
+        plan(plan),
+        numC(params.mpc.C),
+        numP(params.mpc.P),
+        delta(params.mpc.delta),
+        eta(params.lip.eta),
+        nl(params.mpc.nl),
+        h(params.lip.h),
+        qpx(IsmpcQp(params)),
+        qpy(IsmpcQp(params)) {}
 
     /**
      * @brief Update the MPC module

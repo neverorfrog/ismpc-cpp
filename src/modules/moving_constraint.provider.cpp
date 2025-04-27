@@ -1,11 +1,15 @@
 #include "ismpc_cpp/modules/moving_constraint_provider.h"
-#include "ismpc_cpp/tools/math/pose2.h"
 
 namespace ismpc {
 
 MovingConstraintProvider::MovingConstraintProvider(const FrameInfo& frame_info, const State& state,
-                                                   const FootstepPlan& plan)
-    : frame_info(frame_info), state(state), plan(plan) {}
+                                                   const FootstepPlan& plan, const Params& params)
+    : frame_info(frame_info),
+      state(state),
+      plan(plan),
+      numP(params.mpc.P),
+      numC(params.mpc.C),
+      T_c(params.mpc.T_c) {}
 
 void MovingConstraintProvider::update(FootstepPlan& plan) {
     /*
@@ -28,7 +32,7 @@ void MovingConstraintProvider::update(FootstepPlan& plan) {
     }
 
     // Time vector over which the moving constraint spans
-    VectorX time = VectorX::LinSpaced(Config::C, frame_info.tk, frame_info.tk + Config::T_c);
+    VectorX time = VectorX::LinSpaced(numC, frame_info.tk, frame_info.tk + T_c);
 
     // The footstep currently being executed is always included in the plan
     for (size_t j = 0; j < plan.footsteps.size(); ++j) {
