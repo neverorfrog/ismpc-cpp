@@ -6,7 +6,7 @@ fs_duration: 1.0 # [s]
 nl: 1
 
 # Duration parameters
-N: 1000
+N: 100
 P: 200
 C: 100
 
