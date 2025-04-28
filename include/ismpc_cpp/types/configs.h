@@ -9,14 +9,14 @@ namespace ismpc {
 
 struct MpcParams {
     Scalar delta = 0.01205; // Sampling interval (83 Hz)
-    int N = 1000; // Simulation steps (Updated from YAML)
+    int N = 100; // Simulation steps (Updated from YAML)
     int P = 200; // Preview horizon steps (Updated from YAML)
     int C = 100; // Control horizon steps (Updated from YAML)
     Scalar T_p = P * delta; // Preview horizon time length
     Scalar T_c = C * delta; // Control horizon time length
     Scalar beta = 200.0; // Cost weight (Updated from hrp4.yaml)
     TailType tail_type = TailType::PERIODIC; // (Matches YAML)
-    int nl = 3; // Number of lip variables
+    int nl = 1; // Number of lip variables
 };
 
 struct LipParams {
@@ -48,10 +48,10 @@ struct GaitParams {
     Scalar theta_max = 0.3927; // Maximum angle variation between consecutive footsteps (Updated from hrp4.yaml)
     Scalar T_bar = 0.3; // Cruise parameter (Updated from hrp4.yaml)
     Scalar L_bar = 0.3; // Cruise parameter (Updated from hrp4.yaml)
-    Scalar v_bar = 0.5; // Cruise parameter (Default, not in hrp4.yaml)
+    Scalar v_bar = L_bar / T_bar; // Cruise parameter (Default, not in hrp4.yaml)
     Scalar alpha = 0.5; // Cruise parameter (Updated from hrp4.yaml)
 
-    Scalar fs_duration = 0.5; // Footstep duration (Updated from hrp4.yaml)
+    Scalar fs_duration = 1.0; // Footstep duration (Updated from hrp4.yaml)
 };
 
 struct ReferenceParams {
