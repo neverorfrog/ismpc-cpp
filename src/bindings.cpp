@@ -98,6 +98,9 @@ NB_MODULE(ismpc, m) {
     nb::class_<EndEffector>(m, "EndEffector")
         .def(nb::init<>())
         .def(nb::init<const EndEffector &>())
+        .def("__copy__", [](const EndEffector &self) {
+            return new EndEffector(self);
+        }, nb::rv_policy::take_ownership)
         .def_rw("pose", &EndEffector::pose)
         .def_rw("lin_vel", &EndEffector::lin_vel)
         .def_rw("ang_vel", &EndEffector::ang_vel)
@@ -116,6 +119,9 @@ NB_MODULE(ismpc, m) {
     nb::class_<RotationMatrix>(m, "RotationMatrix")
         .def(nb::init<>())
         .def(nb::init<const EigenMatrix &>())
+        .def("__copy__", [](const RotationMatrix &self) {
+            return new RotationMatrix(self);
+        }, nb::rv_policy::take_ownership)
         .def("matrix", [](const RotationMatrix &r) { return static_cast<EigenMatrix>(r); })
         .def("__mul__", [](const RotationMatrix &r1, const RotationMatrix &r2) { return r1 * r2; })
         .def("getXAngle", &RotationMatrix::getXAngle)
@@ -131,6 +137,9 @@ NB_MODULE(ismpc, m) {
     nb::class_<Pose3>(m, "Pose3")
         .def(nb::init<>())
         .def(nb::init<const RotationMatrix &, const Vector3 &>())
+        .def("__copy__", [](const Pose3 &self) {
+            return new Pose3(self);
+        }, nb::rv_policy::take_ownership)
         .def("getVector", &Pose3::getVector)
         .def("__add__", [](const Pose3 &p1, const Pose3 &p2) { return p1 + p2; })
         .def("__str__", &Pose3::toString)
@@ -151,6 +160,9 @@ NB_MODULE(ismpc, m) {
         // Constructor takes Params
         .def(nb::init<const Params &>())
         .def(nb::init<const LipState &>())
+        .def("__copy__", [](const LipState &self) {
+            return new LipState(self);
+        }, nb::rv_policy::take_ownership)
         .def_rw("com_pos", &LipState::com_pos)
         .def_rw("com_vel", &LipState::com_vel)
         .def_rw("com_acc", &LipState::com_acc)
