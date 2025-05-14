@@ -97,6 +97,7 @@ NB_MODULE(ismpc, m) {
     // --- Utility/Data Structure Bindings ---
     nb::class_<EndEffector>(m, "EndEffector")
         .def(nb::init<>())
+        .def(nb::init<const EndEffector &>())
         .def_rw("pose", &EndEffector::pose)
         .def_rw("lin_vel", &EndEffector::lin_vel)
         .def_rw("ang_vel", &EndEffector::ang_vel)
@@ -149,6 +150,7 @@ NB_MODULE(ismpc, m) {
     nb::class_<LipState>(m, "LipState")
         // Constructor takes Params
         .def(nb::init<const Params &>())
+        .def(nb::init<const LipState &>())
         .def_rw("com_pos", &LipState::com_pos)
         .def_rw("com_vel", &LipState::com_vel)
         .def_rw("com_acc", &LipState::com_acc)

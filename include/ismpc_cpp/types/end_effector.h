@@ -23,6 +23,26 @@ class EndEffector {
     EndEffector() = default;
     EndEffector(const Vector3& translation);
 
+    EndEffector(const EndEffector& other):
+        pose(other.pose),
+        lin_vel(other.lin_vel),
+        ang_vel(other.ang_vel),
+        lin_acc(other.lin_acc),
+        ang_acc(other.ang_acc) {}
+
+    EndEffector& operator=(const EndEffector& other) {
+        if (this == &other) { // Protect against self-assignment
+            return *this;
+        }
+        pose = other.pose;
+        lin_vel = other.lin_vel;
+        ang_vel = other.ang_vel;
+        lin_acc = other.lin_acc;
+        ang_acc = other.ang_acc;
+        return *this;
+    }
+
+
     /**
      * @brief Get linear and angular velocity stacked in a Vector6
      */

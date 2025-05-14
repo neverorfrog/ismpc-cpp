@@ -26,7 +26,6 @@ nanobind = "2.4.*"
 python = "3.11.*"
 eigen = ">=3.4.0,<4"
 simde = ">=0.8.0,<1"
-yaml-cpp = ">=0.8.0,<0.9"
 
 [tasks]
 preinstall = 'sudo apt install libeigen3-dev && sudo apt install libsimde-dev'

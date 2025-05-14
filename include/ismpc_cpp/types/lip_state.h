@@ -15,6 +15,25 @@ struct LipState {
 
     LipState(const Params& params);
 
+    LipState(const LipState& other):
+        com_pos(other.com_pos),
+        com_vel(other.com_vel),
+        zmp_pos(other.zmp_pos),
+        com_acc(other.com_acc),
+        zmp_vel(other.zmp_vel) {}
+
+    LipState& operator=(const LipState& other) {
+        if (this == &other) { // Protect against self-assignment
+            return *this;
+        }
+        com_pos = other.com_pos;
+        com_vel = other.com_vel;
+        zmp_pos = other.zmp_pos;
+        com_acc = other.com_acc;
+        zmp_vel = other.zmp_vel;
+        return *this;
+    }
+
     /**
      * @brief Get the LIP state in the x-direction
      *

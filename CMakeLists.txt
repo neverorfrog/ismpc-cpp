@@ -73,14 +73,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(eigen)
 
-# YAML-CPP
-FetchContent_Declare(
-  yaml-cpp
-  GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-  GIT_TAG master
-)
-FetchContent_MakeAvailable(yaml-cpp)
-
 # PROXSUITE
 FetchContent_Declare(
   proxsuite
@@ -97,13 +89,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nanobind)
 
-# DART
-# if(BUILD_DART)
-#   find_package(DART 6.10.0 REQUIRED COMPONENTS gui-osg utils-urdf dart CONFIG)
-#   message(STATUS "DART found: ${DART_VERSION}")
-#   message(STATUS "DART include dirs: ${DART_INCLUDE_DIRS}")
-# endif()
-
 # ============================ ISMPC LIBRARY ==================================================
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 file(GLOB_RECURSE ISMPC_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
@@ -115,14 +100,12 @@ target_include_directories(${ISMPC_CPP_LIBRARY}
   $<INSTALL_INTERFACE:include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${eigen_SOURCE_DIR}>
   ${DART_INCLUDE_DIRS}
 )
 
 set(ISMPC_CPP_EXTRA_LIBRARIES
   $<BUILD_INTERFACE:cxx_setup>
-  $<BUILD_INTERFACE:yaml-cpp::yaml-cpp>
   $<BUILD_INTERFACE:proxsuite>
   $<BUILD_INTERFACE:Eigen3::Eigen>
   ${DART_LIBRARIES}
