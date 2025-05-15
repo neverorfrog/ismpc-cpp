@@ -112,8 +112,12 @@ Scalar RotationMatrix::getXAngle() const {
     const Scalar h = std::sqrt(mat(1, 2) * mat(1, 2) + mat(2, 2) * mat(2, 2));
     if (Arithmetic::isZero(h, 1e-3))
         return 0.0;
-    else
-        return std::acos(mat(2, 2) / h) * -Arithmetic::sgnNeg(mat(1, 2));
+    else {
+        Scalar x = mat(2, 2) / h;
+        if (x < -1.0) x = -1.0;
+        if (x > 1.0) x = 1.0;
+        return std::acos(x) * -Arithmetic::sgnNeg(mat(1, 2));
+    }
 }
 
 Scalar RotationMatrix::getYAngle() const {
@@ -121,8 +125,12 @@ Scalar RotationMatrix::getYAngle() const {
     const float h = std::sqrt(mat(0, 0) * mat(0, 0) + mat(2, 0) * mat(2, 0));
     if (Arithmetic::isZero(h, 1e-5))
         return 0.f;
-    else
-        return std::acos(mat(0, 0) / h) * -Arithmetic::sgnNeg(mat(2, 0));
+    else {
+        float x = mat(0, 0) / h;
+        if (x < -1.0f) x = -1.0f;
+        if (x > 1.0f) x = 1.0f;
+        return std::acos(x) * -Arithmetic::sgnNeg(mat(2, 0));
+    }
 }
 
 Scalar RotationMatrix::getZAngle() const {
@@ -130,8 +138,12 @@ Scalar RotationMatrix::getZAngle() const {
     const float h = std::sqrt(mat(0, 0) * mat(0, 0) + mat(1, 0) * mat(1, 0));
     if (Arithmetic::isZero(h, 1e-5))
         return 0.f;
-    else
-        return std::acos(mat(0, 0) / h) * Arithmetic::sgnPos(mat(1, 0));
+    else {
+        float x = mat(0, 0) / h;
+        if (x < -1.0f) x = -1.0f;
+        if (x > 1.0f) x = 1.0f;
+        return std::acos(x) * Arithmetic::sgnPos(mat(1, 0));
+    }
 }
 
 Vector3 RotationMatrix::getRPY() const {
