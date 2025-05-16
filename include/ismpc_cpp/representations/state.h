@@ -44,6 +44,9 @@ struct State {
 
     State(const Params& params);
 
+    State(const State& state);
+    State& operator=(const State& state);
+
     /**
      * @brief Convert the state to a string representation
      *

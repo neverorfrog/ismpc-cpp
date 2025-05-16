@@ -198,6 +198,10 @@ NB_MODULE(ismpc, m) {
     nb::class_<State>(m, "State")
         // Constructor takes Params
         .def(nb::init<const Params &>())
+        .def(nb::init<const State &>())
+        .def("__copy__", [](const State &self) {
+            return new State(self);
+        }, nb::rv_policy::take_ownership)
         .def_rw("lip", &State::lip)
         .def_rw("left_foot", &State::left_foot)
         .def_rw("right_foot", &State::right_foot)
