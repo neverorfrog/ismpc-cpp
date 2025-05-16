@@ -112,6 +112,13 @@ NB_MODULE(ismpc, m) {
 
     nb::class_<Pose2>(m, "Pose2")
         .def(nb::init<>())
+        .def(nb::init<const Vector2 &>())
+        .def(nb::init<const Angle &, const Vector2 &>())
+        .def(nb::init<const Angle &, const Scalar, const Scalar &>())
+        .def(nb::init<const Pose2 &>())
+        .def("__copy__", [](const Pose2 &self) {
+            return new Pose2(self);
+        }, nb::rv_policy::take_ownership)
         .def("rotation", [](const Pose2 &pose) { return static_cast<double>(pose.rotation); })
         .def_ro("translation", &Pose2::translation)
         .def("__str__", &Pose2::toString);
