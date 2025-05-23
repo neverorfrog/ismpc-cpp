@@ -8,7 +8,7 @@ preview = ["pixi-build"]
 
 [dependencies] 
 ismpc = { path = "." }
-python = "3.11.*"
+python = "3.10.*"
 
 [package] 
 name = "ismpc"
@@ -21,9 +21,9 @@ backend = { name = "pixi-build-cmake", version = "0.1.*" }
 extra-args = ["-DCMAKE_BUILD_TYPE=Release"] 
 
 [package.host-dependencies]
+python = "3.10.*"
 cmake = "3.20.*"
 nanobind = "2.4.*"
-python = "3.11.*"
 eigen = ">=3.4.0,<4"
 simde = ">=0.8.0,<1"
 
