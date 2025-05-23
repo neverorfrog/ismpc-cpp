@@ -1,0 +1,102 @@
+# In your pyproject.toml
+
+[build-system]
+requires = ["scikit-build-core>=0.7.0", "nanobind[cmake]>=1.9.0"] # Use valid versions
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "ismpc"
+version = "0.0.1" # Increment for new releases
+description = "ISMPC: Instantaneous Model Predictive Controller" # Be descriptive
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.8" # Specify your supported Python range
+license = { file = "LICENSE" } # Ensure LICENSE file exists
+authors = [
+    { name="Your Name", email="you@example.com" }, # Replace with actual info
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License", # Choose your actual license
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: C++",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Topic :: Scientific/Engineering",
+]
+# dependencies = [ # Runtime Python dependencies, if any
+#     "numpy>=1.20",
+# ]
+
+[tool.scikit-build]
+cmake.source-dir = "."
+# python-package-dir = "src" # Assuming your Python package is src/ismpc/
+# cmake.args = ["-DSOME_CMAKE_OPTION=ON"] # If you need to pass args to CMake
+
+# --- CIBUILDWHEEL CONFIGURATION ---
+[tool.cibuildwheel]
+# Skip Python versions you don't want to build for.
+# nanobind generally supports 3.8+ well.
+skip = "cp37-* pp* *-win32" # Skip Python 3.7, PyPy, and 32-bit Windows
+
+# For Linux: Choose a manylinux image.
+# manylinux_2_28 is a good modern choice (based on CentOS Stream 8, glibc 2.28).
+# manylinux2014 is older and more compatible if 2_28 gives issues (based on CentOS 7, glibc 2.17).
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-i686-image = "manylinux_2_28" # If you decide to build 32-bit Linux later
+
+# For macOS: Specify architectures.
+# "auto" picks the native arch of the runner.
+# For universal2 wheels (x86_64 + arm64), you can do this:
+# archs-macos = ["x86_64", "arm64"] # This will build separate wheels.
+# Or for a single universal2 wheel (often preferred):
+# Set CIBW_ARCHS_MACOS="universal2" in the GitHub Actions env for older cibw,
+# or for newer cibuildwheel, ["auto", "universal2"] or simply ensure your runner supports it.
+# For simplicity, let's rely on GitHub Actions matrix for macOS archs initially.
+
+# Commands to run before the build inside the Docker/VM environment.
+# Useful for installing system dependencies your C++ code needs.
+# Example for Linux (yum for manylinux_2_28/CentOS based, apt for Debian/Ubuntu based)
+# before-build-linux = "yum install -y eigen3-devel || echo 'Eigen not installed via yum, assuming vendored or found by CMake'"
+# before-build-macos = "brew install eigen" # If you use Homebrew on macOS runners
+# before-build-windows = "choco install eigen" # If you use Chocolatey on Windows runners
+# If Eigen or other dependencies are found by CMake (e.g., via FetchContent or find_package),
+# you might not need these.
+
+# Test command: Runs after the wheel is built and installed in a virtual env.
+# This should perform a basic import test or run your test suite.
+test-command = "python -c 'import ismpc; print(ismpc)'" # Basic import
+# If you have a test suite (e.g., using pytest):
+# test-command = "pytest {project}/test" # Assuming tests are in project_root/test
+# test-requires = ["pytest", "numpy"] # Packages needed to run your tests
+
+# Environment variables to pass to the build environment
+# Useful for CMake flags or compiler settings.
+# [tool.cibuildwheel.environment] # Old syntax
+# CMAKE_ARGS = "-DSOME_CMAKE_OPTION=ON" # Pass to CMake
+# CXXFLAGS = "-O2"
+
+# Newer syntax for environment variables:
+# [tool.cibuildwheel.linux.environment]
+# CMAKE_ARGS = "-DSOME_LINUX_CMAKE_OPTION=ON"
+# [tool.cibuildwheel.macos.environment]
+# CMAKE_ARGS = "-DSOME_MACOS_CMAKE_OPTION=ON"
+# [tool.cibuildwheel.windows.environment]
+# CMAKE_ARGS = "-DSOME_WINDOWS_CMAKE_OPTION=ON"
+
+# If you need to ensure C++17 consistently (nanobind_add_module usually handles it)
+# [tool.cibuildwheel.environment] # This is older syntax, use platform-specific if needed
+# CXXFLAGS = "-std=c++17" # GCC/Clang
+# CMAKE_CXX_STANDARD = "17" # More CMake idiomatic way
+
+# If you only want to build specific Python versions on specific platforms:
+#[[tool.cibuildwheel.overrides]]
+#select = "cp312-*" # Selects CPython 3.12 builds
+#skip = "*-win*"   # Skips Windows builds for Python 3.12
