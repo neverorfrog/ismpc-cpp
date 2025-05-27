@@ -145,6 +145,62 @@ install(
 
 # =============================================================================================
 
+# ============================= ROS2 PACKAGE ==================================================
+find_package(ament_cmake REQUIRED)
+  add_definitions(-DUSING_ROS2)
+  message(STATUS "------------------------------------------")
+  message(STATUS "ismpc_cpp is being built using AMENT.")
+  message(STATUS "------------------------------------------")
+  set(CMAKE_CONFIG_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CONFIG_PATH})
+
+  find_package(ament_index_cpp REQUIRED)
+  list(APPEND ISMPC_CPP_EXTRA_LIBRARIES $<BUILD_INTERFACE:ament_index_cpp::ament_index_cpp>)
+  ament_export_dependencies(ament_index_cpp)
+  ament_export_dependencies(yaml-cpp)
+
+  set(ISMPC_CPP_LIB_DESTINATION lib)
+  set(ISMPC_CPP_INCLUDE_DESTINATION include)
+  set(ISMPC_CPP_BIN_DESTINATION bin)
+
+  mark_as_advanced(
+    ISMPC_CPP_EXTRA_LIBRARIES
+    ISMPC_CPP_LIB_DESTINATION
+    ISMPC_CPP_INCLUDE_DESTINATION
+    ISMPC_CPP_BIN_DESTINATION
+  )
+
+  install(
+    TARGETS ${ISMPC_CPP_LIBRARY}
+    EXPORT ${ISMPC_CPP_LIBRARY}Targets
+    ARCHIVE DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
+    LIBRARY DESTINATION ${ISMPC_CPP_LIB_DESTINATION}
+    RUNTIME DESTINATION ${ISMPC_CPP_BIN_DESTINATION}
+    INCLUDES DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
+  )
+
+  install(
+    DIRECTORY
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    $<BUILD_INTERFACE:${proxsuite_SOURCE_DIR}/include/proxsuite>
+    ${EIGEN_INCLUDE_DIR}
+    $<BUILD_INTERFACE:${nanobind_SOURCE_DIR}/include/nanobind>
+    $<BUILD_INTERFACE:${yaml-cpp_SOURCE_DIR}/include/yaml-cpp>
+    DESTINATION ${ISMPC_CPP_INCLUDE_DESTINATION}
+    FILES_MATCHING PATTERN "*.h*"
+  )
+
+  install(
+    DIRECTORY include/
+    DESTINATION include
+  )
+
+  ament_export_include_directories(include)
+  ament_export_libraries(${ISMPC_CPP_LIBRARY})
+  ament_export_targets(${ISMPC_CPP_LIBRARY}Targets HAS_LIBRARY_TARGET)
+  ament_package()
+# =============================================================================================
+
 # =========================== GOOGLE TEST =====================================================
 if(BUILD_TESTS)
   add_subdirectory(test)
