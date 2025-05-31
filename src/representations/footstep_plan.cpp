@@ -11,7 +11,14 @@ FootstepPlan::FootstepPlan(const Params& params) : numP(params.mpc.P), numC(para
 
 std::string FootstepPlan::toString() const {
     std::ostringstream os;
-    os << "FootstepPlan: " << std::endl;
+    os << "\nFootstepPlan: " << std::endl;
+    os << "Number of steps: " << footsteps.size() << std::endl;
+    for(const auto& step : footsteps) {
+        os << "Step: " << step.toString() << std::endl;
+    }
+    os << "ZMP midpoints (x): " << zmp_midpoints_x.transpose() << std::endl;
+    os << "ZMP midpoints (y): " << zmp_midpoints_y.transpose() << std::endl;
+    os << "ZMP midpoints (theta): " << zmp_midpoints_theta.transpose() << std::endl;
     return os.str();
 }
 
