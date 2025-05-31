@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 # ============================= PROJECT SETUP ===============================================
-project(ismpc VERSION 0.1 LANGUAGES CXX)
+project(ismpc_cpp VERSION 0.1 LANGUAGES CXX)
 set(ISMPC_CPP_LIBRARY ismpc_cpp)
 set(ISMPC_PY_LIBRARY ismpc)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -111,38 +111,6 @@ set(ISMPC_CPP_EXTRA_LIBRARIES
   ${DART_LIBRARIES}
 )
 target_link_libraries(${ISMPC_CPP_LIBRARY} PUBLIC ${ISMPC_CPP_EXTRA_LIBRARIES})
-# =============================================================================================
-
-# ============================ PYTHON BINDINGS =================================================
-find_package(Python 3.8 COMPONENTS Interpreter Development.Module REQUIRED)
-execute_process(
-  COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
-  OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT
-)
-
-execute_process(
-    COMMAND ${Python_EXECUTABLE} -c "import sysconfig; print(sysconfig.get_path('purelib'))"
-    OUTPUT_VARIABLE PYTHON_SITE_PACKAGES
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-include_directories(${Python_INCLUDE_DIRS})
-message(STATUS "Python_EXECUTABLE: ${Python_EXECUTABLE}")
-message(STATUS "Python_VERSION: ${Python_VERSION}")
-message(STATUS "PYTHON INCLUDE DIRECTORIES" ${Python_INCLUDE_DIRS})
-
-nanobind_add_module(${ISMPC_PY_LIBRARY} ${PROJECT_SOURCE_DIR}/src/bindings.cpp)
-target_include_directories(${ISMPC_PY_LIBRARY} PUBLIC ${eigen_SOURCE_DIR} ${ISMPC_INCLUDE_DIR})
-target_link_libraries(${ISMPC_PY_LIBRARY} PUBLIC ${ISMPC_CPP_LIBRARY})
-
-install(
-    TARGETS ${ISMPC_PY_LIBRARY}
-    EXPORT ${ISMPC_PY_LIBRARY}Targets
-    LIBRARY DESTINATION ${PYTHON_SITE_PACKAGES}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${BINDIR}
-)
-
 # =============================================================================================
 
 # ============================= ROS2 PACKAGE ==================================================
