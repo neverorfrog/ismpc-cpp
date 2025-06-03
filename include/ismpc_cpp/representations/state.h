@@ -18,6 +18,8 @@ struct State {
     EndEffector right_foot{};
     EndEffector torso{};
     EndEffector base{};  // TODO ??????????
+    bool left_foot_contact = true;
+    bool right_foot_contact = true;
 
     // Desired state
     LipState desired_lip;

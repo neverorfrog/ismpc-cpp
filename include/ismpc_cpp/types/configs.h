@@ -8,7 +8,7 @@ namespace ismpc {
 
 
 struct MpcParams {
-    Scalar delta = 0.01205; // Sampling interval (83 Hz)
+    Scalar delta = 0.01; // Sampling interval
     int N = 100; // Simulation steps (Updated from YAML)
     int P = 200; // Preview horizon steps (Updated from YAML)
     int C = 100; // Control horizon steps (Updated from YAML)
@@ -55,7 +55,7 @@ struct GaitParams {
 };
 
 struct ReferenceParams {
-    Scalar des_vel_x = 0.2; // Desired velocity in x direction (Updated from YAML)
+    Scalar des_vel_x = 0.0; // Desired velocity in x direction (Updated from YAML)
     Scalar des_vel_y = 0.0; // Desired velocity in y direction (Matches YAML)
     Scalar des_omega = 0.0; // Desired angular velocity (Matches YAML)
 };
