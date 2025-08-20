@@ -1,6 +1,6 @@
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/configs.h"
+#include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {
 

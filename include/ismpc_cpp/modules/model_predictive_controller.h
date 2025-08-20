@@ -6,10 +6,10 @@
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/state.h"
 #include "ismpc_cpp/tools/proxsuite.h"
+#include "ismpc_cpp/types/configs.h"
 #include "ismpc_cpp/types/ismpc_qp.h"
 #include "ismpc_cpp/types/math_types.h"
 #include "ismpc_cpp/types/optimization.h"
-#include "ismpc_cpp/types/configs.h"
 
 namespace ismpc {
 
@@ -49,18 +49,19 @@ class ModelPredictiveController {
     std::chrono::high_resolution_clock::time_point start, end;
 
    public:
-    ModelPredictiveController(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan, const Params& params) :
-        frame_info(frame_info),
-        state(state),
-        plan(plan),
-        numC(params.mpc.C),
-        numP(params.mpc.P),
-        delta(params.mpc.delta),
-        eta(params.lip.eta),
-        nl(params.mpc.nl),
-        h(params.lip.h),
-        qpx(IsmpcQp(params)),
-        qpy(IsmpcQp(params)) {}
+    ModelPredictiveController(const FrameInfo& frame_info, const State& state, const FootstepPlan& plan,
+                              const Params& params)
+        : frame_info(frame_info),
+          state(state),
+          plan(plan),
+          numC(params.mpc.C),
+          numP(params.mpc.P),
+          delta(params.mpc.delta),
+          eta(params.lip.eta),
+          nl(params.mpc.nl),
+          h(params.lip.h),
+          qpx(IsmpcQp(params)),
+          qpy(IsmpcQp(params)) {}
 
     /**
      * @brief Update the MPC module

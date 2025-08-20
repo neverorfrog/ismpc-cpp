@@ -6,19 +6,19 @@ channels = [
 platforms = ["osx-arm64", "osx-64", "linux-64", "win-64"]
 preview = ["pixi-build"]
 
-[dependencies] 
+[dependencies]
 ismpc = { path = "." }
 python = "3.11.*"
 
-[package] 
+[package]
 name = "ismpc"
 version = "0.1.0"
 
 [package.build]
-backend = { name = "pixi-build-cmake", version = "0.1.*" } 
+backend = { name = "pixi-build-cmake", version = "0.1.*" }
 
-[package.build.configuration]
-extra-args = ["-DCMAKE_BUILD_TYPE=Release"] 
+[package.build.config]
+extra-args = ["-DCMAKE_BUILD_TYPE=Release"]
 
 [package.host-dependencies]
 cmake = "3.20.*"

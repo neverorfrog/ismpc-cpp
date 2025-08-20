@@ -1,9 +1,10 @@
 #include "ismpc_cpp/representations/reference.h"
+
 #include "ismpc_cpp/types/configs.h"
 
 namespace ismpc {
 
-Reference::Reference(const Params& params): delta(params.mpc.delta) {
+Reference::Reference(const Params& params) : delta(params.mpc.delta) {
     velocity.vx = params.reference.des_vel_x;
     velocity.vy = params.reference.des_vel_y;
     velocity.omega = params.reference.des_omega;

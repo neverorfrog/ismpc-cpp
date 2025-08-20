@@ -1,4 +1,5 @@
 #include "ismpc_cpp/representations/footstep_plan.h"
+
 #include "ismpc_cpp/types/body_parts.h"
 
 namespace ismpc {

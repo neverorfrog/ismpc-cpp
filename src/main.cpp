@@ -24,10 +24,13 @@ int main() {
     ismpc::FootstepPlan plan = ismpc::FootstepPlan(params);
 
     // Modules
-    ismpc::FootstepPlanProvider planner = ismpc::FootstepPlanProvider(frame_info, reference, state, plan, params);
+    ismpc::FootstepPlanProvider planner
+        = ismpc::FootstepPlanProvider(frame_info, reference, state, plan, params);
     ismpc::ModelPredictiveController mpc = ismpc::ModelPredictiveController(frame_info, state, plan, params);
-    ismpc::FootTrajectoryGenerator ft_generator = ismpc::FootTrajectoryGenerator(frame_info, state, plan, params);
-    ismpc::MovingConstraintProvider mc_provider = ismpc::MovingConstraintProvider(frame_info, state, plan, params);
+    ismpc::FootTrajectoryGenerator ft_generator
+        = ismpc::FootTrajectoryGenerator(frame_info, state, plan, params);
+    ismpc::MovingConstraintProvider mc_provider
+        = ismpc::MovingConstraintProvider(frame_info, state, plan, params);
 
     // Timing stuff
     std::chrono::system_clock::time_point start, end;
@@ -53,12 +56,10 @@ int main() {
         start = std::chrono::high_resolution_clock::now();
         mpc.update(state);
         std::cout << "CURRENT STATE: \n LIP: \n" << state.lip << std::endl;
-        std::cout << "LEFT FOOT: "
-                  << state.left_foot.pose.getPose2().getVector().transpose().format(CleanFmt)
+        std::cout << "LEFT FOOT: " << state.left_foot.pose.getPose2().getVector().transpose().format(CleanFmt)
                   << std::endl;
         std::cout << "RIGHT FOOT: "
-                  << state.right_foot.pose.getPose2().getVector().transpose().format(CleanFmt) <<
-                  "\n"
+                  << state.right_foot.pose.getPose2().getVector().transpose().format(CleanFmt) << "\n"
                   << std::endl;
         std::cout << "DESIRED LIP: \n" << state.desired_lip << std::endl;
         std::cout << "MOVING CONSTRAINTS: \n"
@@ -90,7 +91,8 @@ int main() {
     auto average_feet_duration = total_feet_duration / params.mpc.N;
 
     std::cout << "Average execution time: " << average_duration << " microseconds" << std::endl;
-    std::cout << "Average planner execution time: " << average_planner_duration << " microseconds" << std::endl;
+    std::cout << "Average planner execution time: " << average_planner_duration << " microseconds"
+              << std::endl;
     std::cout << "Average mpc execution time: " << average_mpc_duration << " microseconds" << std::endl;
     std::cout << "Average feet execution time: " << average_feet_duration << " microseconds" << std::endl;
     return 0;

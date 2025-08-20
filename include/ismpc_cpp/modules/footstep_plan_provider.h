@@ -87,8 +87,7 @@ class FootstepPlanProvider {
           dax(params.gait.dax),
           day(params.gait.day),
           l(params.gait.l),
-          fs_duration(params.gait.fs_duration) {
-    };
+          fs_duration(params.gait.fs_duration){};
 
     /**
      * @brief Update the footstep plan. This function computes the timing,

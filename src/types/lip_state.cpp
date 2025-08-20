@@ -9,8 +9,8 @@ LipState::LipState(const Params& params) : eta(params.lip.eta), delta(params.mpc
     sinh = std::sinh(eta * delta);
     A = Matrix3({{cosh, sinh / eta, 1 - cosh}, {eta * sinh, cosh, -eta * sinh}, {0., 0., 1.}});
     B = Vector3({delta - sinh / eta, 1 - cosh, delta});
-    Scalar com_x = params.initial_feet.lf_x + 0.5 * (params.initial_feet.rf_x  - params.initial_feet.lf_x);
-    Scalar com_y = params.initial_feet.lf_y  + 0.5 * (params.initial_feet.rf_y  - params.initial_feet.lf_y);
+    Scalar com_x = params.initial_feet.lf_x + 0.5 * (params.initial_feet.rf_x - params.initial_feet.lf_x);
+    Scalar com_y = params.initial_feet.lf_y + 0.5 * (params.initial_feet.rf_y - params.initial_feet.lf_y);
     com_pos << com_x, com_y, params.lip.h;
     com_vel << 0, 0, 0;
     com_acc << 0, 0, 0;

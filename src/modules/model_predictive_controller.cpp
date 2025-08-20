@@ -8,7 +8,8 @@ void ModelPredictiveController::update(State& state) {
     qpx.update(state.lip.getX(), plan.zmp_midpoints_x);
     qpy.update(state.lip.getY(), plan.zmp_midpoints_y);
     end = std::chrono::high_resolution_clock::now();
-    total_mpc_preprocessing_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    total_mpc_preprocessing_duration
+        += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     // ===================================================
 
     // ================== SOLVE QP =======================
