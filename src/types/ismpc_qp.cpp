@@ -5,7 +5,19 @@
 
 namespace ismpc {
 
-IsmpcQp::IsmpcQp() {
+IsmpcQp::IsmpcQp(const Params &params)
+    : numC(params.mpc.C),
+      beta(params.mpc.beta),
+      delta(params.mpc.delta),
+      eta(params.lip.eta),
+      dxz(params.lip.dxz),
+      zmp_vx_max(params.lip.zmp_vx_max),
+      tail_type(params.mpc.tail_type),
+      nl(params.mpc.nl),
+      nv(nl + 1),
+      d(nv * numC + nl),
+      n_in(2 * numC),
+      n_eq(nl + nl * numC + 1) {
     // Options
     qp.settings.max_iter = 500;
     qp.settings.initial_guess = InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;

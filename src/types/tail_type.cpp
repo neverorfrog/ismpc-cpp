@@ -26,21 +26,3 @@ TailType toTailType(const std::string& str) {
 }
 
 }  // namespace ismpc
-
-namespace YAML {
-
-Node convert<ismpc::TailType>::encode(const ismpc::TailType& type) {
-    Node node;
-    node = ismpc::toString(type);
-    return node;
-}
-
-bool convert<ismpc::TailType>::decode(const Node& node, ismpc::TailType& type) {
-    if (!node.IsScalar()) {
-        return false;
-    }
-    type = ismpc::toTailType(node.as<std::string>());
-    return true;
-}
-
-}  // namespace YAML

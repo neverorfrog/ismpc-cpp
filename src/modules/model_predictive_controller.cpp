@@ -2,17 +2,14 @@
 
 namespace ismpc {
 
-ModelPredictiveController::ModelPredictiveController(const FrameInfo& frame_info, const State& state,
-                                                     const FootstepPlan& plan)
-    : frame_info(frame_info), state(state), plan(plan) {}
-
 void ModelPredictiveController::update(State& state) {
     // ================== PREPROCESSING ===================
     start = std::chrono::high_resolution_clock::now();
     qpx.update(state.lip.getX(), plan.zmp_midpoints_x);
     qpy.update(state.lip.getY(), plan.zmp_midpoints_y);
     end = std::chrono::high_resolution_clock::now();
-    total_mpc_preprocessing_duration += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    total_mpc_preprocessing_duration
+        += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     // ===================================================
 
     // ================== SOLVE QP =======================
@@ -29,7 +26,7 @@ void ModelPredictiveController::update(State& state) {
     // ====================================================
 
     // ================== POSTPROCESSING ==================
-    if (Config::nl == 1) {
+    if (nl == 1) {
         // Integrate the lip velocities
         xdz = x_sol(1);
         ydz = y_sol(1);
@@ -41,7 +38,7 @@ void ModelPredictiveController::update(State& state) {
         yc = predicted_y(0);
         xdc = predicted_x(1);
         ydc = predicted_y(1);
-    } else if (Config::nl == 3) {
+    } else if (nl == 3) {
         xdz = x_sol(3);
         ydz = y_sol(3);
         xc = x_sol(4);
@@ -53,7 +50,7 @@ void ModelPredictiveController::update(State& state) {
     }
 
     // Set desired state
-    state.desired_lip.com_pos << xc, yc, RobotConfig::h;
+    state.desired_lip.com_pos << xc, yc, h;
     state.desired_lip.com_vel << xdc, ydc, 0.0;
     state.desired_lip.zmp_pos << xz, yz, 0.0;
     state.desired_lip.zmp_vel << xdz, ydz, 0.0;

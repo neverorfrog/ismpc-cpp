@@ -1,12 +1,6 @@
 #include "ismpc_cpp/modules/footstep_plan_provider.h"
 
-#include "ismpc_cpp/representations/footstep_plan.h"
-
 namespace ismpc {
-
-FootstepPlanProvider::FootstepPlanProvider(const FrameInfo& frame_info, const Reference& reference,
-                                           const State& state, const FootstepPlan& plan)
-    : frame_info(frame_info), reference(reference), state(state), plan(plan) {}
 
 void FootstepPlanProvider::update(FootstepPlan& plan) {
     if (plan.need_to_replan) {
@@ -51,7 +45,7 @@ void FootstepPlanProvider::computePlan(FootstepPlan& plan) {
     if (plan.footsteps.empty()) {
         plan.footsteps.push_back(Footstep{state.right_foot.getPose2(), state.right_foot.getPose2(),
                                           WalkPhase::STARTING, Foot::left, frame_info.tk, frame_info.tk,
-                                          frame_info.tk + Config::fs_duration});
+                                          frame_info.tk + fs_duration});
     }
 
     // Compute the number of footsteps with the associated timings
@@ -65,8 +59,9 @@ void FootstepPlanProvider::computePlan(FootstepPlan& plan) {
     computePositionSequence();
 
     // Need to insert the current footstep pose in the plan
-    const Pose2& swing_foot_pose = plan.footsteps.front().support_foot == Foot::right ? state.left_foot.getPose2() :
-                                                                                        state.right_foot.getPose2();
+    const Pose2& swing_foot_pose = plan.footsteps.front().support_foot == Foot::right ?
+                                       state.left_foot.getPose2() :
+                                       state.right_foot.getPose2();
     theta_sequence.insert(theta_sequence.begin(), swing_foot_pose.rotation);
     x_sequence.insert(x_sequence.begin(), swing_foot_pose.translation(0));
     y_sequence.insert(y_sequence.begin(), swing_foot_pose.translation(1));
@@ -102,7 +97,7 @@ void FootstepPlanProvider::computePlan(FootstepPlan& plan) {
 
 void FootstepPlanProvider::computeTiming() {
     Scalar current_fs_ts = plan.footsteps.front().end;  // time at which i lay the swing foot on the ground
-    for (Scalar ts = current_fs_ts + Config::fs_duration; ts <= current_fs_ts + T_p; ts += Config::fs_duration) {
+    for (Scalar ts = current_fs_ts + fs_duration; ts <= current_fs_ts + T_p; ts += fs_duration) {
         timestamps.push_back(truncateToDecimalPlaces(ts, 2));
     }
 }
@@ -150,7 +145,8 @@ void FootstepPlanProvider::computePositionSequence() {
 
     // Solving the optimization problem
     position_qp.work.timer.start();
-    position_qp.init(pos_cost.H, pos_cost.g, nullopt, nullopt, kin_constraint.C, kin_constraint.l, kin_constraint.u);
+    position_qp.init(pos_cost.H, pos_cost.g, nullopt, nullopt, kin_constraint.C, kin_constraint.l,
+                     kin_constraint.u);
     position_qp.solve();
     position_qp.work.timer.stop();
     total_planner_qp_duration += position_qp.work.timer.elapsed().user;
@@ -182,8 +178,9 @@ InequalityConstraint FootstepPlanProvider::getKinematicConstraint(int F) const {
     VectorX lbj = VectorX::Zero(2);
     VectorX ubj = VectorX::Zero(2);
 
-    const Pose2& swing_foot_pose = plan.footsteps.front().support_foot == Foot::right ? state.left_foot.getPose2() :
-                                                                                        state.right_foot.getPose2();
+    const Pose2& swing_foot_pose = plan.footsteps.front().support_foot == Foot::right ?
+                                       state.left_foot.getPose2() :
+                                       state.right_foot.getPose2();
 
     Scalar current_x = swing_foot_pose.translation(0);
     Scalar current_y = swing_foot_pose.translation(1);
@@ -240,8 +237,9 @@ Cost FootstepPlanProvider::getThetaCost() const {
         t_end = timestamps[j + 1];
         delta_theta(j) = reference.integrateOmega(t_start, t_end);
     }
-    Scalar current_theta = plan.footsteps.front().support_foot == Foot::right ? state.left_foot.getPose2().rotation :
-                                                                                state.right_foot.getPose2().rotation;
+    Scalar current_theta = plan.footsteps.front().support_foot == Foot::right ?
+                               state.left_foot.getPose2().rotation :
+                               state.right_foot.getPose2().rotation;
 
     // Cost Matrix
     Matrix H = Matrix::Identity(F, F);

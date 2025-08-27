@@ -1,18 +1,17 @@
 #include "ismpc_cpp/types/lip_state.h"
 
+#include "ismpc_cpp/types/configs.h"
+
 namespace ismpc {
 
-Scalar LipState::cosh = std::cosh(RobotConfig::eta * Config::delta);
-Scalar LipState::sinh = std::sinh(RobotConfig::eta * Config::delta);
-Matrix3 LipState::A = Matrix3({{cosh, sinh / RobotConfig::eta, 1 - cosh},
-                               {RobotConfig::eta * sinh, cosh, -RobotConfig::eta* sinh},
-                               {0., 0., 1.}});
-Vector3 LipState::B = Vector3({Config::delta - sinh / RobotConfig::eta, 1 - cosh, Config::delta});
-
-LipState::LipState() {
-    Scalar com_x = RobotConfig::left_foot_x + 0.5 * (RobotConfig::right_foot_x - RobotConfig::left_foot_x);
-    Scalar com_y = RobotConfig::left_foot_y + 0.5 * (RobotConfig::right_foot_y - RobotConfig::left_foot_y);
-    com_pos << com_x, com_y, RobotConfig::h;
+LipState::LipState(const Params& params) : eta(params.lip.eta), delta(params.mpc.delta) {
+    cosh = std::cosh(eta * delta);
+    sinh = std::sinh(eta * delta);
+    A = Matrix3({{cosh, sinh / eta, 1 - cosh}, {eta * sinh, cosh, -eta * sinh}, {0., 0., 1.}});
+    B = Vector3({delta - sinh / eta, 1 - cosh, delta});
+    Scalar com_x = params.initial_feet.lf_x + 0.5 * (params.initial_feet.rf_x - params.initial_feet.lf_x);
+    Scalar com_y = params.initial_feet.lf_y + 0.5 * (params.initial_feet.rf_y - params.initial_feet.lf_y);
+    com_pos << com_x, com_y, params.lip.h;
     com_vel << 0, 0, 0;
     com_acc << 0, 0, 0;
     zmp_pos << com_x, com_y, 0;

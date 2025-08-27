@@ -50,9 +50,3 @@ repos:
           ]
         types: [text]
         files: \.(yml|yaml)$
-
-  # Finds spelling issues in code.
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
-    hooks:
-      - id: codespell

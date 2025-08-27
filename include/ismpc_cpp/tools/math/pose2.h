@@ -4,7 +4,6 @@
 #include <string>
 
 #include "angle.h"
-#include "ismpc_cpp/tools/config/config.h"
 #include "ismpc_cpp/types/math_types.h"
 
 namespace ismpc {

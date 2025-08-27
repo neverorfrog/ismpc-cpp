@@ -18,10 +18,9 @@
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/reference.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/tools/config/config.h"
-#include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/proxsuite.h"
 #include "ismpc_cpp/types/body_parts.h"
+#include "ismpc_cpp/types/configs.h"
 #include "ismpc_cpp/types/end_effector.h"
 #include "ismpc_cpp/types/footstep.h"
 #include "ismpc_cpp/types/math_types.h"
@@ -56,19 +55,8 @@ class FootstepPlanProvider {
     bool in_double_support;
 
     // Parameters
-    const int numP = Config::P;
-    const Scalar T_p = Config::T_p;
-    const Scalar T_c = Config::T_c;
-    const Scalar delta = Config::delta;
-    const Scalar T_bar = RobotConfig::T_bar;
-    const Scalar v_bar = RobotConfig::v_bar;
-    const Scalar alpha = RobotConfig::alpha;
-    const Scalar ds_percentage = RobotConfig::ds_percentage;
-    const Scalar theta_max = RobotConfig::theta_max;
-    const Scalar eta = RobotConfig::eta;
-    const Scalar dax = RobotConfig::dax;
-    const Scalar day = RobotConfig::day;
-    const Scalar l = RobotConfig::l;
+    int numP;
+    Scalar T_p, T_c, delta, T_bar, v_bar, alpha, ds_percentage, theta_max, dax, day, l, fs_duration;
 
     // TODO: Test
     Scalar last_plan_timestamp = 0.0;
@@ -82,7 +70,24 @@ class FootstepPlanProvider {
 
    public:
     FootstepPlanProvider(const FrameInfo& frame_info, const Reference& reference, const State& state,
-                         const FootstepPlan& plan);
+                         const FootstepPlan& plan, const Params& params)
+        : frame_info(frame_info),
+          reference(reference),
+          state(state),
+          plan(plan),
+          numP(params.mpc.P),
+          T_p(params.mpc.T_p),
+          T_c(params.mpc.T_c),
+          delta(params.mpc.delta),
+          T_bar(params.gait.T_bar),
+          v_bar(params.gait.v_bar),
+          alpha(params.gait.alpha),
+          ds_percentage(params.gait.ds_percentage),
+          theta_max(params.gait.theta_max),
+          dax(params.gait.dax),
+          day(params.gait.day),
+          l(params.gait.l),
+          fs_duration(params.gait.fs_duration){};
 
     /**
      * @brief Update the footstep plan. This function computes the timing,

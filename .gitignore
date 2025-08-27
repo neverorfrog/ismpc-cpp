@@ -2,6 +2,7 @@
 # pixi environments
 .pixi
 *.egg-info
+*.conda
 
 # cpp build directories
 build/

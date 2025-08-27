@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ismpc_cpp/tools/config/config.h"
-#include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/tools/math/pose2.h"
+#include "ismpc_cpp/tools/math/rotation_matrix.h"
 #include "ismpc_cpp/types/body_parts.h"
+#include "ismpc_cpp/types/configs.h"
 #include "ismpc_cpp/types/end_effector.h"
 #include "ismpc_cpp/types/footstep.h"
 #include "ismpc_cpp/types/lip_state.h"
@@ -13,24 +13,24 @@ namespace ismpc {
 
 struct State {
     // Current state
-    LipState lip{};
+    LipState lip;
     EndEffector left_foot{};
     EndEffector right_foot{};
     EndEffector torso{};
     EndEffector base{};  // TODO ??????????
 
     // Desired state
-    LipState desired_lip{};
+    LipState desired_lip;
     EndEffector desired_left_foot{};
     EndEffector desired_right_foot{};
     EndEffector desired_torso{};
     EndEffector desired_base{};
 
     // Variables from config to save permanently
-    Scalar left_foot_x = RobotConfig::left_foot_x;
-    Scalar left_foot_y = RobotConfig::left_foot_y;
-    Scalar right_foot_x = RobotConfig::right_foot_x;
-    Scalar right_foot_y = RobotConfig::right_foot_y;
+    Scalar left_foot_x;
+    Scalar left_foot_y;
+    Scalar right_foot_x;
+    Scalar right_foot_y;
 
     // Time related stuff
     Scalar total_mpc_qp_duration = 0.0;
@@ -42,7 +42,10 @@ struct State {
     std::vector<EndEffector> left_foot_history;
     std::vector<EndEffector> right_foot_history;
 
-    State();
+    State(const Params& params);
+
+    State(const State& state);
+    State& operator=(const State& state);
 
     /**
      * @brief Convert the state to a string representation

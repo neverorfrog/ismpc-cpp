@@ -6,18 +6,19 @@
 
 namespace ismpc {
 struct Footstep {
-    Pose2 start_pose;  // the pose of the footstep when it lifts off the ground and the single support phase starts
+    Pose2 start_pose;  // the pose of the footstep when it lifts off the ground and the single support phase
+                       // starts
     Pose2 end_pose;    // the pose of the footstep when it hits the ground and the double support phase starts
     WalkPhase walk_phase;  // the walk phase when the footstep is taken (starting, walking, falling)
     Foot support_foot;     // the foot that is supporting the robot when the footstep is taken (left, right)
     Scalar start;          // the time instant in which the foot lifts off the ground
     Scalar ds_start;       // the time instant in which the foot hits the ground
-    Scalar end;            // the time instant in which the double support phase ends and a new footstep starts
+    Scalar end;  // the time instant in which the double support phase ends and a new footstep starts
 
     Footstep() = default;
 
-    Footstep(const Pose2& start_pose, const Pose2& end_pose, WalkPhase walk_phase, Foot support_foot, Scalar start,
-             Scalar ds_start, Scalar end)
+    Footstep(const Pose2& start_pose, const Pose2& end_pose, WalkPhase walk_phase, Foot support_foot,
+             Scalar start, Scalar ds_start, Scalar end)
         : start_pose(start_pose),
           end_pose(end_pose),
           walk_phase(walk_phase),

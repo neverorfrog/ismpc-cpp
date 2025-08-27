@@ -10,8 +10,6 @@
 #include "ismpc_cpp/representations/frame_info.h"
 #include "ismpc_cpp/representations/reference.h"
 #include "ismpc_cpp/representations/state.h"
-#include "ismpc_cpp/tools/config/config.h"
-#include "ismpc_cpp/tools/config/robot_config.h"
 #include "ismpc_cpp/types/end_effector.h"
 #include "ismpc_cpp/types/optimization.h"
 #include "ismpc_cpp/types/support_phase.h"

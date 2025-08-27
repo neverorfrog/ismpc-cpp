@@ -1,12 +1,14 @@
 #include "ismpc_cpp/representations/reference.h"
 
+#include "ismpc_cpp/types/configs.h"
+
 namespace ismpc {
 
-Reference::Reference() {
-    velocity.vx = Config::des_vel_x;
-    velocity.vy = Config::des_vel_y;
-    velocity.omega = Config::des_omega;
-    velocity.vector << Config::des_vel_x, Config::des_vel_y, Config::des_omega;
+Reference::Reference(const Params& params) : delta(params.mpc.delta) {
+    velocity.vx = params.reference.des_vel_x;
+    velocity.vy = params.reference.des_vel_y;
+    velocity.omega = params.reference.des_omega;
+    velocity.vector << params.reference.des_vel_x, params.reference.des_vel_y, params.reference.des_omega;
 }
 
 Velocity Reference::get_velocity() const {
@@ -28,8 +30,8 @@ Scalar Reference::integrateOmega(Scalar start, Scalar end) const {
     Scalar theta = 0;
     Scalar t = start;
     while (t < end) {
-        t += Config::delta;
-        theta += velocity.omega * Config::delta;
+        t += delta;
+        theta += velocity.omega * delta;
     }
     return theta;
 }
@@ -40,10 +42,10 @@ Pose2 Reference::integrateVelocity(Scalar start, Scalar end, Scalar current_thet
     Scalar y = 0;
     Scalar t = start;
     while (t < end) {
-        t += Config::delta;
-        x += (velocity.vx * std::cos(theta) - velocity.vy * std::sin(theta)) * Config::delta;
-        y += (velocity.vx * std::sin(theta) + velocity.vy * std::cos(theta)) * Config::delta;
-        theta += velocity.omega * Config::delta;
+        t += delta;
+        x += (velocity.vx * std::cos(theta) - velocity.vy * std::sin(theta)) * delta;
+        y += (velocity.vx * std::sin(theta) + velocity.vy * std::cos(theta)) * delta;
+        theta += velocity.omega * delta;
     }
     return Pose2(theta, x, y);
 }
