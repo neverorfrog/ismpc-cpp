@@ -3,6 +3,7 @@
 .pixi
 *.egg-info
 *.conda
+.clangd
 
 # cpp build directories
 build/

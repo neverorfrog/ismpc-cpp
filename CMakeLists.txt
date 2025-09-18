@@ -154,4 +154,14 @@ endif()
 # ============================ EXECUTABLES ====================================================
 add_executable(ismpc_main ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 target_link_libraries(ismpc_main PRIVATE ${ISMPC_CPP_LIBRARY})
+
+install(TARGETS ismpc_main
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  BUNDLE  DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
 # =============================================================================================
+
+# ============================== CLANGD =========================================================
+file(WRITE "${CMAKE_SOURCE_DIR}/.clangd"
+  "CompileFlags:\n  CompilationDatabase: ${CMAKE_CURRENT_BINARY_DIR}\n")
+# ==============================================================================================

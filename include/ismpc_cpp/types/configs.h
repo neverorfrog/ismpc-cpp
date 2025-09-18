@@ -37,7 +37,7 @@ struct InitialFeetParams {
 };
 
 struct GaitParams {
-    Scalar ds_percentage = 0.3;                  // (Updated from hrp4.yaml)
+    Scalar ds_percentage = 0.4;                  // (Updated from hrp4.yaml)
     Scalar ss_percentage = 1.0 - ds_percentage;  // (Recalculated based on updated ds_percentage)
     Scalar step_height = 0.01;                   // (Updated from hrp4.yaml)
 
@@ -45,8 +45,7 @@ struct GaitParams {
     Scalar dax = 0.3;  // Footstep length in x direction (Updated from hrp4.yaml)
     Scalar day = 0.2;  // Footstep length in y direction (Updated from hrp4.yaml)
 
-    Scalar theta_max
-        = 0.3927;        // Maximum angle variation between consecutive footsteps (Updated from hrp4.yaml)
+    Scalar theta_max = 0.3927;        // Maximum angle variation between consecutive footsteps (Updated from hrp4.yaml)
     Scalar T_bar = 0.3;  // Cruise parameter (Updated from hrp4.yaml)
     Scalar L_bar = 0.3;  // Cruise parameter (Updated from hrp4.yaml)
     Scalar v_bar = L_bar / T_bar;  // Cruise parameter (Default, not in hrp4.yaml)
